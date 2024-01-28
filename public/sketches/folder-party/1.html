@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sketch one</title>
+
+    <style>
+      .draggable {
+        display: inline-block;
+        user-select: none;
+      }
+
+      .draggable:hover {
+        /* for easy debugging */
+        /* background-color: purple; */
+        cursor: move !important;
+      }
+    </style>
+
+    <script>
+      function setTopLeft(element) {
+        const { top, left } = element.getBoundingClientRect();
+        const { scrollX, scrollY } = window;
+        element.style.setProperty("top", `${top + scrollY}px`);
+        element.style.setProperty("left", `${left + scrollX}px`);
+      }
+
+      function setPositionAbsolute(element) {
+        element.style.setProperty("position", "absolute");
+      }
+
+      function setDraggableAttributes(element) {
+        element.classList.add("draggable");
+        // element.setAttribute("draggable", true);
+        // element.addEventListener("drag", onDrag);
+      }
+
+      // When the mouse is down on an element, add a listener to the body
+      // When the mouse goes up on an element, remove the listener on the body
+      function onMouseDown(event) {
+        const { target, pageX, pageY } = event;
+        const { width, height } = target.getBoundingClientRect();
+
+        // TODO: Add shift calculation
+        // https://javascript.info/mouse-drag-and-drop#correct-positioning
+        function moveTo(pageX, pageY) {
+          const newLeft = pageX - width / 2 + "px";
+          const newTop = pageY - height / 2 + "px";
+          target.style.setProperty("left", newLeft);
+          target.style.setProperty("top", newTop);
+        }
+
+        function onMouseMove(event) {
+          moveTo(event.pageX, event.pageY);
+        }
+
+        function onMouseUp() {
+          document.removeEventListener("mousemove", onMouseMove);
+          target.removeEventListener("mouseUp", onMouseUp);
+        }
+
+        document.addEventListener("mousemove", onMouseMove);
+        target.addEventListener("mouseup", onMouseUp);
+      }
+
+      window.addEventListener("load", (event) => {
+        const elements = document.querySelectorAll("[data-draggable]");
+        elements.forEach(setDraggableAttributes);
+        elements.forEach(setTopLeft);
+        elements.forEach(setPositionAbsolute);
+        elements.forEach((ele) =>
+          ele.addEventListener("mousedown", onMouseDown)
+        );
+      });
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/index.html">back</a>
+    </nav>
+    <main>
+      <figure data-draggable>
+        <figcaption>not-a-link.txt</figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">future-feelings.txt</a></figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">hm/</a></figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">i-am-an-aspiring-teacher.png</a></figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">not-all-features.png</a></figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption>
+          <a href="#">Screen Shot 2021-03-09 at 10.19.53 PM.png</a>
+        </figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">welcome/hello,goodday!!!!.png</a></figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">would-you-like-to/find-out.jpeg</a></figcaption>
+      </figure>
+      <figure data-draggable>
+        <figcaption><a href="#">you-deserve-a.png</a></figcaption>
+      </figure>
+      <pre aria-lable="loveseat" data-draggable>
+  /~~~~~~~~\  
+ /~ () ()  ~\ 
+(_)========(_)
+ I|________|I
+      </pre>
+      <pre aria-label="couch" data-draggable>
+  /~~~~~~~~~~~~~~~~\
+ /~ ()  ()  () ()  ~\
+(_)==== ===========(_)
+ |__________________|
+      </pre>
+      <pre aria-lable="standing lamp" data-draggable>
+  ____
+ /    \
+/______\
+   ||
+   ||
+   ||
+   ||
+  _||_
+      </pre>
+      <pre aria-label="dresser" data-draggable>
+ _______
+|_o_|_o_|
+|___o___|
+|___o___|
+|___o___| 
+ ||   ||
+      </pre>
+      <pre aria-label="rug" data-draggable>
+   /////////////////////////
+  /////////////////////////
+ /////////////////////////
+/////////////////////////
+      </pre>
+      <pre data-draggable>
+  *  .  . * 
+ .    *        
+    *.   *
+      </pre>
+      <pre data-draggable>
+   *    ..
+.             *
+       *    .
+         .  *   .
+      *  .  ..  *
+   .      *   *
+      </pre>
+    </main>
+  </body>
+</html>
