@@ -1,0 +1,10 @@
+{
+  "name": "html-sketches",
+  "version": "0.1.0",
+  "description": "a messy space for sketching w html, css, js",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lizz thabet"
+}
