@@ -4,7 +4,11 @@
   "description": "a messy space for sketching w html, css, js",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx nodemon ./dev-server.js --ext js,html,css"
   },
-  "author": "lizz thabet"
+  "author": "lizz thabet",
+  "devDependencies": {
+    "nodemon": "^3.0.3",
+    "ws": "^8.16.0"
+  }
 }
