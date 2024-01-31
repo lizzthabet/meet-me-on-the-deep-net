@@ -6,73 +6,81 @@
     <title>sketch one</title>
 
     <style>
-      .draggable {
+      [data-draggable] {
         display: inline-block;
         user-select: none;
+        /* Right now, this prevents an issue with calculating drag position
+           that I probably want to solve another way... derp */
+        margin: 0;
+        padding: 1rem;
+        /* Border for debugging */
+        /* border: 1px dashed black; */
       }
 
-      .draggable:hover {
-        /* for easy debugging */
-        /* background-color: purple; */
-        cursor: move !important;
+      [data-draggable]:hover {
+        cursor: move;
       }
     </style>
 
     <script>
       function setTopLeft(element) {
-        const { top, left } = element.getBoundingClientRect();
-        const { scrollX, scrollY } = window;
-        element.style.setProperty("top", `${top + scrollY}px`);
-        element.style.setProperty("left", `${left + scrollX}px`);
+        const { top, left } = element.getBoundingClientRect()
+        const { scrollX, scrollY } = window
+        element.style.setProperty("top", `${top + scrollY}px`)
+        element.style.setProperty("left", `${left + scrollX}px`)
       }
 
       function setPositionAbsolute(element) {
-        element.style.setProperty("position", "absolute");
-      }
-
-      function setDraggableAttributes(element) {
-        element.classList.add("draggable");
-        // element.setAttribute("draggable", true);
-        // element.addEventListener("drag", onDrag);
+        element.style.setProperty("position", "absolute")
       }
 
       // When the mouse is down on an element, add a listener to the body
       // When the mouse goes up on an element, remove the listener on the body
       function onMouseDown(event) {
-        const { target, pageX, pageY } = event;
-        const { width, height } = target.getBoundingClientRect();
-
-        // TODO: Add shift calculation
+        event.stopPropagation()
+        // Use the "currentTarget," which represents the element that the event
+        // listener is attached to, instead of "target"
+        const { currentTarget, target, pageX, pageY, clientX, clientY } = event
+        // TODO: These coordinates are relative to the viewport, so they'll need to be adjusted by scrollX, scrollY
+        const { left, top } = currentTarget.getBoundingClientRect()
+        
+        // Do a little bit of math to calculate where the mouse is
+        // in relation to the element dimensions so they can be used
+        // in positioning the element
         // https://javascript.info/mouse-drag-and-drop#correct-positioning
+        const shiftX = clientX - left
+        const shiftY = clientY - top
+
         function moveTo(pageX, pageY) {
-          const newLeft = pageX - width / 2 + "px";
-          const newTop = pageY - height / 2 + "px";
-          target.style.setProperty("left", newLeft);
-          target.style.setProperty("top", newTop);
+          const newLeft = pageX - shiftX + "px"
+          const newTop = pageY - shiftY + "px"
+          currentTarget.style.setProperty("left", newLeft)
+          currentTarget.style.setProperty("top", newTop)
         }
 
         function onMouseMove(event) {
-          moveTo(event.pageX, event.pageY);
+          moveTo(event.pageX, event.pageY)
         }
 
         function onMouseUp() {
-          document.removeEventListener("mousemove", onMouseMove);
-          target.removeEventListener("mouseUp", onMouseUp);
+          document.removeEventListener("mousemove", onMouseMove)
+          document.removeEventListener("mouseup", onMouseUp)
         }
 
-        document.addEventListener("mousemove", onMouseMove);
-        target.addEventListener("mouseup", onMouseUp);
+        document.addEventListener("mousemove", onMouseMove)
+        // Add the "mouseup" event to the document, in case
+        // the event doesn't fire on the target itself
+        document.addEventListener("mouseup", onMouseUp)
       }
 
       window.addEventListener("load", (event) => {
-        const elements = document.querySelectorAll("[data-draggable]");
-        elements.forEach(setDraggableAttributes);
-        elements.forEach(setTopLeft);
-        elements.forEach(setPositionAbsolute);
+        const elements = document.querySelectorAll("[data-draggable]")
+        elements.forEach(setTopLeft)
+        elements.forEach(setPositionAbsolute)
         elements.forEach((ele) =>
           ele.addEventListener("mousedown", onMouseDown)
-        );
-      });
+        )
+      })
     </script>
   </head>
   <body>
@@ -81,7 +89,7 @@
     </nav>
     <main>
       <figure data-draggable>
-        <figcaption>not-a-link.txt</figcaption>
+        not-a-link.txt
       </figure>
       <figure data-draggable>
         <figcaption><a href="#">future-feelings.txt</a></figcaption>
@@ -109,7 +117,7 @@
       <figure data-draggable>
         <figcaption><a href="#">you-deserve-a.png</a></figcaption>
       </figure>
-      <pre aria-lable="loveseat" data-draggable>
+      <pre aria-label="loveseat" data-draggable>
   /~~~~~~~~\  
  /~ () ()  ~\ 
 (_)========(_)
@@ -121,7 +129,7 @@
 (_)==== ===========(_)
  |__________________|
       </pre>
-      <pre aria-lable="standing lamp" data-draggable>
+      <pre aria-label="standing lamp" data-draggable>
   ____
  /    \
 /______\
@@ -145,12 +153,12 @@
  /////////////////////////
 /////////////////////////
       </pre>
-      <pre data-draggable>
+      <pre aria-label="small star" data-draggable>
   *  .  . * 
  .    *        
     *.   *
       </pre>
-      <pre data-draggable>
+      <pre aria-label="big star" data-draggable>
    *    ..
 .             *
        *    .
