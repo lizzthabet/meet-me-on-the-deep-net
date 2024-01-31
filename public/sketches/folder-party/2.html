@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sketch two</title>
+
+    <style>
+      .back-button {
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      [data-draggable] {
+        user-select: none;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      [data-draggable]:hover {
+        cursor: move;
+      }
+      body {
+        background-image: url("assets/green-path.jpg");
+      }
+
+      h1 {
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-style: italic;
+        color: white;
+      }
+
+      figure {
+        max-width: 150px;
+        width: fit-content;
+        align-items: center;
+        display: inline-flex;
+        flex-direction: column;
+      }
+
+      figure:focus {
+        outline: none;
+      }
+
+      figure:focus > figcaption {
+        background-color: blue;
+        border-color: blue;
+        color: white;
+      }
+
+      figure:focus > figcaption > a {
+        color: white;
+      }
+
+      figure:focus > .fake-icon {
+        border-color: blue;
+      }
+
+      figcaption {
+        overflow-wrap: anywhere;
+        text-align: center;
+        background-color: gainsboro;
+        border-radius: 8px;
+        border: 5px solid gainsboro;
+      }
+
+      .fake-icon {
+        background-color: gray;
+        border: 10px solid gainsboro;
+        border-radius: 10px;
+        /* content: ''; */
+        /* display: block; */
+        display: inline-flex;
+        height: 50px;
+        margin-bottom: -5px;
+        width: 50px;
+      }
+    </style>
+    <script>
+      function setTopLeft(element) {
+        const { top, left } = element.getBoundingClientRect()
+        const { scrollX, scrollY } = window
+        element.style.setProperty("top", `${top + scrollY}px`)
+        element.style.setProperty("left", `${left + scrollX}px`)
+      }
+
+      function setPositionAbsolute(element) {
+        element.style.setProperty("position", "absolute")
+      }
+
+      function setDraggableAttributes(element) {
+        // TODO: might need to make images themselves not draggable??
+        // element.classList.add("draggable")
+      }
+
+      function onMouseDown(event) {
+        event.stopPropagation()
+        const { currentTarget, target, pageX, pageY, clientX, clientY } = event
+        const { left, top } = currentTarget.getBoundingClientRect()
+        const shiftX = clientX - left
+        const shiftY = clientY - top
+
+        function moveTo(pageX, pageY) {
+          const newLeft = pageX - shiftX + "px"
+          const newTop = pageY - shiftY + "px"
+          currentTarget.style.setProperty("left", newLeft)
+          currentTarget.style.setProperty("top", newTop)
+        }
+
+        function onMouseMove(event) {
+          moveTo(event.pageX, event.pageY)
+        }
+
+        function onMouseUp() {
+          document.removeEventListener("mousemove", onMouseMove)
+          document.removeEventListener("mouseup", onMouseUp)
+        }
+
+        document.addEventListener("mousemove", onMouseMove)
+        document.addEventListener("mouseup", onMouseUp)
+      }
+
+      window.addEventListener("load", (event) => {
+        const elements = document.querySelectorAll("[data-draggable]")
+        elements.forEach(setDraggableAttributes)
+        elements.forEach(setTopLeft)
+        elements.forEach(setPositionAbsolute)
+        elements.forEach((ele) =>
+          ele.addEventListener("mousedown", onMouseDown)
+        )
+      })
+    </script>
+
+  <!-- For now, I'm just adding styles to play around with how things feel. -->
+  </head>
+  <body>
+    <nav>
+      <a class="back-button" href="/index.html">back</a>
+    </nav>
+    <main>
+      <h1>welcome to a place on my harddrive i've created just for you</h1>
+      <figure role="button" tabindex="1" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>not-a-link.txt</figcaption>
+      </figure>
+      <figure role="button" tabindex="2" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>future-feelings.txt</figcaption>
+      </figure>
+      <figure role="button" tabindex="3" data-draggable="">
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>hm/</figcaption>
+      </figure>
+      <figure role="button" tabindex="4" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>i-am-an-aspiring-teacher.png</figcaption>
+      </figure>
+      <figure role="button" tabindex="5" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>not-all-features.png</figcaption>
+      </figure>
+      <figure role="button" tabindex="6" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>
+          Screen Shot 2021-03-09 at 10.19.53 PM.png
+        </figcaption>
+      </figure>
+      <figure role="button" tabindex="7" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>welcome/hello,goodday!!!!.png</figcaption>
+      </figure>
+      <figure role="button" tabindex="8" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>would-you-like-to/find-out.jpeg</figcaption>
+      </figure>
+      <figure role="button" tabindex="9" data-draggable>
+        <span class="fake-icon" role="presentation"></span>
+        <figcaption>you-deserve-a.png</figcaption>
+      </figure>
+    </main>
+  </body>
+</html>
