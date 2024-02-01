@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>sketch one</title>
 
     <style>
@@ -19,6 +19,16 @@
 
       [data-draggable]:hover {
         cursor: move;
+      }
+
+      header {
+        max-width: 600px;
+        width: 100%;
+      }
+
+      figcaption {
+        color: blue;
+        text-decoration: underline;
       }
     </style>
 
@@ -85,52 +95,55 @@
   </head>
   <body>
     <nav>
-      <a href="/index.html">back</a>
+      <a href="http://localhost:8089/index.html">back</a>
     </nav>
+    <header>
+      <h1>
+        Index of /welcome-to-a-small-place-on-my-hard-drive-i've-created-just-for-you
+      </h1>
+      <hr>
+    </header>
     <main>
-      <figure data-draggable>
-        not-a-link.txt
+      <figure data-draggable="" style="top: 276.875px; left: 1102px; position: absolute;">
+        <figcaption>not-a-link.txt</figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">future-feelings.txt</a></figcaption>
+      <figure data-draggable="" style="top: 173.875px; left: 50.9844px; position: absolute;">
+        <figcaption>future-feelings.txt</figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">hm/</a></figcaption>
+      <figure data-draggable="" style="top: 411.875px; left: 657.062px; position: absolute;">
+        <figcaption>hm/</figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">i-am-an-aspiring-teacher.png</a></figcaption>
+      <figure data-draggable="" style="top: 979.875px; left: 1004.95px; position: absolute;">
+        <figcaption>i-am-an-aspiring-teacher.png</figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">not-all-features.png</a></figcaption>
+      <figure data-draggable="" style="top: 224.875px; left: 1062.22px; position: absolute;">
+        <figcaption>not-all-features.png</figcaption>
       </figure>
-      <figure data-draggable>
+      <figure data-draggable="" style="top: 20.875px; left: 678.953px; position: absolute;">
         <figcaption>
-          <a href="#">Screen Shot 2021-03-09 at 10.19.53 PM.png</a>
+          Screen Shot 2021-03-09 at 10.19.53 PM.png
         </figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">welcome/hello,goodday!!!!.png</a></figcaption>
+      <figure data-draggable="" style="top: 658.875px; left: 1064.16px; position: absolute;">
+        <figcaption>welcome/hello,goodday!!!!.png</figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">would-you-like-to/find-out.jpeg</a></figcaption>
+      <figure data-draggable="" style="top: 773.875px; left: 326.766px; position: absolute;">
+        <figcaption>would-you-like-to/find-out.jpeg</figcaption>
       </figure>
-      <figure data-draggable>
-        <figcaption><a href="#">you-deserve-a.png</a></figcaption>
+      <figure data-draggable="" style="top: 331.875px; left: 1070.86px; position: absolute;">
+        <figcaption>you-deserve-a.png</figcaption>
       </figure>
-      <pre aria-label="loveseat" data-draggable>
-  /~~~~~~~~\  
+      <pre aria-label="loveseat" data-draggable="" style="top: 597.875px; left: 564px; position: absolute;">  /~~~~~~~~\  
  /~ () ()  ~\ 
 (_)========(_)
  I|________|I
       </pre>
-      <pre aria-label="couch" data-draggable>
-  /~~~~~~~~~~~~~~~~\
+      <pre aria-label="couch" data-draggable="" style="top: 481.875px; left: 758.578px; position: absolute;">  /~~~~~~~~~~~~~~~~\
  /~ ()  ()  () ()  ~\
 (_)==== ===========(_)
  |__________________|
       </pre>
-      <pre aria-label="standing lamp" data-draggable>
-  ____
+      <pre aria-label="standing lamp" data-draggable="" style="top: 432.875px; left: 635.766px; position: absolute;">  ____
  /    \
 /______\
    ||
@@ -139,27 +152,23 @@
    ||
   _||_
       </pre>
-      <pre aria-label="dresser" data-draggable>
- _______
+      <pre aria-label="dresser" data-draggable="" style="top: 472.875px; left: 1030.39px; position: absolute;"> _______
 |_o_|_o_|
 |___o___|
 |___o___|
 |___o___| 
  ||   ||
       </pre>
-      <pre aria-label="rug" data-draggable>
-   /////////////////////////
+      <pre aria-label="rug" data-draggable="" style="top: 580.875px; left: 762.672px; position: absolute;">   /////////////////////////
   /////////////////////////
  /////////////////////////
 /////////////////////////
       </pre>
-      <pre aria-label="small star" data-draggable>
-  *  .  . * 
+      <pre aria-label="small star" data-draggable="" style="top: 684.875px; left: 338.828px; position: absolute;">  *  .  . * 
  .    *        
     *.   *
       </pre>
-      <pre aria-label="big star" data-draggable>
-   *    ..
+      <pre aria-label="big star" data-draggable="" style="top: 161.875px; left: 1232.23px; position: absolute;">   *    ..
 .             *
        *    .
          .  *   .
@@ -167,5 +176,40 @@
    .      *   *
       </pre>
     </main>
-  </body>
-</html>
+  
+
+
+
+<script>// Borrowed directly from https://dev.to/adamcoster/create-a-live-reload-server-for-front-end-development-3gnp :)
+(() => {
+  const socketUrl = 'ws://localhost:8090';
+  let socket = new WebSocket(socketUrl);
+  socket.addEventListener('close',()=>{
+    // Then the server has been turned off,
+    // either due to file-change-triggered reboot,
+    // or to truly being turned off.
+
+    // Attempt to re-establish a connection until it works,
+    // failing after a few seconds (at that point things are likely
+    // turned off/permanantly broken instead of rebooting)
+    const interAttemptTimeoutMilliseconds = 100;
+    const maxDisconnectedTimeMilliseconds = 3000;
+    const maxAttempts = Math.round(maxDisconnectedTimeMilliseconds/interAttemptTimeoutMilliseconds);
+    let attempts = 0;
+    const reloadIfCanConnect = ()=>{
+      attempts ++ ;
+      if(attempts > maxAttempts){
+        console.error("Could not reconnect to dev server.");
+        return;
+      }
+      socket = new WebSocket(socketUrl);
+      socket.addEventListener('error',()=>{
+        setTimeout(reloadIfCanConnect,interAttemptTimeoutMilliseconds);
+      });
+      socket.addEventListener('open',()=>{
+        location.reload();
+      });
+    };
+    reloadIfCanConnect();
+  });
+})();</script></body></html>
