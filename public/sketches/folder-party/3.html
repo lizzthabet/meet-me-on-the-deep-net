@@ -145,7 +145,7 @@
     <header>
       <!-- Maybe this text can be curved? -->
       <h1>
-        welcome to a place on my harddrive i've created just for you
+        welcome to a small place on my hard drive i've created just for you
       </h1>
     </header>
     <!-- ahhh this does not work because the changes are only in our browser, but i could update with a dialog with instructions -->
@@ -190,40 +190,5 @@
         <figcaption>you-deserve-a.png</figcaption>
       </figure>
     </main>
-  
-
-
-
-<script>// Borrowed directly from https://dev.to/adamcoster/create-a-live-reload-server-for-front-end-development-3gnp :)
-(() => {
-  const socketUrl = 'ws://localhost:8090';
-  let socket = new WebSocket(socketUrl);
-  socket.addEventListener('close',()=>{
-    // Then the server has been turned off,
-    // either due to file-change-triggered reboot,
-    // or to truly being turned off.
-
-    // Attempt to re-establish a connection until it works,
-    // failing after a few seconds (at that point things are likely
-    // turned off/permanantly broken instead of rebooting)
-    const interAttemptTimeoutMilliseconds = 100;
-    const maxDisconnectedTimeMilliseconds = 3000;
-    const maxAttempts = Math.round(maxDisconnectedTimeMilliseconds/interAttemptTimeoutMilliseconds);
-    let attempts = 0;
-    const reloadIfCanConnect = ()=>{
-      attempts ++ ;
-      if(attempts > maxAttempts){
-        console.error("Could not reconnect to dev server.");
-        return;
-      }
-      socket = new WebSocket(socketUrl);
-      socket.addEventListener('error',()=>{
-        setTimeout(reloadIfCanConnect,interAttemptTimeoutMilliseconds);
-      });
-      socket.addEventListener('open',()=>{
-        location.reload();
-      });
-    };
-    reloadIfCanConnect();
-  });
-})();</script></body></html>
+  </body>
+</html>

@@ -25,14 +25,14 @@
       }
 
       h1 {
-        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        /* font-family: 'Comic Sans MS', cursive; */
         font-style: italic;
         color: white;
+        opacity: 0.75;
       }
 
       figure {
-        max-width: 150px;
-        width: fit-content;
+        width: 150px;
         align-items: center;
         display: inline-flex;
         flex-direction: column;
@@ -52,7 +52,8 @@
         color: white;
       }
 
-      figure:focus > .fake-icon {
+      figure:focus > .fake-icon,
+      figure:focus > .icon {
         border-color: green;
       }
 
@@ -61,15 +62,14 @@
         text-align: center;
         background-color: rgba(220, 220, 220, 0.75);
         border-radius: 8px;
-        box-shadow: 5px 5px 15px #333333;
         padding: 5px;
+        min-width: 40px; /* for the icon width */
       }
 
       .fake-icon {
         background-color: rgb(128, 128, 128, 1);
         border: 10px solid rgba(220, 220, 220, 0.75);
         border-radius: 10px;
-        box-shadow: 5px 10px 15px #333333;
         display: inline-flex;
         height: 50px;
         margin-bottom: 10px;
@@ -122,6 +122,9 @@
         elements.forEach((ele) =>
           ele.addEventListener("mousedown", onMouseDown)
         )
+
+        const icons = document.querySelectorAll(".icon")
+        icons.forEach((e) => e.setAttribute("draggable", false))
       })
     </script>
 
@@ -132,80 +135,54 @@
       <a class="back-button" href="http://localhost:8089/index.html">back</a>
     </nav>
     <main>
-      <h1>welcome to a place on my harddrive i've created just for you</h1>
+      <h1 data-draggable style="top: 79px; left: 195px; position: absolute;">welcome to a small place on my hard drive i've created just for you</h1>
       <figure role="button" tabindex="1" data-draggable="" style="top: -7.125px; left: 1032px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_binary.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>not-a-link.txt</figcaption>
       </figure>
       <figure role="button" tabindex="2" data-draggable="" style="top: 572.875px; left: 105.984px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_text.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>future-feelings.txt</figcaption>
       </figure>
       <figure role="button" tabindex="3" data-draggable="" style="top: 292.875px; left: 385.062px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_dir.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>hm/</figcaption>
       </figure>
       <figure role="button" tabindex="4" data-draggable="" style="top: 171.875px; left: 1047.06px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_image2.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>i-am-an-aspiring-teacher.png</figcaption>
       </figure>
       <figure role="button" tabindex="5" data-draggable="" style="top: 508.875px; left: 190.062px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_image2.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>not-all-features.png</figcaption>
       </figure>
       <figure role="button" tabindex="6" data-draggable="" style="top: 607.875px; left: 657.797px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_image2.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>
           Screen Shot 2021-03-09 at 10.19.53 PM.png
         </figcaption>
       </figure>
       <figure role="button" tabindex="7" data-draggable="" style="top: 299.875px; left: 917.797px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_image2.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>welcome/hello,goodday!!!!.png</figcaption>
       </figure>
       <figure role="button" tabindex="8" data-draggable="" style="top: 852.875px; left: 901.797px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_movie.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>would-you-like-to/find-out.jpeg</figcaption>
       </figure>
       <figure role="button" tabindex="9" data-draggable="" style="top: 404.875px; left: 1248.8px; position: absolute;">
-        <span class="fake-icon" role="presentation"></span>
+        <img class="icon" src="assets/icon_unknown.png"/>
+        <!-- <span class="fake-icon" role="presentation"></span> -->
         <figcaption>you-deserve-a.png</figcaption>
       </figure>
     </main>
-  
-
-
-
-<script>// Borrowed directly from https://dev.to/adamcoster/create-a-live-reload-server-for-front-end-development-3gnp :)
-(() => {
-  const socketUrl = 'ws://localhost:8090';
-  let socket = new WebSocket(socketUrl);
-  socket.addEventListener('close',()=>{
-    // Then the server has been turned off,
-    // either due to file-change-triggered reboot,
-    // or to truly being turned off.
-
-    // Attempt to re-establish a connection until it works,
-    // failing after a few seconds (at that point things are likely
-    // turned off/permanantly broken instead of rebooting)
-    const interAttemptTimeoutMilliseconds = 100;
-    const maxDisconnectedTimeMilliseconds = 3000;
-    const maxAttempts = Math.round(maxDisconnectedTimeMilliseconds/interAttemptTimeoutMilliseconds);
-    let attempts = 0;
-    const reloadIfCanConnect = ()=>{
-      attempts ++ ;
-      if(attempts > maxAttempts){
-        console.error("Could not reconnect to dev server.");
-        return;
-      }
-      socket = new WebSocket(socketUrl);
-      socket.addEventListener('error',()=>{
-        setTimeout(reloadIfCanConnect,interAttemptTimeoutMilliseconds);
-      });
-      socket.addEventListener('open',()=>{
-        location.reload();
-      });
-    };
-    reloadIfCanConnect();
-  });
-})();</script></body></html>
+  </body>
+</html>
