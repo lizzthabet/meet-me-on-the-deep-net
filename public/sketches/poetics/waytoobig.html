@@ -9,6 +9,7 @@
         background-color: gray;
         font-family: 'Times New Roman', Times, serif;
         font-size: 2rem;
+        cursor: grab;
       }
 
       nav {
@@ -43,12 +44,13 @@
         position: fixed;
         right: 0;
         text-align: right;
+        cursor: pointer;
       }
 
       /* Optionally, a container that can be used
       for a more linear layout */
       [id="container-for-everything"] {
-        display: "flex";
+        display: flex;
         margin: 4rem 1rem;
         max-width: 36000px;
       }
@@ -90,7 +92,9 @@
         }
 
         function createIframe(word, container) {
-          const iframe = createIframeElement(word, container)
+          // Optionally, pass the container to the element creator function
+          // and it'll do a non-random layout
+          const iframe = createIframeElement(word)
           if (container) {
             container.appendChild(iframe)
           } else {
@@ -116,7 +120,22 @@
           // Remove the button once the process begins
           target.style.setProperty("display", "none")
           const iframeContainer = document.getElementById("container-for-everything")
-          nextFrame(words, 0)
+          nextFrame(words, 0, iframeContainer)
+        }
+
+        function onMouseDown() {
+          function onMouseMove(mouseMoveEvent) {
+            // Add a > 1 multiplier to make scrolling seem faster on such a large space
+            window.scrollBy(mouseMoveEvent.movementX * -2, mouseMoveEvent.movementY * -2)
+          }
+
+          function onMouseUp() {
+            document.removeEventListener('mouseup', onMouseUp)
+            document.removeEventListener('mousemove', onMouseMove)
+          }
+
+          document.addEventListener('mouseup', onMouseUp)
+          document.addEventListener('mousemove', onMouseMove)
         }
 
         const words = [...SCRIPT.matchAll(/\b\w+\b/g)]
@@ -124,6 +143,9 @@
         if (startButton != null) {
           startButton.addEventListener("click", buildAHouse)
         }
+
+        // Scroll the page based on mouse movements
+        document.addEventListener('mousedown', onMouseDown)
       })
     </script>
   </head>
