@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>this page is a house</title>
+    <style>
+      html {
+        background-color: gray;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 2rem;
+      }
+
+      nav {
+        margin: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+  
+      nav > a,
+      details {
+        color: white;
+        text-shadow: black 5px 5px 5px;
+      }
+
+      iframe {
+        opacity: 0.75;
+        background-color: yellow;
+        box-shadow: black 5px 5px 5px;
+      }
+
+      button[id="begin-being"] {
+        border-radius: 30px;
+        text-align: justify;
+        padding: 30px;
+        opacity: 0.75;
+      }
+
+      details {
+        bottom: 0;
+        margin: 1rem;
+        position: fixed;
+        right: 0;
+        text-align: right;
+      }
+
+      /* Optionally, a container that can be used
+      for a more linear layout */
+      [id="container-for-everything"] {
+        display: "flex";
+        margin: 4rem 1rem;
+        max-width: 36000px;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // From the introduction of Ursula M. Franklin's "The Real World of Technology"
+        // https://archive.org/details/the-real-world-of-technology/ 
+        const SCRIPT = "As I see it, technology has built the house in which we all live. The house is continually being extended and remodelled. More and more of human life takes place within its walls, so that today there is hardly any human activity that does not occur within this house. All are affected by the design of the house, by the division of its space, by the location of its doors and walls. Compared to people in earlier times, we rarely have a chance to live outside this house. And the house is still changing; it is still being built as well as being demolished."
+        const TEST_SCRIPT = SCRIPT.slice(0, 65)
+        const MAX_WINDOW_HEIGHT = 40000
+        const MAX_WINDOW_WIDTH = 36000
+
+        function generateDimension(min, max) {
+          return Math.ceil((Math.random() * (max - min))) + min
+        }
+
+        function createIframeElement(domain, container) {
+          // TODO: It'd be cool to pull from the list of generic domain names and see if
+          // the next word (following the current one) is a domain name
+          const sourceUrl = `https://${domain}.com`
+          const iframe = document.createElement("iframe")
+          const maxHeight = Math.max(600, window.innerHeight)
+          const maxWidth = Math.max(1000, window.innerHeight)
+          iframe.setAttribute("referrerpolicy", "no-referrer")
+          iframe.setAttribute("allow", "none")
+          iframe.setAttribute("sandbox", "")
+          iframe.setAttribute("src", sourceUrl)
+          iframe.setAttribute("height", `${generateDimension(300, maxHeight)}px`)
+          iframe.setAttribute("width", `${generateDimension(450, maxWidth)}px`)
+          iframe.style.setProperty("z-index", `${generateDimension(10)}px`)
+          if (!container) {
+            iframe.style.setProperty("position", 'absolute')
+            iframe.style.setProperty("top", `${generateDimension(0, MAX_WINDOW_HEIGHT)}px`)
+            iframe.style.setProperty("left", `${generateDimension(0, MAX_WINDOW_WIDTH)}px`)
+          }
+
+          return iframe
+        }
+
+        function createIframe(word, container) {
+          const iframe = createIframeElement(word, container)
+          if (container) {
+            container.appendChild(iframe)
+          } else {
+            document.body.appendChild(iframe)
+          }
+          iframe.scrollIntoView()
+        }
+
+        function nextFrame(list, index, container) {
+          // No more words
+          if (index > list.length - 1) {
+            return
+          }
+          // Get the specific match from the match array
+          const word = list[index][0]
+          createIframe(word, container)
+          // Create the next iframe on delay
+          setTimeout(() => nextFrame(list, index + 1, container), 1000)
+        }
+
+        function buildAHouse(clickEvent) {
+          const { target } = clickEvent
+          // Remove the button once the process begins
+          target.style.setProperty("display", "none")
+          const iframeContainer = document.getElementById("container-for-everything")
+          nextFrame(words, 0)
+        }
+
+        const words = [...SCRIPT.matchAll(/\b\w+\b/g)]
+        const startButton = document.getElementById("begin-being")
+        if (startButton != null) {
+          startButton.addEventListener("click", buildAHouse)
+        }
+      })
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/">back</a>
+    </nav>
+    <main id="container-for-everything">
+      <button id="begin-being">whenever you are ready, let's begin</button>
+      <details>
+        <summary>?</summary>
+        this website is <em>way too big</em>. <br/>you can watch the network requests + filter by documents when it begins.
+      </details>
+    </main>
+  </body>
+</html>
