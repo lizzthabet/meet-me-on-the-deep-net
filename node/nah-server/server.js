@@ -127,7 +127,7 @@ function generateIndexHtml(files) {
   const tableRows = sortedFiles.map(file => {
     const { ext } = parse(file)
     return `<tr>
-  <td><img src="${getIconByExt(ext)}" role="presentation"/></td>
+  <td><img src="${getIconByExt(normalize(ext))}" role="presentation"/></td>
   <td><a href="${file}">${file}</a></td>
 </tr>`
   })
