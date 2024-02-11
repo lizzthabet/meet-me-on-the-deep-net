@@ -16,8 +16,12 @@
         text-shadow: 5px 5px 5px #333333;
       }
 
-      [data-draggable] {
+      /* dialogs should manage their own display */
+      [data-draggable]:not(dialog) {
         display: inline-block;
+      }
+
+      [data-draggable] {
         user-select: none;
         margin: 0;
         padding: 1rem;
@@ -47,59 +51,70 @@
         margin: 8px;
       }
 
-      figure[data-draggable] {
-        max-height: 400px;
-        min-width: 150px;
-        width: fit-content;
-        align-items: center;
-        display: inline-flex;
-        flex-direction: column;
-        z-index: 1;
+      button.filename {
+        background-color: #d2d2d2;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 5px 5px 5px rgb(51, 51, 51, 0.75);
+        color: blue;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 1rem;
+        max-width: 250px;
+        padding: 5px;
+        overflow-wrap: anywhere;
+        text-align: center;
+        text-decoration: underline;
+        width: max-content;
       }
 
-      figure:focus {
-        outline: none;
-      }
-
-      figure:focus > figcaption {
+      button.filename:focus {
         background-color: purple;
         color: white;
-        user-select: none;
+        outline: none;
         text-decoration: none;
       }
 
-      figcaption {
-        overflow-wrap: anywhere;
-        text-align: center;
-        /* background-color: rgba(220, 220, 220, 0.75); */
-        background-color: #d2d2d2;
-        border-radius: 8px;
-        /* box-shadow: 5px 5px 10px 0px #333333; */
-        /* text-shadow: 5px 5px 5px #333333; */
-        box-shadow: 5px 5px 5px rgb(51, 51, 51, 0.75);
-        padding: 5px;
-        color: blue;
-        text-decoration: underline;
+      button.close-fileviewer {
+        background-color: unset;
+        border: none;
+        color: #333333;
+        font-family: monospace;
+        float: right;
+        margin: 0.5rem -0.5rem -0.5rem 0.5rem;
+        text-transform: uppercase;
       }
 
-      .living-room {
-        content: '';
-        height: 500px;
-        width: 500px;
-        position: absolute;
-        top: 50vh;
-        left: 50vw;
-        top: 10vh;
-        left: 20vw;
+      button.close-fileviewer:active,
+      button.close-fileviewer:focus {
+        background-color: purple;
+        border-radius: 5px;
+        color: white;
+        outline: none;
+      }
+
+      dialog.fileviewer[open] {
+        background-color: #dfdfdf;
+        box-shadow: 5px 5px 5px rgb(51, 51, 51, 0.75);
+        border-radius: 8px;
         border: 2px dotted #333333;
+        z-index: 2;
+      }
+
+      object[type="application/pdf"] {
+        width: 400px;
+        height: 250px;
       }
     </style>
     <script>
-      function setTopLeft(element) {
+      function positionInPlace(element) {
         const { top, left } = element.getBoundingClientRect()
         const { scrollX, scrollY } = window
-        element.style.setProperty("top", `${top + scrollY}px`)
-        element.style.setProperty("left", `${left + scrollX}px`)
+        setTopLeft(element, top + scrollY, left + scrollX)
+      }
+
+      function setTopLeft(element, top, left) {
+        element.style.setProperty("top", `${top}px`)
+        element.style.setProperty("left", `${left}px`)
       }
 
       function setPositionAbsolute(element) {
@@ -133,10 +148,36 @@
         document.addEventListener("mouseup", onMouseUp)
       }
 
+      // TODO: Trigger this action with keyboard space + enter keys, plus a tap for mobile experience?
+      const DOUBLE_CLICK = 2
+      function onDoubleClick(e) {
+        if (e.detail === DOUBLE_CLICK) {
+          // with the nested figure/figcaption, the element we need is the currentTarget, not target
+          const dialogId = e.currentTarget.getAttribute("aria-controls")
+          if (!dialogId) {
+            return
+          }
+          const dialog = document.getElementById(dialogId)
+          if (!dialog) {
+            return
+          }
+          if (dialog.open === false) {
+            const { top, left, height, width } = e.currentTarget.getBoundingClientRect()
+            const { scrollX, scrollY } = window
+            setTopLeft(dialog, top + height + scrollY + 10, left + scrollX)
+            setPositionAbsolute(dialog)
+            dialog.show()
+          }
+        }
+      }
+
       window.addEventListener("load", (event) => {
         const elements = document.querySelectorAll("[data-draggable]")
-        elements.forEach(setTopLeft)
+        // Position each element absolutely so document flow isn't changed
+        // when one element is moved
+        elements.forEach(positionInPlace)
         elements.forEach(setPositionAbsolute)
+        // Add drag-to-move functionality
         elements.forEach((ele) =>
           ele.addEventListener("mousedown", onMouseDown)
         )
@@ -145,6 +186,12 @@
         // doesn't interfere with 
         const images = document.querySelectorAll('img')
         images.forEach(e => e.setAttribute('draggable', false))
+
+        // Add double-click listener to open up fileviewer
+        const fileviewers = document.querySelectorAll("[data-fileviewer]")
+        fileviewers.forEach((ele) => {
+          ele.addEventListener("click", onDoubleClick)
+        })
       })
   </script>
   </head>
@@ -156,33 +203,126 @@
       <h1>welcome</h1>
     </header>
     <main>
-      <figure role="button" tabindex="1" data-draggable="" style="top: 876px; left: 199px; position: absolute;">
-        <figcaption>not-a-link.txt</figcaption>
-      </figure>
-      <figure role="button" tabindex="2" data-draggable="" style="top: 1120px; left: 1365.39px; position: absolute;">
-        <figcaption>future-feelings.txt</figcaption>
-      </figure>
-      <figure role="button" tabindex="3" data-draggable="" style="top: 231px; left: 1209.47px; position: absolute;">
-        <figcaption>hm/</figcaption>
-      </figure>
-      <figure role="button" tabindex="4" data-draggable="" style="top: 534px; left: 2275.8px; position: absolute;">
-        <figcaption>i-am-an-aspiring-teacher.png</figcaption>
-      </figure>
-      <figure role="button" tabindex="5" data-draggable="" style="top: 976px; left: 953.797px; position: absolute;">
-        <figcaption>not-all-features.png</figcaption>
-      </figure>
-      <figure role="button" tabindex="6" data-draggable="" style="top: 919px; left: 952.516px; position: absolute;">
-        <figcaption>Screen Shot 2021-03-09 at 10.19.53 PM.png</figcaption>
-      </figure>
-      <figure role="button" tabindex="7" data-draggable="" style="top: 91px; left: 501.516px; position: absolute;">
-        <figcaption>welcome/hello,goodday!!!!.png</figcaption>
-      </figure>
-      <figure role="button" tabindex="8" data-draggable="" style="top: 517px; left: 739.516px; position: absolute;">
-        <figcaption>would-you-like-to/find-out.jpeg</figcaption>
-      </figure>
-      <figure role="button" tabindex="9" data-draggable="" style="top: 1136px; left: 599.516px; position: absolute;">
-        <figcaption>you-deserve-a.png</figcaption>
-      </figure>
+      <button
+        class="filename"
+        style="top: 876px; left: 199px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="sample-of-homegrown.pdf"
+        data-fileviewer
+        data-draggable>
+        sample-of-homegrown.pdf
+      </button>
+      <!-- TODO: Set  -->
+      <dialog class="fileviewer" id="sample-of-homegrown.pdf" data-draggable>
+        <object class="file" type="application/pdf" data="./assets/sample-of-homegrown.pdf" width="550px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+      class="filename"
+      style="top: 1120px; left: 1365.39px; position: absolute;"
+      aria-haspopup="dialog"
+      aria-controls="future-feelings.txt"
+      data-fileviewer
+      data-draggable>
+        future-feelings.txt
+      </button>
+      <dialog class="fileviewer" id="future-feelings.txt" data-draggable>
+        <object class="file" data="./assets/future-feelings.txt" width="550px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 231px; left: 1209.47px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="hm/"
+        data-fileviewer
+        data-draggable>
+        hm/
+      </button>
+      <!-- TODO: how should empty folders be displayed? -->
+      <dialog class="fileviewer" id="hm/" data-draggable>
+        <pre>empty folder</pre>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 534px; left: 2275.8px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="i-am-an-aspiring-teacher.png"
+        data-fileviewer
+        data-draggable>
+        i-am-an-aspiring-teacher.png
+      </button>
+      <dialog class="fileviewer" id="i-am-an-aspiring-teacher.png" data-draggable>
+        <object class="file" data="./assets/i-am-an-aspiring-teacher.png" width="550px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 976px; left: 953.797px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="not-all-features.png"
+        data-fileviewer
+        data-draggable>
+        not-all-features.png
+      </button>
+      <dialog class="fileviewer" id="not-all-features.png" data-draggable>
+        <object class="file" data="./assets/not-all-features.png"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 919px; left: 952.516px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="ScreenShot2021-03-09at10.19.53PM.png"
+        data-fileviewer
+        data-draggable>
+        ScreenShot2021-03-09at10.19.53PM.png
+      </button>
+      <!-- TODO: note that files with spaces in name are broken on dev server, need to check with other servers -->
+      <dialog class="fileviewer" id="ScreenShot2021-03-09at10.19.53PM.png" data-draggable>
+        <object class="file" data="./assets/ScreenShot2021-03-09at10.19.53PM.png" width="300px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 91px; left: 501.516px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="welcome/hello,goodday!!!!.png"
+        data-fileviewer
+        data-draggable>
+        welcome/hello,goodday!!!!.png
+      </button>
+      <dialog class="fileviewer" id="welcome/hello,goodday!!!!.png" data-draggable>
+        <object class="file" data="./assets/welcome/hello,goodday!!!!.png" width="400px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 517px; left: 739.516px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="would-you-like-to/find-out.jpeg"
+        data-fileviewer
+        data-draggable>
+        would-you-like-to/find-out.jpeg
+      </button>
+      <dialog class="fileviewer" id="would-you-like-to/find-out.jpeg" data-draggable>
+        <object class="file" data="./assets/would-you-like-to/find-out.jpeg" width="300px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
+      <button
+        class="filename"
+        style="top: 1136px; left: 599.516px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="you-deserve-a.png"
+        data-fileviewer
+        data-draggable>
+        you-deserve-a.png
+      </button>
+      <dialog class="fileviewer" id="you-deserve-a.png" data-draggable>
+        <object class="file" data="./assets/you-deserve-a.png" width="150px"></object>
+        <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
+      </dialog>
       <section aria-label="furniture">
         <img src="./assets/test-banner-1@3x.png" data-draggable="" style="top: 216.875px; left: 113px; position: absolute;" draggable="false">
         <section aria-label="main living room space">
@@ -201,7 +341,7 @@
         <section aria-label="mini living room for side conversations">
           <img src="./assets/test-bean-bag@3x.png" data-draggable="" style="top: 950.875px; left: 79px; position: absolute;" draggable="false">
           <img src="./assets/test-plant-1@3x.png" data-draggable="" style="top: 897.875px; left: 405px; position: absolute;" draggable="false">
-          <img src="./assets/test-shelf-1@3x.png" data-draggable="" style="top: 761.875px; left: 137px; position: absolute;" draggable="false">
+          <img src="./assets/test-shelf-1@3x.png" data-draggable="" style="top: 711.875px; left: 144px; position: absolute;" draggable="false">
           <img src="./assets/test-side-table-2@3x.png" data-draggable="" style="top: 1116.88px; left: 319px; position: absolute;" draggable="false">
           <img src="./assets/test-stool@3x.png" data-draggable="" style="top: 950.875px; left: 545px; position: absolute;" draggable="false">
         </section>
