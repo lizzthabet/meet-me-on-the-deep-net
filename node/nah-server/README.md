@@ -10,7 +10,7 @@ What might happen if that basic contract were broken? This is a simple static se
 
 💾 Server: "Hm, they want `a-cat.jpg`? Nah, I'll give them `a-giraffe.jpg` instead."
 
-This server isn't _that_ chaotic. It'll at least give you a resource of the same type that you asked for. ☉ ‿ ⚆
+This server isn't _that_ chaotic. It'll at least give you a resource of the same type that you asked for. ¯\\_(ツ)\_/¯
 
 ## Run this server
 

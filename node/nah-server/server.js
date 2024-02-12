@@ -203,6 +203,7 @@ app.use((req, res, next) => {
 
   const { ext } = parse(path)
   const fileToSend = getRandomFile(decodeURI(path), publicFilesByExt[normalize(ext)])
+  console.log(`request for ${decodeURI(path)} ⊹ nah ⊹ sending ${fileToSend}`)
   res.sendFile(publicPath(fileToSend))
   return
 })
