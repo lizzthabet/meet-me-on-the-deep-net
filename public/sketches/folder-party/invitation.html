@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sketch invitation</title>
+
+    <style>
+      html {
+        background-color: #d3d3d3;
+      }
+
+      .nav-link {
+        font-size: 1.5rem;
+        color: white;
+        text-shadow: 5px 5px 5px #333333;
+      }
+
+      /* dialogs should manage their own display */
+      [data-draggable]:not(dialog) {
+        display: inline-block;
+      }
+
+      [data-draggable] {
+        user-select: none;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      [data-draggable]:hover {
+        cursor: move;
+      }
+
+      h2 {
+        margin-bottom: 2rem;
+      }
+
+      /* Making this class not-specific to buttons for now */
+      .filename {
+        background-color: #d2d2d2;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 5px 5px 5px rgb(51, 51, 51, 0.75);
+        color: blue;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 1rem;
+        font-weight: normal;
+        max-width: 250px;
+        padding: 5px;
+        overflow-wrap: anywhere;
+        text-align: center;
+        text-decoration: underline;
+        width: max-content;
+      }
+
+      button.filename:focus {
+        background-color: purple;
+        color: white;
+        outline: none;
+        text-decoration: none;
+      }
+
+      .invitation {
+        box-shadow: 5px 5px 5px rgb(51, 51, 51, 0.75);
+        border-radius: 8px;
+        border: 2px dotted #333333;
+        max-width: 600px;
+        width: fit-content;
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+    </style>
+    <script>
+      function positionInPlace(element) {
+        const { top, left } = element.getBoundingClientRect()
+        const { scrollX, scrollY } = window
+        setTopLeft(element, top + scrollY, left + scrollX)
+      }
+
+      function setTopLeft(element, top, left) {
+        element.style.setProperty("top", `${top}px`)
+        element.style.setProperty("left", `${left}px`)
+      }
+
+      function setPositionAbsolute(element) {
+        element.style.setProperty("position", "absolute")
+      }
+
+      function onMouseDown(event) {
+        event.stopPropagation()
+        const { currentTarget, target, pageX, pageY, clientX, clientY } = event
+        const { left, top } = currentTarget.getBoundingClientRect()
+        const shiftX = clientX - left
+        const shiftY = clientY - top
+
+        function moveTo(pageX, pageY) {
+          const newLeft = pageX - shiftX + "px"
+          const newTop = pageY - shiftY + "px"
+          currentTarget.style.setProperty("left", newLeft)
+          currentTarget.style.setProperty("top", newTop)
+        }
+
+        function onMouseMove(event) {
+          moveTo(event.pageX, event.pageY)
+        }
+
+        function onMouseUp() {
+          document.removeEventListener("mousemove", onMouseMove)
+          document.removeEventListener("mouseup", onMouseUp)
+        }
+
+        document.addEventListener("mousemove", onMouseMove)
+        document.addEventListener("mouseup", onMouseUp)
+      }
+
+      window.addEventListener("load", (event) => {
+        const elements = document.querySelectorAll("[data-draggable]")
+        // Position each element absolutely so document flow isn't changed
+        // when one element is moved
+        elements.forEach(positionInPlace)
+        elements.forEach(setPositionAbsolute)
+        // Add drag-to-move functionality
+        elements.forEach((ele) =>
+          ele.addEventListener("mousedown", onMouseDown)
+        )
+
+        // Remove the native draggable functionality on all images, so it
+        // doesn't interfere with 
+        const images = document.querySelectorAll('img')
+        images.forEach(e => e.setAttribute('draggable', false))
+      })
+  </script>
+  </head>
+  <body>
+    <nav>
+      <a class="nav-link" href="/">back</a>
+    </nav>
+    <header>
+      <h1><i>my computer is a home that my friends can visit</i></h1>
+    </header>
+    <main>
+      <section class="invitation">
+        <h2 class="filename">invite.html</h2>
+        <p>
+          hi friend!
+        </p>
+        <p>
+          i'm having a small gathering at a folder on my computer.
+        </p>
+        <p>
+          i've created a space just for you to visit. drop by any time.
+        </p>
+        <p>
+          xo<br/>lizz
+        </p>
+      </section>
+      <img class="decor" src="./assets/test-book-2@3x.png" data-draggable="" style="top: 112px; left: 427px; position: absolute;" draggable="false">
+      <img class="decor" src="./assets/test-plant-1@3x.png" data-draggable="" style="top: 205.875px; left: 564px; position: absolute;" draggable="false">
+      <section class="invitation">
+        <h2 class="filename">directions.html</h2>
+        <p>
+          i don't have my computer's address listed publically, so you'll need the help of your browser to get there.
+          <details>
+            <summary>why's that?</summary>
+            a short explanation about tor here pls
+          </details>
+        </p>
+        <hr />
+        <p>
+          the easiest way to get here is with <a href="https://www.torproject.org/download/">tor browser</a>. you can also take <a href="https://brave.com/download/">brave browser</a> or <a href="https://mullvad.net/en/download/browser">mullvad browser</a> to get here. all of these web browsers respect your privacy and know how to rendezvous with my computer, so you can drop by without revealing where you're coming from. :)
+        </p>
+        <!-- <p>
+          continue to folder party
+          ooo what about a little map diagram?
+        </p> -->
+        <p>use this address: <a href="http://fqxxc5nj46irxroqwlrq4kumoa7dxfb2ri6xqs6pzcqwjesthdnzcmyd.onion">http://fqxxc5nj46irxroqwlrq4kumoa7dxfb2ri6xqs6pzcqwjesthdnzcmyd.onion</a></p>
+        <hr />
+        <p>
+          you can also take the round-about way if you're using another browser like firefox, safari, or chrome, but sometimes the road is under construction, and there are unexpected detours. take this route at your own risk. <3
+        </p>
+        <p>use this address: <a href="https://fqxxc5nj46irxroqwlrq4kumoa7dxfb2ri6xqs6pzcqwjesthdnzcmyd.onion.ly">https://fqxxc5nj46irxroqwlrq4kumoa7dxfb2ri6xqs6pzcqwjesthdnzcmyd.onion.ly</a></p>
+        <p></p>
+      </section>
+    </main>
+  </body>
+</html>

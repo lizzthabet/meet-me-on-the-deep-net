@@ -152,7 +152,6 @@
       const DOUBLE_CLICK = 2
       function onDoubleClick(e) {
         if (e.detail === DOUBLE_CLICK) {
-          // with the nested figure/figcaption, the element we need is the currentTarget, not target
           const dialogId = e.currentTarget.getAttribute("aria-controls")
           if (!dialogId) {
             return
@@ -218,12 +217,12 @@
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
-      class="filename"
-      style="top: 1120px; left: 1365.39px; position: absolute;"
-      aria-haspopup="dialog"
-      aria-controls="future-feelings.txt"
-      data-fileviewer
-      data-draggable>
+        class="filename"
+        style="top: 1120px; left: 1365.39px; position: absolute;"
+        aria-haspopup="dialog"
+        aria-controls="future-feelings.txt"
+        data-fileviewer
+        data-draggable>
         future-feelings.txt
       </button>
       <dialog class="fileviewer" id="future-feelings.txt" data-draggable>
