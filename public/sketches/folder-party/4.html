@@ -104,6 +104,8 @@
         width: 400px;
         height: 250px;
       }
+
+      /* add all different types of queries! */
     </style>
     <script>
       function positionInPlace(element) {
@@ -122,9 +124,13 @@
       }
 
       function onMouseDown(event) {
+        console.log("mousedown", event)
         event.stopPropagation()
-        const { currentTarget, target, pageX, pageY, clientX, clientY } = event
+        const { currentTarget, target, pageX, pageY, clientX, clientY, type } = event
+        // Get the position of the element
         const { left, top } = currentTarget.getBoundingClientRect()
+        // Use the position of the mouse to the element it's moving
+        // to offset the final position of the element
         const shiftX = clientX - left
         const shiftY = clientY - top
 
@@ -143,9 +149,42 @@
           document.removeEventListener("mousemove", onMouseMove)
           document.removeEventListener("mouseup", onMouseUp)
         }
-
         document.addEventListener("mousemove", onMouseMove)
         document.addEventListener("mouseup", onMouseUp)
+      }
+
+      function onTouchStart(event) {
+        console.log("touchstart")
+        event.stopPropagation()
+        // TODO: Need to use the `touches` object to 
+        const { target, pageX, pageY, clientX, clientY } = event
+        // Get the position of the element
+        const { left, top } = target.getBoundingClientRect()
+        // Use the position of the mouse to the element it's moving
+        // to offset the final position of the element
+        const shiftX = clientX - left
+        const shiftY = clientY - top
+
+        console.log("left", left, "top", top, "x", clientX, "y", clientY)
+
+        function moveTo(pageX, pageY) {
+          const newLeft = pageX - shiftX + "px"
+          const newTop = pageY - shiftY + "px"
+          target.style.setProperty("left", newLeft)
+          target.style.setProperty("top", newTop)
+        }
+
+        function onTouchMove(event) {
+          moveTo(event.pageX, event.pageY)
+        }
+
+        function onTouchEnd() {
+          document.removeEventListener("touchmove", onTouchMove)
+          document.removeEventListener("touchend", onTouchEnd)
+        }
+
+        document.addEventListener("touchmove", onTouchMove)
+        document.addEventListener("touchend", onTouchEnd)
       }
 
       // TODO: Trigger this action with keyboard space + enter keys, plus a tap for mobile experience?
@@ -177,12 +216,13 @@
         elements.forEach(positionInPlace)
         elements.forEach(setPositionAbsolute)
         // Add drag-to-move functionality
-        elements.forEach((ele) =>
+        elements.forEach((ele) => {
           ele.addEventListener("mousedown", onMouseDown)
-        )
+          // ele.addEventListener("touchstart", onTouchStart)
+        })
 
         // Remove the native draggable functionality on all images, so it
-        // doesn't interfere with 
+        // doesn't interfere with drag-to-move
         const images = document.querySelectorAll('img')
         images.forEach(e => e.setAttribute('draggable', false))
 
@@ -211,9 +251,8 @@
         data-draggable>
         sample-of-homegrown.pdf
       </button>
-      <!-- TODO: Set  -->
       <dialog class="fileviewer" id="sample-of-homegrown.pdf" data-draggable>
-        <object class="file" type="application/pdf" data="./assets/sample-of-homegrown.pdf" width="550px"></object>
+        <object class="file" type="application/pdf" data="./assets/sample-of-homegrown.pdf" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -226,7 +265,7 @@
         future-feelings.txt
       </button>
       <dialog class="fileviewer" id="future-feelings.txt" data-draggable>
-        <object class="file" data="./assets/future-feelings.txt" width="550px"></object>
+        <object class="file" data="./assets/future-feelings.txt" width="550px" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -253,7 +292,7 @@
         i-am-an-aspiring-teacher.png
       </button>
       <dialog class="fileviewer" id="i-am-an-aspiring-teacher.png" data-draggable>
-        <object class="file" data="./assets/i-am-an-aspiring-teacher.png" width="550px"></object>
+        <object class="file" data="./assets/i-am-an-aspiring-teacher.png" width="550px" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -266,7 +305,7 @@
         not-all-features.png
       </button>
       <dialog class="fileviewer" id="not-all-features.png" data-draggable>
-        <object class="file" data="./assets/not-all-features.png"></object>
+        <object class="file" data="./assets/not-all-features.png" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -280,7 +319,7 @@
       </button>
       <!-- TODO: note that files with spaces in name are broken on dev server, need to check with other servers -->
       <dialog class="fileviewer" id="ScreenShot2021-03-09at10.19.53PM.png" data-draggable>
-        <object class="file" data="./assets/ScreenShot2021-03-09at10.19.53PM.png" width="300px"></object>
+        <object class="file" data="./assets/ScreenShot2021-03-09at10.19.53PM.png" width="300px" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -293,7 +332,7 @@
         welcome/hello,goodday!!!!.png
       </button>
       <dialog class="fileviewer" id="welcome/hello,goodday!!!!.png" data-draggable>
-        <object class="file" data="./assets/welcome/hello,goodday!!!!.png" width="400px"></object>
+        <object class="file" data="./assets/welcome/hello,goodday!!!!.png" width="400px" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -306,7 +345,7 @@
         would-you-like-to/find-out.jpeg
       </button>
       <dialog class="fileviewer" id="would-you-like-to/find-out.jpeg" data-draggable>
-        <object class="file" data="./assets/would-you-like-to/find-out.jpeg" width="300px"></object>
+        <object class="file" data="./assets/would-you-like-to/find-out.jpeg" width="300px" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <button
@@ -319,7 +358,7 @@
         you-deserve-a.png
       </button>
       <dialog class="fileviewer" id="you-deserve-a.png" data-draggable>
-        <object class="file" data="./assets/you-deserve-a.png" width="150px"></object>
+        <object class="file" data="./assets/you-deserve-a.png" width="150px" draggable="false"></object>
         <form method="dialog"><button class="close-fileviewer" aria-label="close">close</button></form>
       </dialog>
       <section aria-label="furniture">

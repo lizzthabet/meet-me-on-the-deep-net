@@ -62,12 +62,25 @@
 
       .invitation {
         box-shadow: 5px 5px 5px rgb(51, 51, 51, 0.75);
+        box-sizing: border-box;
         border-radius: 8px;
         border: 2px dotted #333333;
-        max-width: 600px;
-        width: fit-content;
-        padding: 1rem;
+        font-size: 1rem;
         margin-bottom: 2rem;
+        max-width: 600px;
+        padding: 1rem;
+        overflow-wrap: anywhere;
+        width: max-content;
+      }
+
+      @media (max-width: 600px) {
+        .invitation {
+          max-width: 100%;
+        }
+      }
+
+      details > summary {
+        margin: 0.5rem 0;
       }
     </style>
     <script>
@@ -160,10 +173,6 @@
         <h2 class="filename">directions.html</h2>
         <p>
           i don't have my computer's address listed publically, so you'll need the help of your browser to get there.
-          <details>
-            <summary>why's that?</summary>
-            a short explanation about tor here pls
-          </details>
         </p>
         <hr />
         <p>
@@ -179,7 +188,11 @@
           you can also take the round-about way if you're using another browser like firefox, safari, or chrome, but sometimes the road is under construction, and there are unexpected detours. take this route at your own risk. <3
         </p>
         <p>use this address: <a href="https://fqxxc5nj46irxroqwlrq4kumoa7dxfb2ri6xqs6pzcqwjesthdnzcmyd.onion.ly">https://fqxxc5nj46irxroqwlrq4kumoa7dxfb2ri6xqs6pzcqwjesthdnzcmyd.onion.ly</a></p>
-        <p></p>
+        <hr />
+        <details>
+          <summary>tell me more! what's this weird link?</summary>
+          i'm using a free and open-source tool called <a href="https://www.torproject.org">tor</a>, which uses a worldwide network of volunteer-run computers to help people access websites anonymously and securely. the very long link is a unique key that helps you find my website.
+        </details>
       </section>
     </main>
   </body>
