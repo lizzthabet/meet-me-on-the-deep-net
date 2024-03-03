@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>the sound a website makes</title>
+    <style>
+      body {
+        background-color: darkslategray;
+        color: linen;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+
+      .main {
+        border: solid 1px goldenrod;
+        border-radius: 5px;
+        max-width: 900px;
+        padding: 2rem;
+        width: fit-content;
+        margin: 2rem auto;
+      }
+
+      .instruction {
+        font-size: 1.25rem;
+      }
+
+      .sub-instruction {
+
+      }
+
+      .grid-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        width: 600px;
+        padding: 0;
+        margin: 2rem auto;
+      }
+
+      .click-me {
+        aspect-ratio: 1 / 1;
+        width: calc(33% - 10px);
+        overflow: hidden;
+        margin: 5px;
+        background-color: darkslategray;
+        padding: 0;
+      }
+
+      .captcha {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script>
+      const POPUP_HEIGHT = 625
+      const POPUP_WIDTH = 470
+      const positions = [{ left: 300, top: 50 }, { left: 200, top: 20 + POPUP_HEIGHT }, { left: POPUP_WIDTH + 500, top: 0 }]
+      document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll("button")
+        const test = buttons.item(0)
+        buttons.forEach((button, i) => {
+          const position = positions[i]
+          if (position) {
+            button.addEventListener("click", () => {
+              window.open(`./popups/${i + 1}.html`, "_blank", `popup=true,innerWidth=${POPUP_WIDTH},innerHeight=${POPUP_HEIGHT},left=${position.left},top=${position.top}`)
+            })
+          }
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/">back</a>
+    </nav>
+    <main class="main">
+      <h1 class="instruction">Please click on all of the items that need water to survive.</h1>
+      <p class="sub-instruction">If there are None, click Skip</p>
+      <figure class="grid-wrapper">
+        <button class="click-me"><img class="captcha" src="./assets/captcha-button-1.png"/></button>
+        <button class="click-me"><img class="captcha" src="./assets/captcha-button-2.png"/></button>
+        <button class="click-me"><img class="captcha" src="./assets/captcha-button-3.png"/></button>
+        <button class="click-me"><img class="captcha" src="./assets/captcha-button-4.png"/></button>
+        <button class="click-me"></button>
+        <button class="click-me"></button>
+        <button class="click-me"></button>
+        <button class="click-me"></button>
+        <button class="click-me"></button>
+      </figure>
+
+    </main>
+  </body>
+</html>
