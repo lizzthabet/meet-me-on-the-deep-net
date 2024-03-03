@@ -3,12 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>the sound a website makes</title>
+    <title>sounds of human verification</title>
     <style>
       body {
         background-color: darkslategray;
         color: linen;
         font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+
+      nav > a,
+      nav > a:visited {
+        color: goldenrod;
       }
 
       .main {
@@ -20,50 +25,46 @@
         margin: 2rem auto;
       }
 
-      .instruction {
+      .title {
         font-size: 1.25rem;
       }
 
-      .sub-instruction {
-
+      .verify-instruction {
+        margin-top: 35px;
       }
 
-      .grid-wrapper {
+      .verify-box {
+        background-color: rgba(218, 165, 32, 0.25);
+        border: 1px solid goldenrod;
+        border-radius: 5px;
+        cursor: pointer;
         display: flex;
-        flex-wrap: wrap;
-        width: 600px;
-        padding: 0;
-        margin: 2rem auto;
+        align-items: center;
+        padding: 20px;
+        width: 80%;
       }
 
-      .click-me {
-        aspect-ratio: 1 / 1;
-        width: calc(33% - 10px);
-        overflow: hidden;
-        margin: 5px;
+      .verify-check {
         background-color: darkslategray;
-        padding: 0;
+        border: 3px solid goldenrod;
+        border-radius: 5px;
+        display: inline-block;
+        height: 40px;
+        width: 40px;
       }
 
-      .captcha {
-        height: 100%;
-        width: 100%;
+      .verify-check + .verify-text {
+        color: linen;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-size: 1rem;
+        margin-left: 20px;
       }
     </style>
     <script>
-      const POPUP_HEIGHT = 625
-      const POPUP_WIDTH = 470
-      const positions = [{ left: 300, top: 50 }, { left: 200, top: 20 + POPUP_HEIGHT }, { left: POPUP_WIDTH + 500, top: 0 }]
       document.addEventListener("DOMContentLoaded", () => {
-        const buttons = document.querySelectorAll("button")
-        const test = buttons.item(0)
-        buttons.forEach((button, i) => {
-          const position = positions[i]
-          if (position) {
-            button.addEventListener("click", () => {
-              window.open(`./popups/${i + 1}.html`, "_blank", `popup=true,innerWidth=${POPUP_WIDTH},innerHeight=${POPUP_HEIGHT},left=${position.left},top=${position.top}`)
-            })
-          }
+        const open = document.getElementById("start-it")
+        open.addEventListener("click", () => {
+          window.open(`./popups/selection.html`, "_blank", `popup=true,innerWidth=540,innerHeight=640,name="verification,top=150,left=500"`)
         })
       })
     </script>
@@ -73,20 +74,14 @@
       <a href="/">back</a>
     </nav>
     <main class="main">
-      <h1 class="instruction">Please click on all of the items that need water to survive.</h1>
-      <p class="sub-instruction">If there are None, click Skip</p>
-      <figure class="grid-wrapper">
-        <button class="click-me"><img class="captcha" src="./assets/captcha-button-1.png"/></button>
-        <button class="click-me"><img class="captcha" src="./assets/captcha-button-2.png"/></button>
-        <button class="click-me"><img class="captcha" src="./assets/captcha-button-3.png"/></button>
-        <button class="click-me"><img class="captcha" src="./assets/captcha-button-4.png"/></button>
-        <button class="click-me"></button>
-        <button class="click-me"></button>
-        <button class="click-me"></button>
-        <button class="click-me"></button>
-        <button class="click-me"></button>
-      </figure>
-
+      <h1 class="title">The sounds of human verification</h1>
+      <!-- <p class="sub-instruction">Enable pop-ups and turn on sound</p> -->
+      <p>Pop-ups must be enabled and sound turned on</p>
+      <p class="verify-instruction">Please check the box below to proceed</p>
+      <button id="start-it" class="verify-box">
+        <span role="presentation" class="verify-check"></span>
+        <p class="verify-text">I'm not a robot</p>
+      </button>
     </main>
   </body>
 </html>

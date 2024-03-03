@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sounds of human verification</title>
+    <style>
+      body {
+        background-color: darkslategray;
+        color: linen;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+
+      .main {
+        border: solid 1px goldenrod;
+        border-radius: 5px;
+        max-width: 900px;
+        padding: 2rem;
+        width: fit-content;
+        margin: auto;
+      }
+
+      .instruction {
+        font-size: 1.25rem;
+      }
+
+      .sub-instruction {
+
+      }
+
+      .grid-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        width: 400px;
+        padding: 0;
+        margin: 2rem auto;
+      }
+
+      .click-me {
+        aspect-ratio: 1 / 1;
+        width: calc(33% - 10px);
+        overflow: hidden;
+        margin: 5px;
+        background-color: darkslategray;
+        padding: 0;
+      }
+
+      .captcha {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script>
+      function random(min, max) {
+        return Math.round(Math.random() * (max - min) + min)
+      }
+      function randomWidth() {
+        return random(10, 1700)
+      }
+      function randomHeight() {
+        return random(10, 900)
+      }
+      const POPUP_HEIGHT = 250
+      const POPUP_WIDTH = 200
+      document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll("button")
+        const test = buttons.item(0)
+        buttons.forEach((button, i) => {
+          button.addEventListener("click", () => {
+            window.open(`./${i + 1}.html`, "_blank", `popup=true,innerWidth=${POPUP_WIDTH},innerHeight=${POPUP_HEIGHT},left=${randomWidth()},top=${randomHeight()}`)
+          })
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <main class="main">
+      <h1 class="instruction">Please click on all of the items that need sunshine to live.</h1>
+      <p class="sub-instruction">If there are None, click Skip</p>
+      <figure class="grid-wrapper">
+        <button class="click-me"><img class="captcha" src="../assets/guest1.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest2.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest3.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest4.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest5.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest6.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest7.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest8.png"/></button>
+        <button class="click-me"><img class="captcha" src="../assets/guest9.png"/></button>
+      </figure>
+
+    </main>
+  </body>
+</html>
