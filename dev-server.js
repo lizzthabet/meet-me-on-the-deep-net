@@ -60,7 +60,8 @@ const requestHandler = function (req, res) {
   if(method=='get'){
     // No need to ensure the route can't access other local files,
     // since this is for development only.
-    const route = path.normalize(path.join(__dirname,'public',decodeURI(req.url)));
+    const url = new URL(req.url, `http://${req.headers.host}`)
+    const route = path.normalize(path.join(__dirname,'public',decodeURI(url.pathname)));
     if(serveStaticPageIfExists(route,res)){
       return;
     }
