@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>let's move around the screen in a grid</title>
+
+    <style>
+      :root {
+        --medium-blue: #2a3e47;
+        --dark-blue: #13272d;
+
+        --white-yellow: #eadfce;
+        --light-yellow: #e0cfa9;
+        --golden-yellow: #d3be91;
+
+        --light-purple: #776163;
+        --dark-purple: #54474e;
+        --gray-purple: #7c777b;
+
+        --medium-green: #4c5345;
+        --dark-green: #2b3223;
+      }
+
+      html {
+        background-color: var(--dark-blue);
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      main {
+        margin: 2rem 0;
+      }
+
+      button, a {
+        margin: 2px;
+      }
+
+      a, a:visited {
+        font-size: 1.25rem;
+        color: var(--golden-yellow);
+      }
+
+      .wavy {
+        text-decoration: var(--dark-purple) wavy underline;
+        text-underline-offset: 4px;
+      }
+
+      figure#you {
+        background-color: var(--medium-green);
+        border: 2px dashed var(--white-yellow);
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        margin: 0;
+        z-index: 99999;
+      }
+
+      p#musings {
+        background-color: var(--light-purple);
+        color: var(--white-yellow);
+        display: inline-block;
+        font-size: 2rem;
+        margin: 20px auto;
+        padding: 10px;
+      }
+
+      section#grass {
+        background-color: var(--dark-green);
+        bottom: 0;
+        left: 0;
+        height: 75px;
+        position: absolute;
+        width: 100vw;
+      }
+    </style>
+    <script>
+      const state = {
+        // maybe this should be grid position?
+        position: { x: 0, y:0 }
+      }
+
+      const GRID_SIZE_PX = 50
+      const CAN_SCROLL = false
+
+      function positionInPlace(element) {
+        const { top, left } = element.getBoundingClientRect()
+        const { scrollX, scrollY } = window
+        setTopLeft(element, top + scrollY, left + scrollX)
+      }
+
+      function setPositionAbsolute(element) {
+        element.style.setProperty("position", "absolute")
+      }
+
+      function setTopLeft(element, top, left) {
+        element.style.setProperty("top", top + "px")
+        element.style.setProperty("left", left + "px")
+      }
+
+      function updatePosition(element, top, left) {
+        if (element === null) {
+          return
+        }
+
+        if (CAN_SCROLL) {
+          const { scrollX, scrollY } = window
+          state.position.x = left + scrollX
+          state.position.y = top + scrollY
+        } else {
+          state.position.x = left
+          state.position.y = top
+        }
+        setTopLeft(element, state.position.y, state.position.x)
+      }
+
+      function moveDirection(element, direction) {
+        if (element === null) {
+          return
+        }
+        const { top, left } = element.getBoundingClientRect()
+        const { scrollX, scrollY } = window
+        const newPosition = { x: left, y: top }
+        switch(direction) {
+          case 'up':
+            newPosition.y = newPosition.y - GRID_SIZE_PX
+            break
+          case 'down':
+            newPosition.y = newPosition.y + GRID_SIZE_PX
+            break
+          case 'left':
+            newPosition.x = newPosition.x - GRID_SIZE_PX
+            break
+          case 'right':
+            newPosition.x = newPosition.x + GRID_SIZE_PX
+            break
+        }
+
+        updatePosition(element, newPosition.y, newPosition.x)
+      }
+
+      function onKeyUp(event) {
+        event.preventDefault()
+        const you = document.getElementById("you")
+        switch(event.key) {
+          case 'ArrowUp':
+            moveDirection(you, 'up')
+            break
+          case 'ArrowDown':
+            moveDirection(you, 'down')
+            break
+          case 'ArrowLeft':
+            moveDirection(you, 'left')
+            break
+          case 'ArrowRight':
+            moveDirection(you, 'right')
+            break
+          default:
+            return
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const you = document.getElementById("you")
+        if (you !== null) {
+          // this isn't exact lol, not sure why 
+          // setTopLeft(you, window.innerHeight - GRID_SIZE_PX - 75, 0)
+          positionInPlace(you)
+          setPositionAbsolute(you)
+        }
+
+        document.addEventListener("keyup", onKeyUp)
+      })
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/">back</a>
+    </nav>
+    <main>
+      <p id="musings"><span class="wavy">Welcome</span> to this space. You can move around <span class="wavy">now</span>.</p>
+      <figure id="you"></figure>
+      <section id="grass"></section>
+    </main>
+  </body>
+</html>
