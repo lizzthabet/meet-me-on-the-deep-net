@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="grid">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,11 +20,20 @@
 
         --medium-green: #4c5345;
         --dark-green: #2b3223;
+
+        --grid-size: 50px;
       }
 
       html {
         background-color: var(--dark-blue);
         font-family: 'Courier New', Courier, monospace;
+      }
+
+      .grid {
+        background-size: var(--grid-size) var(--grid-size);
+        background-image:
+          linear-gradient(to right, var(--medium-blue) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--medium-blue) 1px, transparent 1px);
       }
 
       main {
@@ -53,6 +62,8 @@
         width: 40px;
         margin: 0;
         z-index: 99999;
+        /* This is semi-important for sizing elements on the grid */
+        box-sizing: border-box;
       }
 
       p#musings {
@@ -74,13 +85,12 @@
       }
     </style>
     <script>
-      const state = {
-        // maybe this should be grid position?
-        position: { x: 0, y:0 }
-      }
-
       const GRID_SIZE_PX = 50
       const CAN_SCROLL = false
+      const UP = 'up'
+      const DOWN = 'down'
+      const LEFT = 'left'
+      const RIGHT = 'right'
 
       function positionInPlace(element) {
         const { top, left } = element.getBoundingClientRect()
@@ -97,45 +107,56 @@
         element.style.setProperty("left", left + "px")
       }
 
-      function updatePosition(element, top, left) {
-        if (element === null) {
-          return
-        }
+      function positionOnGrid(element, x, y) {
+        // Scale the (x, y) of the grid to pixels on screen
+        const xPixels = gridToPixels(x)
+        const yPixels = gridToPixels(y)
 
-        if (CAN_SCROLL) {
-          const { scrollX, scrollY } = window
-          state.position.x = left + scrollX
-          state.position.y = top + scrollY
-        } else {
-          state.position.x = left
-          state.position.y = top
-        }
-        setTopLeft(element, state.position.y, state.position.x)
+        // Center the element in the grid cell
+        const { height, width } = element.getBoundingClientRect()
+        const xOffset = (GRID_SIZE_PX - width) / 2
+        const yOffset = (GRID_SIZE_PX - height) / 2
+
+        // Position element precisely
+        setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
       }
 
-      function moveDirection(element, direction) {
-        if (element === null) {
-          return
-        }
-        const { top, left } = element.getBoundingClientRect()
-        const { scrollX, scrollY } = window
-        const newPosition = { x: left, y: top }
-        switch(direction) {
-          case 'up':
-            newPosition.y = newPosition.y - GRID_SIZE_PX
-            break
-          case 'down':
-            newPosition.y = newPosition.y + GRID_SIZE_PX
-            break
-          case 'left':
-            newPosition.x = newPosition.x - GRID_SIZE_PX
-            break
-          case 'right':
-            newPosition.x = newPosition.x + GRID_SIZE_PX
-            break
-        }
+      // Convert grid coordinates like (1, 2) to pixel values (50px, 100px)
+      function gridToPixels(n) {
+        return n * GRID_SIZE_PX
+      }
 
-        updatePosition(element, newPosition.y, newPosition.x)
+      // Convert pixels to nearest grid coordinates like (55px, 5px) to (1, 0)
+      function pixelsToGrid(n) {
+        const nearestGridPixelValue = n - (n % GRID_SIZE_PX)
+        return nearestGridPixelValue / GRID_SIZE_PX
+      }
+
+      function moveDirectionOnGrid(element, direction) {
+        const { top, left } = element.getBoundingClientRect()
+        // Convert element's position to grid coordinates
+        const gridX = pixelsToGrid(left)
+        const gridY = pixelsToGrid(top)
+        console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
+        // Change grid coordinates based on direction
+        let nextGridX = gridX
+        let nextGridY = gridY
+        switch(direction) {
+          case UP:
+            nextGridY--
+            break
+          case DOWN:
+            nextGridY++
+            break
+          case LEFT:
+            nextGridX--
+            break
+          case RIGHT:
+            nextGridX++
+            break
+        }
+        // Position element with grid cooridnates
+        positionOnGrid(element, nextGridX, nextGridY)
       }
 
       function onKeyUp(event) {
@@ -143,16 +164,16 @@
         const you = document.getElementById("you")
         switch(event.key) {
           case 'ArrowUp':
-            moveDirection(you, 'up')
+            moveDirectionOnGrid(you, UP)
             break
           case 'ArrowDown':
-            moveDirection(you, 'down')
+            moveDirectionOnGrid(you, DOWN)
             break
           case 'ArrowLeft':
-            moveDirection(you, 'left')
+            moveDirectionOnGrid(you, LEFT)
             break
           case 'ArrowRight':
-            moveDirection(you, 'right')
+            moveDirectionOnGrid(you, RIGHT)
             break
           default:
             return
@@ -162,12 +183,12 @@
       document.addEventListener("DOMContentLoaded", () => {
         const you = document.getElementById("you")
         if (you !== null) {
-          // this isn't exact lol, not sure why 
-          // setTopLeft(you, window.innerHeight - GRID_SIZE_PX - 75, 0)
-          positionInPlace(you)
+          // set an arbitrary position for avatar
+          positionOnGrid(you, 3, 4)
           setPositionAbsolute(you)
         }
 
+        // Move the avatar based on arrow presses
         document.addEventListener("keyup", onKeyUp)
       })
     </script>
