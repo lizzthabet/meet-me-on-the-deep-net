@@ -73,6 +73,7 @@
         font-size: 2rem;
         margin: 20px auto;
         padding: 10px;
+        z-index: 2;
       }
 
       section#grass {
@@ -83,6 +84,23 @@
         position: absolute;
         width: 100vw;
       }
+
+      .tree {
+        background-color: var(--medium-green);
+        height: var(--grid-size);
+        width: var(--grid-size);
+        margin: 0;
+        z-index: -1;
+      }
+
+      .with-content {
+        /* To center any text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        user-select: none;
+      }
     </style>
     <script>
       const GRID_SIZE_PX = 50
@@ -91,6 +109,15 @@
       const DOWN = 'down'
       const LEFT = 'left'
       const RIGHT = 'right'
+
+      const state = {
+        boundaries: [{startX: 0, startY: 0}],
+        obstacles: [
+          {startX: 6, startY: 4},
+          {startX: 10, startY: 10},
+          {startX: 7, startY: 15},
+        ],
+      }
 
       function positionInPlace(element) {
         const { top, left } = element.getBoundingClientRect()
@@ -107,6 +134,17 @@
         element.style.setProperty("left", left + "px")
       }
 
+      // Convert grid coordinates like (1, 2) to pixel values (50px, 100px)
+      function gridToPixels(n) {
+        return n * GRID_SIZE_PX
+      }
+
+      // Convert pixels to nearest grid coordinates like (55px, 5px) to (1, 0)
+      function pixelsToGrid(n) {
+        const nearestGridPixelValue = n - (n % GRID_SIZE_PX)
+        return nearestGridPixelValue / GRID_SIZE_PX
+      }
+
       function positionOnGrid(element, x, y) {
         // Scale the (x, y) of the grid to pixels on screen
         const xPixels = gridToPixels(x)
@@ -118,18 +156,42 @@
         const yOffset = (GRID_SIZE_PX - height) / 2
 
         // Position element precisely
+        // TODO: take the scoll into account lol
+        // const { scrollX, scrollY } = window
         setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
       }
 
-      // Convert grid coordinates like (1, 2) to pixel values (50px, 100px)
-      function gridToPixels(n) {
-        return n * GRID_SIZE_PX
+      // Returns whether or not the coordinates overlap with an obstacle
+      // or a boundary
+      function canMoveTo(x, y) {
+        // Check boundaries first
+        for (let i = 0; i < state.boundaries.length; i++) {
+          const b = state.boundaries[i]
+          const endX = b.endX ?? Infinity
+          const endY = b.endY ?? Infinity
+          if (x < b.startX || x > endX || y < b.startY || y > endY) {
+            return false
+          }
+        }
+
+        // Check obstacles next
+        for (let i = 0; i < state.obstacles.length; i++) {
+          const o = state.obstacles[i]
+          const endX = o.endX ?? o.startX
+          const endY = o.endY ?? o.startY
+          if (x >= o.startX && x <= endX && y >= o.startY && y <= endY) {
+            return false
+          }
+        }
+
+        return true
       }
 
-      // Convert pixels to nearest grid coordinates like (55px, 5px) to (1, 0)
-      function pixelsToGrid(n) {
-        const nearestGridPixelValue = n - (n % GRID_SIZE_PX)
-        return nearestGridPixelValue / GRID_SIZE_PX
+      function positionAvatarOnGrid(element, x, y) {
+        const canMove = canMoveTo(x, y)
+        if (canMove) {
+          positionOnGrid(element, x, y)
+        }
       }
 
       function moveDirectionOnGrid(element, direction) {
@@ -156,7 +218,7 @@
             break
         }
         // Position element with grid cooridnates
-        positionOnGrid(element, nextGridX, nextGridY)
+        positionAvatarOnGrid(element, nextGridX, nextGridY)
       }
 
       function onKeyUp(event) {
@@ -180,13 +242,28 @@
         }
       }
 
+      const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
+
       document.addEventListener("DOMContentLoaded", () => {
+        // position the avatar
         const you = document.getElementById("you")
         if (you !== null) {
           // set an arbitrary position for avatar
           positionOnGrid(you, 3, 4)
           setPositionAbsolute(you)
         }
+
+        // position some trees
+        const trees = document.querySelectorAll(".tree")
+        trees.forEach((t, i) => {
+          const p = treePositions[i]
+          if (p) {
+            positionOnGrid(t, p.x, p.y)
+            setPositionAbsolute(t)
+          }
+        })
+
+        // TODO: get the obstacles and record their position, instead of hardcoding
 
         // Move the avatar based on arrow presses
         document.addEventListener("keyup", onKeyUp)
@@ -198,9 +275,12 @@
       <a href="/">back</a>
     </nav>
     <main>
-      <p id="musings"><span class="wavy">Welcome</span> to this space. You can move around <span class="wavy">now</span>.</p>
-      <figure id="you"></figure>
+      <p id="musings"><span class="wavy">Welcome</span> to this space. Move around using the arrows on your keyboard.</p>
+      <figure id="you" class="with-content">🕹️</figure>
       <section id="grass"></section>
+      <figure class="tree with-content" data-obstacle>🌳</figure>
+      <figure class="tree with-content" data-obstacle>🌳</figure>
+      <figure class="tree with-content" data-obstacle>🌳</figure>
     </main>
   </body>
 </html>

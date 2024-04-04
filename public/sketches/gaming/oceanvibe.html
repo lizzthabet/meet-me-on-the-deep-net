@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="grid">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>an ocean</title>
+
+    <style>
+      :root {
+        --medium-blue: #2a3e47;
+        --dark-blue: #13272d;
+
+        --white-yellow: #eadfce;
+        --light-yellow: #e0cfa9;
+        --golden-yellow: #d3be91;
+
+        --light-purple: #776163;
+        --dark-purple: #54474e;
+        --gray-purple: #7c777b;
+
+        --medium-green: #4c5345;
+        --dark-green: #2b3223;
+
+        --grid-size: 50px;
+      }
+
+      html {
+        background-color: var(--dark-blue);
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      .grid {
+        background: 
+          repeat scroll top left / var(--grid-size) var(--grid-size) linear-gradient(to right, var(--medium-blue) 1px, transparent 1px),
+          repeat scroll top left / var(--grid-size) var(--grid-size) linear-gradient(to bottom, var(--medium-blue) 1px, transparent 1px),
+          repeat scroll center / cover url("assets/ocean-closeup-200x64.gif");
+      }
+
+      .ocean {
+        background-image: url("assets/ocean-closeup-200x64.gif");
+        background-repeat: repeat;
+        background-size: cover;
+      }
+
+      main {
+        margin: 2rem 0;
+      }
+
+      button, a {
+        margin: 2px;
+      }
+
+      a, a:visited {
+        font-size: 1.25rem;
+        color: var(--golden-yellow);
+      }
+
+      .wavy {
+        text-decoration: var(--dark-purple) wavy underline;
+        text-underline-offset: 4px;
+      }
+
+      figure#you {
+        background-color: var(--dark-blue);
+        height: 40px;
+        width: 40px;
+        margin: 0;
+        z-index: 99999;
+        /* This is semi-important for sizing elements on the grid */
+        box-sizing: border-box;
+        /* To center any text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        color: var(--white-yellow);
+      }
+
+      p#musings {
+        background-color: var(--dark-blue);
+        color: var(--white-yellow);
+        display: inline-block;
+        font-size: 1.5rem;
+        margin: 20px auto;
+        padding: 10px;
+        font-family: 'Times New Roman', Times, serif;
+        font-style: italic;
+      }
+
+      section#grass {
+        background-color: var(--dark-green);
+        bottom: 0;
+        left: 0;
+        height: 75px;
+        position: absolute;
+        width: 100vw;
+      }
+    </style>
+    <script>
+      const GRID_SIZE_PX = 50
+      const CAN_SCROLL = false
+      const UP = 'up'
+      const DOWN = 'down'
+      const LEFT = 'left'
+      const RIGHT = 'right'
+
+      function positionInPlace(element) {
+        const { top, left } = element.getBoundingClientRect()
+        const { scrollX, scrollY } = window
+        setTopLeft(element, top + scrollY, left + scrollX)
+      }
+
+      function setPositionAbsolute(element) {
+        element.style.setProperty("position", "absolute")
+      }
+
+      function setTopLeft(element, top, left) {
+        element.style.setProperty("top", top + "px")
+        element.style.setProperty("left", left + "px")
+      }
+
+      function positionOnGrid(element, x, y) {
+        // Scale the (x, y) of the grid to pixels on screen
+        const xPixels = gridToPixels(x)
+        const yPixels = gridToPixels(y)
+
+        // Center the element in the grid cell
+        const { height, width } = element.getBoundingClientRect()
+        const xOffset = (GRID_SIZE_PX - width) / 2
+        const yOffset = (GRID_SIZE_PX - height) / 2
+
+        // Position element precisely
+        setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
+      }
+
+      // Convert grid coordinates like (1, 2) to pixel values (50px, 100px)
+      function gridToPixels(n) {
+        return n * GRID_SIZE_PX
+      }
+
+      // Convert pixels to nearest grid coordinates like (55px, 5px) to (1, 0)
+      function pixelsToGrid(n) {
+        const nearestGridPixelValue = n - (n % GRID_SIZE_PX)
+        return nearestGridPixelValue / GRID_SIZE_PX
+      }
+
+      function moveDirectionOnGrid(element, direction) {
+        const { top, left } = element.getBoundingClientRect()
+        // Convert element's position to grid coordinates
+        const gridX = pixelsToGrid(left)
+        const gridY = pixelsToGrid(top)
+        console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
+        // Change grid coordinates based on direction
+        let nextGridX = gridX
+        let nextGridY = gridY
+        switch(direction) {
+          case UP:
+            nextGridY--
+            break
+          case DOWN:
+            nextGridY++
+            break
+          case LEFT:
+            nextGridX--
+            break
+          case RIGHT:
+            nextGridX++
+            break
+        }
+        // Position element with grid cooridnates
+        positionOnGrid(element, nextGridX, nextGridY)
+      }
+
+      function onKeyUp(event) {
+        event.preventDefault()
+        const you = document.getElementById("you")
+        switch(event.key) {
+          case 'ArrowUp':
+            moveDirectionOnGrid(you, UP)
+            break
+          case 'ArrowDown':
+            moveDirectionOnGrid(you, DOWN)
+            break
+          case 'ArrowLeft':
+            moveDirectionOnGrid(you, LEFT)
+            break
+          case 'ArrowRight':
+            moveDirectionOnGrid(you, RIGHT)
+            break
+          default:
+            return
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const you = document.getElementById("you")
+        if (you !== null) {
+          // set an arbitrary position for avatar
+          positionOnGrid(you, 3, 4)
+          setPositionAbsolute(you)
+        }
+
+        // Move the avatar based on arrow presses
+        document.addEventListener("keyup", onKeyUp)
+      })
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/">back</a>
+    </nav>
+    <main>
+      <p id="musings">Would you cross an ocean?</p>
+      <figure id="you">S</figure>
+    </main>
+  </body>
+</html>
