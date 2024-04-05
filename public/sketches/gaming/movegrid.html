@@ -24,6 +24,47 @@
         --grid-size: 50px;
       }
 
+      @keyframes appear {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      @keyframes disappear {
+        0% {
+          opacity: 1;
+          display: block;
+        }
+        100% {
+          opacity: 0;
+          display: none;
+        }
+      }
+
+      .appear {
+        animation-name: appear;
+        animation-duration: 2s; 
+      }
+
+      .disappear {
+        animation-name: disappear;
+        animation-duration: 2s; 
+      }
+
+      .cloak {
+        background-color: var(--dark-blue);
+        top: 0;
+        left: 0;
+        position: fixed;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        opacity: 0;
+        z-index: 100;
+      }
+
       html {
         background-color: var(--dark-blue);
         font-family: 'Courier New', Courier, monospace;
@@ -51,7 +92,7 @@
 
       .wavy {
         text-decoration: var(--dark-purple) wavy underline;
-        text-underline-offset: 4px;
+        text-underline-offset: 2px;
       }
 
       figure#you {
@@ -61,7 +102,7 @@
         height: 40px;
         width: 40px;
         margin: 0;
-        z-index: 99999;
+        z-index: 99;
         /* This is semi-important for sizing elements on the grid */
         box-sizing: border-box;
       }
@@ -70,7 +111,6 @@
         background-color: var(--light-purple);
         color: var(--white-yellow);
         display: inline-block;
-        font-size: 2rem;
         margin: 20px auto;
         padding: 10px;
         z-index: 2;
@@ -111,12 +151,33 @@
       const RIGHT = 'right'
 
       const state = {
-        boundaries: [{startX: 0, startY: 0}],
+        boundaries: [
+          {startX: 0, startY: 0},
+        ],
         obstacles: [
           {startX: 6, startY: 4},
           {startX: 10, startY: 10},
           {startX: 7, startY: 15},
         ],
+        activeArea: null,
+        // activeArea: { activation: func, deactivation: func, next: func }
+        activeAreas: [
+          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayText("musings", "Ouch. That hurt.")},
+          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayText("musings", "You can visit me. That's okay.")},
+          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayText("musings", "Hm... I don't know.")},
+        ]
+      }
+
+      function displayText(elementId, text, reset = true) {
+        const musing = document.getElementById(elementId)
+        if (musing) {
+          // oh this is buggy haha, maybe remove
+          const previousText = musing.innerText
+          musing.innerText = text
+          if (reset) {
+            setTimeout(() => displayText(elementId, previousText, false), 3000)
+          }
+        }
       }
 
       function positionInPlace(element) {
@@ -161,36 +222,73 @@
         setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
       }
 
+      // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
+      function checkInsideCoords(x, y, coords) {
+        const endX = coords.endX ?? coords.startX
+        const endY = coords.endY ?? coords.startY
+        if (x >= coords.startX && x <= endX && y >= coords.startY && y <= endY) {
+          return true
+        }
+        return false
+      }
+
+      // Check if an (x, y) is beyond an area of {startX, startY, endX, endY} coordinates
+      function checkExceedCoords(x, y, coords) {
+        const endX = coords.endX ?? Infinity
+        const endY = coords.endY ?? Infinity
+        if (x < coords.startX || x > endX || y < coords.startY || y > endY) {
+          return true
+        }
+        return false
+      }
+
       // Returns whether or not the coordinates overlap with an obstacle
       // or a boundary
       function canMoveTo(x, y) {
         // Check boundaries first
         for (let i = 0; i < state.boundaries.length; i++) {
-          const b = state.boundaries[i]
-          const endX = b.endX ?? Infinity
-          const endY = b.endY ?? Infinity
-          if (x < b.startX || x > endX || y < b.startY || y > endY) {
+          const exceeds = checkExceedCoords(x, y, state.boundaries[i])
+          if (exceeds) {
             return false
           }
         }
-
         // Check obstacles next
         for (let i = 0; i < state.obstacles.length; i++) {
-          const o = state.obstacles[i]
-          const endX = o.endX ?? o.startX
-          const endY = o.endY ?? o.startY
-          if (x >= o.startX && x <= endX && y >= o.startY && y <= endY) {
+          const inside = checkInsideCoords(x, y, state.obstacles[i])
+          if (inside) {
             return false
           }
         }
-
         return true
+      }
+
+      function activateAreaIfOverlap(x, y) {
+        for (let i = 0; i < state.activeAreas.length; i++) {
+          const area = state.activeAreas[i]
+          const inside = checkInsideCoords(x, y, area)
+          const alreadyActive = state.activeArea === area
+          if (inside) {
+            if (!alreadyActive) {
+              // Note: there's currently no way of "leaving" an active area
+              state.activeArea = area
+              area.activation()
+            }
+            // We don't need to check other active points
+            // since there should only be one at once
+            return
+          }
+        }
+
+        // Since there aren't any active areas
+        // reset this state
+        state.activeArea = null
       }
 
       function positionAvatarOnGrid(element, x, y) {
         const canMove = canMoveTo(x, y)
         if (canMove) {
           positionOnGrid(element, x, y)
+          activateAreaIfOverlap(x, y)
         }
       }
 
@@ -199,7 +297,7 @@
         // Convert element's position to grid coordinates
         const gridX = pixelsToGrid(left)
         const gridY = pixelsToGrid(top)
-        console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
+        // console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
         // Change grid coordinates based on direction
         let nextGridX = gridX
         let nextGridY = gridY
@@ -242,9 +340,13 @@
         }
       }
 
-      const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
-
       document.addEventListener("DOMContentLoaded", () => {
+        // volume test to see what volume of obstacles might slow
+        // down movement -- it's not something i need to worry about!
+        // for (let i = 0; i < 1000; i++) {
+        //   state.obstacles.push({startX: 0, startY: 0})
+        // }
+
         // position the avatar
         const you = document.getElementById("you")
         if (you !== null) {
@@ -254,6 +356,7 @@
         }
 
         // position some trees
+        const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
         const trees = document.querySelectorAll(".tree")
         trees.forEach((t, i) => {
           const p = treePositions[i]
@@ -263,7 +366,7 @@
           }
         })
 
-        // TODO: get the obstacles and record their position, instead of hardcoding
+        // TODO: get the obstacles and record their position, instead of hardcoding pls :)
 
         // Move the avatar based on arrow presses
         document.addEventListener("keyup", onKeyUp)
@@ -281,6 +384,8 @@
       <figure class="tree with-content" data-obstacle>🌳</figure>
       <figure class="tree with-content" data-obstacle>🌳</figure>
       <figure class="tree with-content" data-obstacle>🌳</figure>
+      <!-- Below is a tiny experiment with "page open" transitions -->
+      <div class="cloak disappear"></div>
     </main>
   </body>
 </html>
