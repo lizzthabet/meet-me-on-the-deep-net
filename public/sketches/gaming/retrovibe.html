@@ -3,78 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>let's move around the screen in a grid</title>
+    <title>simple kinda retro</title>
 
     <style>
       :root {
-        --medium-blue: #2a3e47;
-        --dark-blue: #13272d;
-
-        --white-yellow: #eadfce;
-        --light-yellow: #e0cfa9;
-        --golden-yellow: #d3be91;
-
-        --light-purple: #776163;
-        --dark-purple: #54474e;
-        --gray-purple: #7c777b;
-
-        --medium-green: #4c5345;
-        --dark-green: #2b3223;
-
         --grid-size: 50px;
       }
 
-      @keyframes appear {
-        0% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
-      @keyframes disappear {
-        0% {
-          opacity: 1;
-          display: block;
-        }
-        100% {
-          opacity: 0;
-          display: none;
-        }
-      }
-
-      .appear {
-        animation-name: appear;
-        animation-duration: 2s; 
-      }
-
-      .disappear {
-        animation-name: disappear;
-        animation-duration: 2s; 
-      }
-
-      .cloak {
-        background-color: var(--dark-blue);
-        top: 0;
-        left: 0;
-        position: fixed;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        opacity: 0;
-        z-index: 100;
-      }
-
       html {
-        background-color: var(--dark-blue);
         font-family: 'Courier New', Courier, monospace;
+        background-color: gray;
       }
 
       .grid {
         background-size: var(--grid-size) var(--grid-size);
         background-image:
-          linear-gradient(to right, var(--medium-blue) 1px, transparent 1px),
-          linear-gradient(to bottom, var(--medium-blue) 1px, transparent 1px);
+          linear-gradient(to right, darkgray 1px, transparent 1px),
+          linear-gradient(to bottom, darkgray 1px, transparent 1px);
       }
 
       main {
@@ -87,50 +32,47 @@
 
       a, a:visited {
         font-size: 1.25rem;
-        color: var(--golden-yellow);
-      }
-
-      .wavy {
-        text-decoration: var(--dark-purple) wavy underline;
-        text-underline-offset: 2px;
+        color: blue;
       }
 
       figure#you {
-        background-color: var(--medium-green);
-        border: 2px dashed var(--white-yellow);
-        border-radius: 50%;
         height: 40px;
         width: 40px;
         margin: 0;
         z-index: 99;
+        font-weight: bold;
+        text-decoration: underline;
         /* This is semi-important for sizing elements on the grid */
         box-sizing: border-box;
       }
 
       p#musings {
-        background-color: var(--light-purple);
-        color: var(--white-yellow);
+        background-color: white;
+        color: black;
         display: inline-block;
-        margin: 20px auto;
         padding: 10px;
+        margin: 1px;
+        font-size: 1.125rem;
         z-index: 2;
-      }
-
-      section#grass {
-        background-color: var(--dark-green);
-        bottom: 0;
-        left: 0;
-        height: 75px;
-        position: absolute;
-        width: 100vw;
+        box-sizing: border-box;
       }
 
       .tree {
-        background-color: var(--medium-green);
-        height: var(--grid-size);
-        width: var(--grid-size);
-        margin: 0;
+        background-color: green;
+        color: lightgray;
+        /* hack to fit within grid lines */
+        height: 48px;
+        margin: 1px;
+        width: 48px;
         z-index: -1;
+      }
+
+      .ocean {
+        background-color: blue;
+        color: lightgray;
+        height: calc(50px * 14 - 1px);
+        width: calc(50px * 5 - 1px);
+        margin: 1px;
       }
 
       .with-content {
@@ -138,7 +80,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1.5rem;
+        /* font-size: 1.5rem; */
         user-select: none;
       }
     </style>
@@ -162,21 +104,16 @@
         activeArea: null,
         // activeArea: { activation: func, deactivation: func, next: func }
         activeAreas: [
-          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayText("musings", "Ouch. That hurt.")},
-          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayText("musings", "You can visit me. That's okay.")},
-          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayText("musings", "Hm... I don't know.")},
+          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayText("musings", "An ocean is a long way to travel...")},
+          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayText("musings", "But I've always had a spirit of adventure.")},
+          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayText("musings", "This could be fun.")},
         ]
       }
 
-      function displayText(elementId, text, reset = true) {
+      function displayText(elementId, text) {
         const musing = document.getElementById(elementId)
         if (musing) {
-          // oh this is buggy haha, maybe remove
-          const previousText = musing.innerText
           musing.innerText = text
-          if (reset) {
-            setTimeout(() => displayText(elementId, previousText, false), 3000)
-          }
         }
       }
 
@@ -211,9 +148,9 @@
         const xPixels = gridToPixels(x)
         const yPixels = gridToPixels(y)
 
+        // Center the element in the grid cell
         let xOffset = 0
         let yOffset = 0
-        // Optionally, center the element in the grid cell
         if (center) {
           const { height, width } = element.getBoundingClientRect()
           xOffset = (GRID_SIZE_PX - width) / 2
@@ -273,7 +210,6 @@
           const alreadyActive = state.activeArea === area
           if (inside) {
             if (!alreadyActive) {
-              // Note: there's currently no way of "leaving" an active area
               state.activeArea = area
               area.activation()
             }
@@ -345,13 +281,6 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        // volume test to see what volume of obstacles might slow
-        // down movement -- it's not something i need to worry about!
-        // for (let i = 0; i < 1000; i++) {
-        //   state.obstacles.push({startX: 0, startY: 0})
-        // }
-
-        // position the avatar
         const you = document.getElementById("you")
         if (you !== null) {
           // set an arbitrary position for avatar
@@ -359,7 +288,6 @@
           setPositionAbsolute(you)
         }
 
-        // position some trees
         const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
         const trees = document.querySelectorAll(".tree")
         trees.forEach((t, i) => {
@@ -369,6 +297,18 @@
             setPositionAbsolute(t)
           }
         })
+
+        const musings = document.getElementById("musings")
+        if (musings !== null) {
+          positionOnGrid(musings, 1, 2, false)
+          setPositionAbsolute(musings)
+        }
+
+        const ocean = document.querySelector(".ocean")
+        if (ocean !== null) {
+          positionOnGrid(ocean, 12, 6, false)
+          setPositionAbsolute(ocean)
+        }
 
         // TODO: get the obstacles and record their position, instead of hardcoding pls :)
 
@@ -382,14 +322,12 @@
       <a href="/">back</a>
     </nav>
     <main>
-      <p id="musings"><span class="wavy">Welcome</span> to this space. Move around using the arrows on your keyboard.</p>
-      <figure id="you" class="with-content">🕹️</figure>
-      <section id="grass"></section>
-      <figure class="tree with-content" data-obstacle>🌳</figure>
-      <figure class="tree with-content" data-obstacle>🌳</figure>
-      <figure class="tree with-content" data-obstacle>🌳</figure>
-      <!-- Below is a tiny experiment with "page open" transitions -->
-      <div class="cloak disappear"></div>
+      <p id="musings">Would you cross an ocean to meet a stranger?</p>
+      <figure id="you" class="with-content">you</figure>
+      <figure class="tree with-content" data-obstacle>tree</figure>
+      <figure class="tree with-content" data-obstacle>tree</figure>
+      <figure class="tree with-content" data-obstacle>tree</figure>
+      <figure class="ocean with-content">ocean</figure>
     </main>
   </body>
 </html>
