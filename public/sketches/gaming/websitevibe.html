@@ -170,8 +170,6 @@
         }
 
         // Position element precisely
-        // TODO: take the scoll into account lol
-        // const { scrollX, scrollY } = window
         setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
       }
 
@@ -241,14 +239,17 @@
         if (canMove) {
           positionOnGrid(element, x, y)
           activateAreaIfOverlap(x, y)
+          // TODO: scroll into view if off viewport
+          // TODO: potentially resize html to cover explored area
         }
       }
 
       function moveDirectionOnGrid(element, direction) {
         const { top, left } = element.getBoundingClientRect()
-        // Convert element's position to grid coordinates
-        const gridX = pixelsToGrid(left)
-        const gridY = pixelsToGrid(top)
+        const { scrollX, scrollY } = window
+        // Convert element's position (with scroll) to grid coordinates
+        const gridX = pixelsToGrid(left + scrollX)
+        const gridY = pixelsToGrid(top + scrollY)
         // console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
         // Change grid coordinates based on direction
         let nextGridX = gridX
@@ -271,7 +272,7 @@
         positionAvatarOnGrid(element, nextGridX, nextGridY)
       }
 
-      function onKeyUp(event) {
+      function onKeyDown(event) {
         event.preventDefault()
         const you = document.getElementById("you")
         switch(event.key) {
@@ -325,7 +326,7 @@
         // TODO: get the obstacles and record their position, instead of hardcoding pls :)
 
         // Move the avatar based on arrow presses
-        document.addEventListener("keyup", onKeyUp)
+        document.addEventListener("keydown", onKeyDown)
       })
     </script>
   </head>

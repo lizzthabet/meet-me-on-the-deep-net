@@ -104,6 +104,36 @@
       const LEFT = 'left'
       const RIGHT = 'right'
 
+      const state = {
+        boundaries: [
+          {startX: 0, startY: 0},
+        ],
+        obstacles: [
+          {startX: 6, startY: 4},
+          {startX: 10, startY: 10},
+          {startX: 7, startY: 15},
+        ],
+        activeArea: null,
+        // activeArea: { activation: func, deactivation: func, next: func }
+        activeAreas: [
+          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayText("musings", "Ouch. That hurt.")},
+          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayText("musings", "You can visit me. That's okay.")},
+          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayText("musings", "Hm... I don't know.")},
+        ]
+      }
+
+      function displayText(elementId, text, reset = true) {
+        const musing = document.getElementById(elementId)
+        if (musing) {
+          // oh this is buggy haha, maybe remove
+          const previousText = musing.innerText
+          musing.innerText = text
+          if (reset) {
+            setTimeout(() => displayText(elementId, previousText, false), 3000)
+          }
+        }
+      }
+
       function positionInPlace(element) {
         const { top, left } = element.getBoundingClientRect()
         const { scrollX, scrollY } = window
@@ -119,20 +149,6 @@
         element.style.setProperty("left", left + "px")
       }
 
-      function positionOnGrid(element, x, y) {
-        // Scale the (x, y) of the grid to pixels on screen
-        const xPixels = gridToPixels(x)
-        const yPixels = gridToPixels(y)
-
-        // Center the element in the grid cell
-        const { height, width } = element.getBoundingClientRect()
-        const xOffset = (GRID_SIZE_PX - width) / 2
-        const yOffset = (GRID_SIZE_PX - height) / 2
-
-        // Position element precisely
-        setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
-      }
-
       // Convert grid coordinates like (1, 2) to pixel values (50px, 100px)
       function gridToPixels(n) {
         return n * GRID_SIZE_PX
@@ -144,12 +160,103 @@
         return nearestGridPixelValue / GRID_SIZE_PX
       }
 
+      function positionOnGrid(element, x, y, center = true) {
+        // Scale the (x, y) of the grid to pixels on screen
+        const xPixels = gridToPixels(x)
+        const yPixels = gridToPixels(y)
+
+        let xOffset = 0
+        let yOffset = 0
+        // Optionally, center the element in the grid cell
+        if (center) {
+          const { height, width } = element.getBoundingClientRect()
+          xOffset = (GRID_SIZE_PX - width) / 2
+          yOffset = (GRID_SIZE_PX - height) / 2
+        }
+
+        // Position element precisely
+        setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
+      }
+
+      // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
+      function checkInsideCoords(x, y, coords) {
+        const endX = coords.endX ?? coords.startX
+        const endY = coords.endY ?? coords.startY
+        if (x >= coords.startX && x <= endX && y >= coords.startY && y <= endY) {
+          return true
+        }
+        return false
+      }
+
+      // Check if an (x, y) is beyond an area of {startX, startY, endX, endY} coordinates
+      function checkExceedCoords(x, y, coords) {
+        const endX = coords.endX ?? Infinity
+        const endY = coords.endY ?? Infinity
+        if (x < coords.startX || x > endX || y < coords.startY || y > endY) {
+          return true
+        }
+        return false
+      }
+
+      // Returns whether or not the coordinates overlap with an obstacle
+      // or a boundary
+      function canMoveTo(x, y) {
+        // Check boundaries first
+        for (let i = 0; i < state.boundaries.length; i++) {
+          const exceeds = checkExceedCoords(x, y, state.boundaries[i])
+          if (exceeds) {
+            return false
+          }
+        }
+        // Check obstacles next
+        for (let i = 0; i < state.obstacles.length; i++) {
+          const inside = checkInsideCoords(x, y, state.obstacles[i])
+          if (inside) {
+            return false
+          }
+        }
+        return true
+      }
+
+      function activateAreaIfOverlap(x, y) {
+        for (let i = 0; i < state.activeAreas.length; i++) {
+          const area = state.activeAreas[i]
+          const inside = checkInsideCoords(x, y, area)
+          const alreadyActive = state.activeArea === area
+          if (inside) {
+            if (!alreadyActive) {
+              // Note: there's currently no way of "leaving" an active area
+              state.activeArea = area
+              area.activation()
+            }
+            // We don't need to check other active points
+            // since there should only be one at once
+            return
+          }
+        }
+
+        // Since there aren't any active areas
+        // reset this state
+        state.activeArea = null
+      }
+
+      function positionAvatarOnGrid(element, x, y) {
+        const canMove = canMoveTo(x, y)
+        if (canMove) {
+          positionOnGrid(element, x, y)
+          activateAreaIfOverlap(x, y)
+          // TODO: scroll into view if off viewport
+          // TODO: potentially resize html to cover explored area
+        }
+      }
+
       function moveDirectionOnGrid(element, direction) {
         const { top, left } = element.getBoundingClientRect()
-        // Convert element's position to grid coordinates
-        const gridX = pixelsToGrid(left)
-        const gridY = pixelsToGrid(top)
-        console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
+        const { scrollX, scrollY } = window
+        // Convert element's position (with scroll) to grid coordinates
+        const gridX = pixelsToGrid(left + scrollX)
+        const gridY = pixelsToGrid(top + scrollY)
+        // console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
         // Change grid coordinates based on direction
         let nextGridX = gridX
         let nextGridY = gridY
@@ -168,10 +275,10 @@
             break
         }
         // Position element with grid cooridnates
-        positionOnGrid(element, nextGridX, nextGridY)
+        positionAvatarOnGrid(element, nextGridX, nextGridY)
       }
 
-      function onKeyUp(event) {
+      function onKeyDown(event) {
         event.preventDefault()
         const you = document.getElementById("you")
         switch(event.key) {
@@ -193,6 +300,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
+        // position the avatar
         const you = document.getElementById("you")
         if (you !== null) {
           // set an arbitrary position for avatar
@@ -200,8 +308,21 @@
           setPositionAbsolute(you)
         }
 
+        // position some trees
+        const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
+        const trees = document.querySelectorAll(".tree")
+        trees.forEach((t, i) => {
+          const p = treePositions[i]
+          if (p) {
+            positionOnGrid(t, p.x, p.y)
+            setPositionAbsolute(t)
+          }
+        })
+
+        // TODO: get the obstacles and record their position, instead of hardcoding pls :)
+
         // Move the avatar based on arrow presses
-        document.addEventListener("keyup", onKeyUp)
+        document.addEventListener("keydown", onKeyDown)
       })
     </script>
   </head>
