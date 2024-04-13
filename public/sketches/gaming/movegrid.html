@@ -151,15 +151,16 @@
       const LEFT = 'left'
       const RIGHT = 'right'
 
+      const initialPositions = {
+        "#you": [{ x: 3, y: 4 }],
+        ".tree": [{ x: 6, y: 4 }, { x: 10, y: 10 }, { x: 7, y: 15 }],
+      }
+
       const state = {
         boundaries: [
-          {startX: 0, startY: 0},
+          {startX: 0, startY: 0}, // always include the top corner as a boundary
         ],
-        obstacles: [
-          {startX: 6, startY: 4},
-          {startX: 10, startY: 10},
-          {startX: 7, startY: 15},
-        ],
+        obstacles: [], // added dynamically based on elements with "data-obstacle" property
         activeArea: null,
         // activeArea: { activation: func, deactivation: func, next: func }
         activeAreas: [
@@ -169,15 +170,10 @@
         ]
       }
 
-      function displayText(elementId, text, reset = true) {
+      function displayText(elementId, text) {
         const musing = document.getElementById(elementId)
         if (musing) {
-          // oh this is buggy haha, maybe remove
-          const previousText = musing.innerText
           musing.innerText = text
-          if (reset) {
-            setTimeout(() => displayText(elementId, previousText, false), 3000)
-          }
         }
       }
 
@@ -354,26 +350,38 @@
         //   state.obstacles.push({startX: 0, startY: 0})
         // }
 
-        // position the avatar
-        const you = document.getElementById("you")
-        if (you !== null) {
-          // set an arbitrary position for avatar
-          positionOnGrid(you, 3, 4)
-          setPositionAbsolute(you)
+        // position elements on grid based on their pre-defined locations
+        for (const selector of Object.keys(initialPositions)) {
+          const positions = initialPositions[selector]
+          const elements = document.querySelectorAll(selector)
+          elements.forEach((e, i) => {
+            const p = positions[i]
+            if (!p) {
+              console.warn(`no position specified for ${selector} #${i}`)
+              return
+            }
+
+            positionOnGrid(e, p.x, p.y)
+            setPositionAbsolute(e)
+          })
         }
 
-        // position some trees
-        const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
-        const trees = document.querySelectorAll(".tree")
-        trees.forEach((t, i) => {
-          const p = treePositions[i]
-          if (p) {
-            positionOnGrid(t, p.x, p.y)
-            setPositionAbsolute(t)
+        // get the tagged obstacles and record their grid positions
+        const obstacles = document.querySelectorAll('[data-obstacle]')
+        obstacles.forEach((o) => {
+          const { scrollX, scrollY } = window
+          const { top, left, width, height } = o.getBoundingClientRect()
+          const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
+          // It's possible this might be a bit buggy hehe
+          if (width > GRID_SIZE_PX) {
+            position.endX = pixelsToGrid(scrollX + left + width)
           }
-        })
 
-        // TODO: get the obstacles and record their position, instead of hardcoding pls :)
+          if (height > GRID_SIZE_PX) {
+            position.endX = pixelsToGrid(scrollY + top + height)
+          }
+          state.obstacles.push(position)
+        })
 
         // Move the avatar based on arrow presses
         document.addEventListener("keydown", onKeyDown)
