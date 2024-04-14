@@ -378,13 +378,14 @@
           const { scrollX, scrollY } = window
           const { top, left, width, height } = o.getBoundingClientRect()
           const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
-          // It's possible this might be a bit buggy hehe
           if (width > GRID_SIZE_PX) {
-            position.endX = pixelsToGrid(scrollX + left + width)
+            const widthExceedingCell = width - GRID_SIZE_PX
+            position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
           }
 
           if (height > GRID_SIZE_PX) {
-            position.endX = pixelsToGrid(scrollY + top + height)
+            const heightExceedingCell = height - GRID_SIZE_PX
+            position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
           }
           state.obstacles.push(position)
         })
