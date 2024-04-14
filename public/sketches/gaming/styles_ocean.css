@@ -7,6 +7,7 @@
   --golden-yellow: #d3be91;
 
   --light-purple: #776163;
+  --medium-purple: #513142;
   --dark-purple: #54474e;
   --gray-purple: #7c777b;
 
@@ -68,7 +69,7 @@ figure#you {
   z-index: 99999;
 }
 
-p#direction {
+#direction {
   background-color: var(--dark-blue);
   color: var(--white-yellow);
   font-family: 'Times New Roman', Times, serif;
@@ -83,19 +84,49 @@ p#direction {
   z-index: 2;
 }
 
+.direction-button {
+  margin-top: 15px;
+  font-size: 1rem;
+  display: block;
+}
+
+.direction-choice {
+  display: block;
+  margin-top: 15px;
+  font-style: normal;
+}
+
+.direction-choice > input[type="radio"] {
+  height: 15px;
+  width: 15px;
+  margin: 0 10px 0 0;
+}
+
 .tree {
   background-color: var(--bright-green);
   color: var(--white-yellow);
 }
 
-#island {
-  /* border: 10px dashed blue; */
-  /* background-color: sienna; */
-  border: 50px solid var(--dark-blue);
+.island {
+  background-color: var(--dark-blue);
   color: var(--white-yellow);
 }
 
-.island {
-  background-color: var(--dark-blue);
+.intro {
+  background-color: var(--medium-purple);
+  color: var(--white-yellow);
+}
+
+.trusted {
+  outline: 5px solid var(--golden-yellow);
+}
+
+.intro > input {
+  width: 15px;
+  height: 15px;
+}
+
+.pen {
+  background-color: var(--dark-green);
   color: var(--white-yellow);
 }

@@ -3,22 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>less game, more website - scene 2</title>
+    <title>kinda game, mostly ocean - scene 2</title>
     <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
-    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_ocean.css" />
     <style>
-      #island {
-        border-left: none;
-        border-right: none;
-        height: 500px;
+      .island-bottom-border {
+        left: 0;
+        top: calc(50px * 16);
+        height: 50px;
         width: 2000px;
+        position: absolute;
       }
 
-      #ocean {
-        background-color: blue;
-        color: white;
-        height: calc(50px * 12);
-        width: calc(2000px);
+      .island-top-border {
+        left: 0;
+        top: calc(50px * 5);
+        height: 50px;
+        width: 2000px;
+        position: absolute;
       }
     </style>
     <script>
@@ -32,7 +34,7 @@
       const initialPositions = {
         "#you": [{ x: 1, y: 9 }],
         ".tree": [
-          { x: 1, y: 5 },
+          { x: 1, y: 6 },
           { x: 3, y: 12 },
           { x: 4, y: 10 },
           { x: 4, y: 11 },
@@ -42,12 +44,12 @@
           { x: 10, y:12 }, // active
         ],
         ".intro": [
-          { x: 17, y: 6 },
-          { x: 17, y: 10 },
-          { x: 17, y: 14 },
-          { x: 21, y: 6 },
-          { x: 21, y: 10 },
-          { x: 21, y: 14 },
+          { x: 17, y: 7 },
+          { x: 15, y: 10 },
+          { x: 17, y: 13 },
+          { x: 21, y: 7 },
+          { x: 23, y: 10 },
+          { x: 21, y: 13 },
         ],
         ".pen": [{x: 31, y: 7}],
         "#island": [{ x: 0, y: 5, center: false }],
@@ -65,12 +67,12 @@
         activeAreas: [
           {startX: 5, startY: 9, endX: 5, endY: 11, activation: direction1 },
           {startX: 9, startY: 11, endX: 11, endY: 13, activation: direction2 },
-          {startX: 16, startY: 5, endX: 18, endY: 7, activation: () => activateCheckbox(1) },
-          {startX: 16, startY: 9, endX: 18, endY: 11, activation: () => activateCheckbox(2) },
-          {startX: 16, startY: 13, endX: 18, endY: 15, activation: () => activateCheckbox(3) },
-          {startX: 20, startY: 5, endX: 22, endY: 7, activation: () => activateCheckbox(4) },
-          {startX: 20, startY: 9, endX: 22, endY: 11, activation: () => activateCheckbox(5) },
-          {startX: 20, startY: 13, endX: 22, endY: 15, activation: () => activateCheckbox(6) },
+          {startX: 16, startY: 6, endX: 18, endY: 8, activation: () => activateCheckbox(1) },
+          {startX: 14, startY: 9, endX: 16, endY: 11, activation: () => activateCheckbox(2) },
+          {startX: 16, startY: 12, endX: 18, endY: 14, activation: () => activateCheckbox(3) },
+          {startX: 20, startY: 6, endX: 22, endY: 8, activation: () => activateCheckbox(4) },
+          {startX: 22, startY: 9, endX: 24, endY: 11, activation: () => activateCheckbox(5) },
+          {startX: 20, startY: 12, endX: 22, endY: 14, activation: () => activateCheckbox(6) },
           {startX: 30, startY: 6, endX: 32, endY: 8, activation: chooseSignature },
         ]
       }
@@ -92,7 +94,11 @@
       function activateCheckbox(number) {
         const cb = document.getElementById(`intro-${number}`)
         if (cb) {
-          cb.checked = !cb.checked
+          if (cb.classList.contains("trusted")) {
+            cb.classList.remove("trusted")
+          } else {
+            cb.classList.add("trusted")
+          }
         }
 
         // TODO: actually keep track of how many are checked and respond :)
@@ -138,7 +144,7 @@
 
       function displayNext() {
         showOrHideSelector("#next", true)
-        state.activeAreas.push({startX: 37, startY: 9, endX: 39, endY: 11, activation: () => window.location.assign("./websitevibe-scene3.html")})
+        state.activeAreas.push({startX: 37, startY: 9, endX: 39, endY: 11, activation: () => window.location.assign("./oceanvibe-scene3.html")})
       }
 
       function toggleGrid() {
@@ -361,14 +367,13 @@
   </head>
   <body>
     <nav>
-      <a href="/">back</a>
-      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
+      <a class="nav-button" href="/">back</a>
     </nav>
     <main>
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
-      <section id="ocean"></section>
-      <section id="island"></section>
+      <figure class="island island-bottom-border"></figure>
+      <figure class="island island-top-border"></figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle></figure>
@@ -377,29 +382,23 @@
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
-      <figure class="intro cell center" data-obstacle>
-        <input id="intro-1" type="checkbox" />
-        <label for="intro-1">trust</label>
+      <figure id="intro-1" class="intro cell center" data-obstacle>
+        trust
       </figure>
-      <figure class="intro cell center" data-obstacle>
-        <input id="intro-2" type="checkbox" />
-        <label for="intro-2">trust</label>
+      <figure id="intro-2" class="intro cell center" data-obstacle>
+        trust
       </figure>
-      <figure class="intro cell center" data-obstacle>
-        <input id="intro-3" type="checkbox" />
-        <label for="intro-3">trust</label>
+      <figure id="intro-3" class="intro cell center" data-obstacle>
+        trust
       </figure>
-      <figure class="intro cell center" data-obstacle>
-        <input id="intro-4" type="checkbox" />
-        <label for="intro-4">trust</label>
+      <figure id="intro-4" class="intro cell center" data-obstacle>
+        trust
       </figure>
-      <figure class="intro cell center" data-obstacle>
-        <input id="intro-5" type="checkbox" />
-        <label for="intro-5">trust</label>
+      <figure id="intro-5" class="intro cell center" data-obstacle>
+        trust
       </figure>
-      <figure class="intro cell center" data-obstacle>
-        <input id="intro-6" type="checkbox" />
-        <label for="intro-6">trust</label>
+      <figure id="intro-6" class="intro cell center" data-obstacle>
+        trust
       </figure>
       <figure class="pen cell center" data-obstacle>pen</figure>
       <figure id="signature" class="hidden">
