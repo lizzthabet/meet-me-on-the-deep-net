@@ -3,134 +3,103 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>an ocean</title>
-
+    <title>ocean - scene 1</title>
+    <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_ocean.css" />
     <style>
-      :root {
-        --medium-blue: #2a3e47;
-        --dark-blue: #13272d;
-
-        --white-yellow: #eadfce;
-        --light-yellow: #e0cfa9;
-        --golden-yellow: #d3be91;
-
-        --light-purple: #776163;
-        --dark-purple: #54474e;
-        --gray-purple: #7c777b;
-
-        --medium-green: #4c5345;
-        --dark-green: #2b3223;
-
-        --grid-size: 50px;
+      #island {
+        border-right: none;
+        height: calc(50px * 10);
+        width: calc(2000px - 50px * 5);
       }
 
-      html {
-        background-color: var(--dark-blue);
-        font-family: 'Courier New', Courier, monospace;
-      }
-
-      .grid {
-        background: 
-          repeat scroll top left / var(--grid-size) var(--grid-size) linear-gradient(to right, var(--medium-blue) 1px, transparent 1px),
-          repeat scroll top left / var(--grid-size) var(--grid-size) linear-gradient(to bottom, var(--medium-blue) 1px, transparent 1px),
-          repeat scroll center / cover url("assets/ocean-noshore-closeup-reverse-400x64.gif");
-      }
-
-      .ocean {
-        background-image: url("assets/ocean-noshore-closeup-reverse-400x64.gif");
-        background-repeat: repeat;
-        background-size: cover;
-      }
-
-      main {
-        margin: 2rem 0;
-      }
-
-      button, a {
-        margin: 2px;
-      }
-
-      a, a:visited {
-        font-size: 1.25rem;
-        color: var(--golden-yellow);
-      }
-
-      .wavy {
-        text-decoration: var(--dark-purple) wavy underline;
-        text-underline-offset: 4px;
-      }
-
-      figure#you {
-        background-color: var(--dark-blue);
-        height: 40px;
-        width: 40px;
-        margin: 0;
-        z-index: 99999;
-        /* This is semi-important for sizing elements on the grid */
-        box-sizing: border-box;
-        /* To center any text */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.5rem;
-        color: var(--white-yellow);
-      }
-
-      p#musings {
-        background-color: var(--dark-blue);
-        color: var(--white-yellow);
-        display: inline-block;
-        font-size: 1.5rem;
-        margin: 20px auto;
-        padding: 10px;
-        font-family: 'Times New Roman', Times, serif;
-        font-style: italic;
-      }
-
-      section#grass {
-        background-color: var(--dark-green);
-        bottom: 0;
-        left: 0;
-        height: 75px;
+      .island-bottom-border {
+        left: calc(50px * 6);
+        top: calc(50px * 16);
+        height: 50px;
+        width: calc(2000px - 50px * 5);
         position: absolute;
-        width: 100vw;
+      }
+
+      .island-top-border {
+        left: calc(50px * 11);
+        top: calc(50px * 5);
+        height: 50px;
+        width: calc(2000px - 50px * 10);
+        position: absolute;
       }
     </style>
     <script>
       const GRID_SIZE_PX = 50
-      const CAN_SCROLL = false
       const UP = 'up'
       const DOWN = 'down'
       const LEFT = 'left'
       const RIGHT = 'right'
 
+      const initialPositions = {
+        "#you": [{ x: 3, y: 4 }],
+        ".tree": [
+          { x: 7, y: 10 },
+          { x: 10, y: 14 },
+          { x: 11, y: 14 },
+          { x: 12, y: 8 },
+          { x: 12, y: 13 },
+          { x: 13, y: 7 },
+          { x: 18, y: 13 }, // active
+          { x: 19, y: 12 },
+          { x: 24, y: 6 }, // active
+        ],
+        ".island": [
+          { x: 4, y: 12, center: false }, // active
+          { x: 4, y: 14 },
+          { x: 5, y: 8, center: false },
+          { x: 5, y: 9, center: false },
+          { x: 5, y: 15 },
+          { x: 8, y: 7, center: false },
+          { x: 9, y: 6, center: false },
+          { x: 10, y: 5 },
+        ],
+        "#island": [{ x: 5, y: 5, center: false }],
+        "#ocean": [{ x: 4, y: 4, center: false }],
+        "#next": [{ x: 38, y: 9 }],
+      }
+
       const state = {
         boundaries: [
-          {startX: 0, startY: 0},
+          {startX: 0, startY: 0, endX: 2000/50 - 1, endY: 1000/50 - 1},
         ],
-        obstacles: [
-          {startX: 6, startY: 4},
-          {startX: 10, startY: 10},
-          {startX: 7, startY: 15},
-        ],
+        obstacles: [],
         activeArea: null,
-        // activeArea: { activation: func, deactivation: func, next: func }
         activeAreas: [
-          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayText("musings", "Ouch. That hurt.")},
-          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayText("musings", "You can visit me. That's okay.")},
-          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayText("musings", "Hm... I don't know.")},
+          {startX: 4, startY: 13, endX: 5, endY: 13, activation: () => updateDirection("Your island is far away from any neighboring shores...")},
+          {startX: 17, startY: 12, endX: 19, endY: 14, activation: () => updateDirection("But you have access to a network of fellow wayfinders who work to deliver messages all over.")},
+          {startX: 23, startY: 5, endX: 25, endY: 7,
+            activation: () => {
+              updateDirection("Let's go find them.")
+              const next = document.getElementById("next")
+              if (next) {
+                next.classList.remove("hidden")
+              }
+            }
+          },
+          {startX: 37, startY: 9, endX: 39, endY: 10, activation: () => window.location.assign("./websitevibe-scene2.html")}
         ]
       }
 
-      function displayText(elementId, text, reset = true) {
-        const musing = document.getElementById(elementId)
-        if (musing) {
-          // oh this is buggy haha, maybe remove
-          const previousText = musing.innerText
-          musing.innerText = text
-          if (reset) {
-            setTimeout(() => displayText(elementId, previousText, false), 3000)
-          }
+      function toggleGrid() {
+        const html = document.documentElement
+        if (html && html.classList.contains("grid")) {
+          html.classList.remove("grid")
+        } else if (html) {
+          html.classList.add("grid")
+        }
+      }
+
+      function updateDirection(html) {
+        const direction = document.getElementById("direction")
+        if (direction) {
+          direction.classList.remove("hidden")
+          direction.innerHTML = html
         }
       }
 
@@ -165,17 +134,33 @@
         const xPixels = gridToPixels(x)
         const yPixels = gridToPixels(y)
 
+        // Center the element in the grid cell
         let xOffset = 0
         let yOffset = 0
-        // Optionally, center the element in the grid cell
         if (center) {
           const { height, width } = element.getBoundingClientRect()
-          xOffset = (GRID_SIZE_PX - width) / 2
-          yOffset = (GRID_SIZE_PX - height) / 2
+          if (height > 0 && width > 0) {
+            xOffset = (GRID_SIZE_PX - width) / 2
+            yOffset = (GRID_SIZE_PX - height) / 2
+          }
         }
 
         // Position element precisely
         setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
+      }
+
+      function positionOnGridBySelector(selector, positions) {
+        const elements = document.querySelectorAll(selector)
+        elements.forEach((e, i) => {
+          const p = positions[i]
+          if (!p) {
+            console.warn(`no position specified for ${selector} #${i}`)
+            return
+          }
+
+          positionOnGrid(e, p.x, p.y, p.center)
+          setPositionAbsolute(e)
+        })
       }
 
       // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
@@ -225,7 +210,6 @@
           const alreadyActive = state.activeArea === area
           if (inside) {
             if (!alreadyActive) {
-              // Note: there's currently no way of "leaving" an active area
               state.activeArea = area
               area.activation()
             }
@@ -300,26 +284,29 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        // position the avatar
-        const you = document.getElementById("you")
-        if (you !== null) {
-          // set an arbitrary position for avatar
-          positionOnGrid(you, 3, 4)
-          setPositionAbsolute(you)
+         // position elements on grid based on their pre-defined locations
+        for (const selector of Object.keys(initialPositions)) {
+          const positions = initialPositions[selector]
+          positionOnGridBySelector(selector, positions)
         }
 
-        // position some trees
-        const treePositions = [{x: 6, y: 4}, {x: 10, y: 10}, {x: 7, y: 15}]
-        const trees = document.querySelectorAll(".tree")
-        trees.forEach((t, i) => {
-          const p = treePositions[i]
-          if (p) {
-            positionOnGrid(t, p.x, p.y)
-            setPositionAbsolute(t)
+        // get the tagged obstacles and record their grid positions
+        const obstacles = document.querySelectorAll('[data-obstacle]')
+        obstacles.forEach((o) => {
+          const { scrollX, scrollY } = window
+          const { top, left, width, height } = o.getBoundingClientRect()
+          const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
+          if (width > GRID_SIZE_PX) {
+            const widthExceedingCell = width - GRID_SIZE_PX
+            position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
           }
-        })
 
-        // TODO: get the obstacles and record their position, instead of hardcoding pls :)
+          if (height > GRID_SIZE_PX) {
+            const heightExceedingCell = height - GRID_SIZE_PX
+            position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
+          }
+          state.obstacles.push(position)
+        })
 
         // Move the avatar based on arrow presses
         document.addEventListener("keydown", onKeyDown)
@@ -328,11 +315,32 @@
   </head>
   <body>
     <nav>
-      <a href="/">back</a>
+      <a class="nav-button" href="/">back</a>
     </nav>
     <main>
-      <p id="musings">Would you cross an ocean?</p>
-      <figure id="you">S</figure>
+      <p id="direction" class="hidden"></p>
+      <figure id="you" class="cell center">you</figure>
+      <figure class="island two-cell-h center" data-obstacle>island</figure>
+      <figure class="island cell" data-obstacle></figure>
+      <figure class="island three-cell-h" data-obstacle></figure>
+      <figure class="island three-cell-v" data-obstacle></figure>
+      <figure class="island cell" data-obstacle></figure>
+      <figure class="island two-cell-v" data-obstacle></figure>
+      <figure class="island two-cell-v" data-obstacle></figure>
+      <figure class="island cell" data-obstacle></figure>
+      <figure class="island island-top-border" data-obstacle></figure>
+      <figure class="island island-bottom-border" data-obstacle></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable>tree</figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable>tree</figure>
+      <a id="next" class="hidden center cell" href="./oceanvibe-scene2.html">next</a>
     </main>
   </body>
+  <script src="./draggable.js"></script>
 </html>

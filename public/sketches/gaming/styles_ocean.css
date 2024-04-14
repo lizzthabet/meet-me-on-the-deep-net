@@ -1,0 +1,101 @@
+:root {
+  --medium-blue: #2a3e47;
+  --dark-blue: #13272d;
+
+  --white-yellow: #eadfce;
+  --light-yellow: #e0cfa9;
+  --golden-yellow: #d3be91;
+
+  --light-purple: #776163;
+  --dark-purple: #54474e;
+  --gray-purple: #7c777b;
+
+  --medium-green: #4c5345;
+  --dark-green: #2b3223;
+  --bright-green: #444d21;
+
+  --grid-size: 50px;
+}
+
+html {
+  background-color: var(--dark-blue);
+  font-family: 'Courier New', Courier, monospace;
+  /* font-family: 'Times New Roman', Times, serif; */
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  /* hardcoded page size */
+  height: 1000px;
+  width: 2000px;
+}
+
+.grid {
+  background: 
+    repeat scroll top left / var(--grid-size) var(--grid-size) linear-gradient(to right, var(--medium-blue) 1px, transparent 1px),
+    repeat scroll top left / var(--grid-size) var(--grid-size) linear-gradient(to bottom, var(--medium-blue) 1px, transparent 1px),
+    repeat scroll center / cover url("assets/ocean-noshore-closeup-reverse-400x64.gif");
+}
+
+/* unused but could be used with grid */
+.ocean {
+  background-image: url("assets/ocean-noshore-closeup-reverse-400x64.gif");
+  background-repeat: repeat;
+  background-size: cover;
+}
+
+nav {
+  padding: 10px;
+}
+
+a, a:visited {
+  font-size: 1.25rem;
+  color: var(--golden-yellow);
+}
+
+.cell {
+  box-sizing: border-box;
+  height: 49px;
+  width: 49px;
+}
+
+figure#you {
+  background-color: var(--dark-blue);
+  color: var(--white-yellow);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  z-index: 99999;
+}
+
+p#direction {
+  background-color: var(--dark-blue);
+  color: var(--white-yellow);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  margin: 1px;
+  max-width: 700px;
+  padding: 10px;
+  position: fixed;
+  top: 50px;
+  left: max(51px, calc(50% - 350px));
+  z-index: 2;
+}
+
+.tree {
+  background-color: var(--bright-green);
+  color: var(--white-yellow);
+}
+
+#island {
+  /* border: 10px dashed blue; */
+  /* background-color: sienna; */
+  border: 50px solid var(--dark-blue);
+  color: var(--white-yellow);
+}
+
+.island {
+  background-color: var(--dark-blue);
+  color: var(--white-yellow);
+}
