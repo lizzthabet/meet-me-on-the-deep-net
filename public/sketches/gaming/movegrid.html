@@ -108,7 +108,7 @@
         box-sizing: border-box;
       }
 
-      p#musings {
+      p#direction {
         background-color: var(--light-purple);
         color: var(--white-yellow);
         display: inline-block;
@@ -164,16 +164,16 @@
         activeArea: null,
         // activeArea: { activation: func, deactivation: func, next: func }
         activeAreas: [
-          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayText("musings", "Ouch. That hurt.")},
-          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayText("musings", "You can visit me. That's okay.")},
-          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayText("musings", "Hm... I don't know.")},
+          {startX: 5, startY: 3, endX: 7, endY: 5, activation: () => displayTextDirection("Ouch. That hurt.")},
+          {startX: 9, startY: 9, endX: 11, endY: 11, activation: () => displayTextDirection("You can visit me. That's okay.")},
+          {startX: 6, startY: 14, endX: 8, endY: 16, activation: () => displayTextDirection("Hm... I don't know.")},
         ]
       }
 
-      function displayText(elementId, text) {
-        const musing = document.getElementById(elementId)
-        if (musing) {
-          musing.innerText = text
+      function displayTextDirection(text) {
+        const direction = document.getElementById("direction")
+        if (direction) {
+          direction.innerText = text
         }
       }
 
@@ -213,12 +213,28 @@
         // Optionally, center the element in the grid cell
         if (center) {
           const { height, width } = element.getBoundingClientRect()
-          xOffset = (GRID_SIZE_PX - width) / 2
-          yOffset = (GRID_SIZE_PX - height) / 2
+          if (height > 0 && width > 0) {
+            xOffset = (GRID_SIZE_PX - width) / 2
+            yOffset = (GRID_SIZE_PX - height) / 2
+          }
         }
 
         // Position element precisely
         setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
+      }
+
+      function positionOnGridBySelector(selector, positions) {
+        const elements = document.querySelectorAll(selector)
+        elements.forEach((e, i) => {
+          const p = positions[i]
+          if (!p) {
+            console.warn(`no position specified for ${selector} #${i}`)
+            return
+          }
+
+          positionOnGrid(e, p.x, p.y, p.center)
+          setPositionAbsolute(e)
+        })
       }
 
       // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
@@ -353,17 +369,7 @@
         // position elements on grid based on their pre-defined locations
         for (const selector of Object.keys(initialPositions)) {
           const positions = initialPositions[selector]
-          const elements = document.querySelectorAll(selector)
-          elements.forEach((e, i) => {
-            const p = positions[i]
-            if (!p) {
-              console.warn(`no position specified for ${selector} #${i}`)
-              return
-            }
-
-            positionOnGrid(e, p.x, p.y)
-            setPositionAbsolute(e)
-          })
+          positionOnGridBySelector(selector, positions)
         }
 
         // get the tagged obstacles and record their grid positions
@@ -393,7 +399,7 @@
       <a href="/">back</a>
     </nav>
     <main>
-      <p id="musings"><span class="wavy">Welcome</span> to this space. Move around using the arrows on your keyboard.</p>
+      <p id="direction"><span class="wavy">Welcome</span> to this space. Move around using the arrows on your keyboard.</p>
       <figure id="you" class="with-content">🕹️</figure>
       <section id="grass"></section>
       <figure class="tree with-content" data-obstacle>🌳</figure>
