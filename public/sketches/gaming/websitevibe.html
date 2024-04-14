@@ -4,151 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>less game, more website - scene 1</title>
-
+    <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
     <style>
-      html {
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 18px;
-      }
-
-      body {
-        border: 5px inset lightgray;
-        box-sizing: border-box;
-        margin: 0;
-        /* hardcoded page size */
-        height: 1000px;
-        width: 2000px;
-      }
-
-      .grid {
-        background-size: 50px 50px;
-        background-image:
-          linear-gradient(to right, lightgray 1px, transparent 1px),
-          linear-gradient(to bottom, lightgray 1px, transparent 1px);
-      }
-
-      main {
-        margin: 2rem 0;
-      }
-
-      button, a {
-        margin: 2px;
-      }
-
-      a, a:visited {
-        font-size: 1.25rem;
-        color: blue;
-      }
-
-      .toggle {
-        margin-left: 2rem;
-        font-size: 1rem;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-      }
-
-      /* important for sizing and positioning */
-      figure, section {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      #you {
-        z-index: 99;
-        font-weight: bold;
-        text-decoration: underline;
-        color: black;
-        background-color: white;
-        border-radius: 25px;
-        height: 45px;
-        width: 45px;
-      }
-
-      #next {
-        background-color: white;
-        border-radius: 25px;
-        margin: 0;
-        padding: 0;
-      }
-
-      #direction {
-        background-color: white;
-        color: black;
-        display: inline-block;
-        font-size: 1.125rem;
-        font-style: italic;
-        margin: 1px;
-        max-width: 700px;
-        padding: 10px;
-        position: fixed;
-        top: 51px;
-        left: max(51px, calc(50% - 350px));
-        z-index: 2;
-      }
-
-      .cell {
-        height: 50px;
-        width: 50px;
-      }
-
-      .tree {
-        background-color: green;
-        color: white;
-      }
-
-      .crab {
-        background-color: red;
-        color: white;
-      }
-
-      .shell {
-        background-color: coral;
-        color: black;
-      }
-
       #ocean {
-        /* border: 20px dotted white; */
         border-radius: 25px 0 0 25px;
-        background-color: blue;
-        color: white;
         height: calc(50px * 12);
         width: calc(2000px - 50px * 4);
       }
 
       #island {
-        /* border: 10px double sienna; */
-        /* color: sienna; */
-        /* a bit of sand? lol */
-        /* border: 50px solid wheat; */
-        border: 10px dashed blue;
         border-right: none;
-        background-color: sienna;
-        color: white;
         height: calc(50px * 10);
         width: calc(2000px - 50px * 5);
-      }
-
-      .left { 
-        padding: 10px;
-      }
-
-      .center {
-        /* To center any text */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-      }
-
-      .hidden {
-        display: none;
       }
     </style>
     <script>
       const GRID_SIZE_PX = 50
-      const CAN_SCROLL = false
       const UP = 'up'
       const DOWN = 'down'
       const LEFT = 'left'
@@ -179,14 +51,14 @@
         activeAreas: [
           // this isn't a very good activation lol
           // top border of the island will be activated
-          {startX: 5, startY: 5, endX: 40, endY: 5, activation: () => displayTextDirection("Your island is far away from any neighboring shores...")},
+          {startX: 5, startY: 5, endX: 40, endY: 5, activation: () => updateDirection("Your island is far away from any neighboring shores...")},
           // bottom border of the island will be activated
-          {startX: 5, startY: 5, endX: 5, endY: 14, activation: () => displayTextDirection("Your island is far away from any neighboring shores...")},
-          {startX: 11, startY: 7, endX: 13, endY: 9, activation: () => displayTextDirection("But you have access to a network of fellow wayfinders who work to deliver messages all over.")},
+          {startX: 5, startY: 5, endX: 5, endY: 14, activation: () => updateDirection("Your island is far away from any neighboring shores...")},
+          {startX: 11, startY: 7, endX: 13, endY: 9, activation: () => updateDirection("But you have access to a network of fellow wayfinders who work to deliver messages all over.")},
           // this is definitely broken / wonky in some way? lol
           {startX: 18, startY: 11, endX: 20, endY: 13,
             activation: () => {
-              displayTextDirection("Let's go find them.")
+              updateDirection("Let's go find them.")
               const next = document.getElementById("next")
               if (next) {
                 next.classList.remove("hidden")
@@ -206,10 +78,11 @@
         }
       }
 
-      function displayTextDirection(text) {
+      function updateDirection(html) {
         const direction = document.getElementById("direction")
         if (direction) {
-          direction.innerText = text
+          direction.classList.remove("hidden")
+          direction.innerHTML = html
         }
       }
 
@@ -257,6 +130,20 @@
 
         // Position element precisely
         setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
+      }
+
+      function positionOnGridBySelector(selector, positions) {
+        const elements = document.querySelectorAll(selector)
+        elements.forEach((e, i) => {
+          const p = positions[i]
+          if (!p) {
+            console.warn(`no position specified for ${selector} #${i}`)
+            return
+          }
+
+          positionOnGrid(e, p.x, p.y, p.center)
+          setPositionAbsolute(e)
+        })
       }
 
       // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
@@ -381,19 +268,9 @@
 
       document.addEventListener("DOMContentLoaded", () => {
          // position elements on grid based on their pre-defined locations
-         for (const selector of Object.keys(initialPositions)) {
+        for (const selector of Object.keys(initialPositions)) {
           const positions = initialPositions[selector]
-          const elements = document.querySelectorAll(selector)
-          elements.forEach((e, i) => {
-            const p = positions[i]
-            if (!p) {
-              console.warn(`no position specified for ${selector} #${i}`)
-              return
-            }
-
-            positionOnGrid(e, p.x, p.y, p.center)
-            setPositionAbsolute(e)
-          })
+          positionOnGridBySelector(selector, positions)
         }
 
         // get the tagged obstacles and record their grid positions
@@ -402,13 +279,14 @@
           const { scrollX, scrollY } = window
           const { top, left, width, height } = o.getBoundingClientRect()
           const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
-          // It's possible this might be a bit buggy hehe
           if (width > GRID_SIZE_PX) {
-            position.endX = pixelsToGrid(scrollX + left + width)
+            const widthExceedingCell = width - GRID_SIZE_PX
+            position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
           }
 
           if (height > GRID_SIZE_PX) {
-            position.endX = pixelsToGrid(scrollY + top + height)
+            const heightExceedingCell = height - GRID_SIZE_PX
+            position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
           }
           state.obstacles.push(position)
         })
@@ -424,7 +302,7 @@
       <button class="toggle" onclick="toggleGrid()">toggle grid</button>
     </nav>
     <main>
-      <p id="direction"></p>
+      <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
       <section id="ocean" class="left"></section>
       <section id="island" class="left">island</section>

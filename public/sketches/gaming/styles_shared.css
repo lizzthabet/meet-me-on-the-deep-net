@@ -1,0 +1,52 @@
+/* important for sizing and positioning */
+figure, section {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Basic helper styles */
+.cell {
+  height: 50px;
+  width: 50px;
+}
+
+.two-cell-h {
+  height: 50px;
+  width: 100px;
+}
+
+.two-cell-v {
+  height: 100px;
+  width: 50px;
+}
+
+.three-cell-h {
+  height: 50px;
+  width: 150px;
+}
+
+.three-cell-v {
+  height: 150px;
+  width: 50px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* For text */
+.left { 
+  padding: 10px;
+  user-select: none;
+}
+
+/* For text */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  user-select: none;
+}

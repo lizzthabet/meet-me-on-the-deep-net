@@ -1,0 +1,123 @@
+html {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 18px;
+}
+
+body {
+  border: 5px inset lightgray;
+  box-sizing: border-box;
+  margin: 0;
+  /* hardcoded page size */
+  height: 1000px;
+  width: 2000px;
+}
+
+.grid {
+  background-size: 50px 50px;
+  background-image:
+    linear-gradient(to right, lightgray 1px, transparent 1px),
+    linear-gradient(to bottom, lightgray 1px, transparent 1px);
+}
+
+main {
+  margin: 2rem 0;
+}
+
+button, a {
+  margin: 2px;
+}
+
+a, a:visited {
+  font-size: 1.25rem;
+  color: blue;
+}
+
+.toggle {
+  margin-left: 2rem;
+  font-size: 1rem;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+#you {
+  z-index: 99;
+  font-weight: bold;
+  text-decoration: underline;
+  color: black;
+  background-color: white;
+  border-radius: 25px;
+  height: 45px;
+  width: 45px;
+}
+
+#next {
+  background-color: white;
+  border-radius: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+#direction {
+  background-color: white;
+  color: black;
+  display: inline-block;
+  font-size: 1.125rem;
+  font-style: italic;
+  margin: 1px;
+  max-width: 700px;
+  padding: 10px;
+  position: fixed;
+  top: 50px;
+  left: max(51px, calc(50% - 350px));
+  z-index: 2;
+}
+
+.direction-button {
+  margin-top: 15px;
+  font-size: 1rem;
+  display: block;
+}
+
+.direction-choice {
+  display: block;
+  margin-top: 15px;
+  font-style: normal;
+}
+
+.direction-choice > input[type="radio"] {
+  height: 15px;
+  width: 15px;
+  margin: 0 10px 0 0;
+}
+
+.tree {
+  background-color: green;
+  color: white;
+}
+
+.intro {
+  background-color: purple;
+  color: white;
+}
+
+.intro > input {
+  width: 15px;
+  height: 15px;
+}
+
+.pen {
+  background-color: black;
+  color: white;
+}
+
+#ocean {
+  background-color: blue;
+  color: white;
+}
+
+#island {
+  border: 10px dashed blue;
+  background-color: sienna;
+  color: white;
+}
