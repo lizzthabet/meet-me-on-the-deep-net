@@ -1,4 +1,4 @@
-title: theFirstChoice
+title: start
 position: -283,-297
 ---
 Let's meet on the deep web and whisper secrets to each other.
@@ -98,6 +98,8 @@ You choose a gift to send along with your meeting place invitation and hand it o
 
 Let's head to the rendezvous point.
 
+<<jump seekingConfirmation>>
+
 ===
 title: seekingConfirmation
 ---
@@ -106,7 +108,7 @@ Oh! Look at that. The stranger has sent ahead their own messenger with the secre
 
 The secrets match up, so it's safe to let them join you now.
 
-Connection has been established.
+And just like that, connection has been established.
 
 The stranger is here to meet you.
 
