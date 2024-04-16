@@ -6,6 +6,7 @@
     <title>kinda game, mostly ocean - scene 2</title>
     <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
     <link rel="stylesheet" type="text/css" href="./styles_ocean.css" />
+    <script src="./gameplay.js" defer></script>
     <style>
       .island-bottom-border {
         left: 0;
@@ -24,13 +25,6 @@
       }
     </style>
     <script>
-      const GRID_SIZE_PX = 50
-      const CAN_SCROLL = false
-      const UP = 'up'
-      const DOWN = 'down'
-      const LEFT = 'left'
-      const RIGHT = 'right'
-
       const initialPositions = {
         "#you": [{ x: 1, y: 9 }],
         ".tree": [
@@ -117,222 +111,9 @@
         showOrHideSelector("#signature", true)
       }
 
-      function updateDirection(html) {
-        const direction = document.getElementById("direction")
-        if (direction) {
-          direction.classList.remove("hidden")
-          direction.innerHTML = html
-        }
-      }
-
-      function resetDirection() {
-        const direction = document.getElementById("direction")
-        if (direction) {
-          direction.classList.add("hidden")
-          direction.innerHTML = ""
-        }
-      }
-
-      function showOrHideSelector(selector, visibility = true) {
-        const element = document.querySelector(selector)
-        if (element && visibility) {
-          element.classList.remove("hidden")
-        } else if (element && !visibility) {
-          element.classList.add("hidden")
-        }
-      }
-
       function displayNext() {
         showOrHideSelector("#next", true)
         state.activeAreas.push({startX: 37, startY: 9, endX: 39, endY: 11, activation: () => window.location.assign("./oceanvibe-scene3.html")})
-      }
-
-      function toggleGrid() {
-        const html = document.documentElement
-        if (html && html.classList.contains("grid")) {
-          html.classList.remove("grid")
-        } else if (html) {
-          html.classList.add("grid")
-        }
-      }
-
-      function positionInPlace(element) {
-        const { top, left } = element.getBoundingClientRect()
-        const { scrollX, scrollY } = window
-        setTopLeft(element, top + scrollY, left + scrollX)
-      }
-
-      function setPositionAbsolute(element) {
-        element.style.setProperty("position", "absolute")
-      }
-
-      function setTopLeft(element, top, left) {
-        element.style.setProperty("top", top + "px")
-        element.style.setProperty("left", left + "px")
-      }
-
-      // Convert grid coordinates like (1, 2) to pixel values (50px, 100px)
-      function gridToPixels(n) {
-        return n * GRID_SIZE_PX
-      }
-
-      // Convert pixels to nearest grid coordinates like (55px, 5px) to (1, 0)
-      function pixelsToGrid(n) {
-        const nearestGridPixelValue = n - (n % GRID_SIZE_PX)
-        return nearestGridPixelValue / GRID_SIZE_PX
-      }
-
-      function positionOnGrid(element, x, y, center = true) {
-        // Scale the (x, y) of the grid to pixels on screen
-        const xPixels = gridToPixels(x)
-        const yPixels = gridToPixels(y)
-
-        // Center the element in the grid cell
-        let xOffset = 0
-        let yOffset = 0
-        if (center) {
-          const { height, width } = element.getBoundingClientRect()
-          if (height > 0 && width > 0) {
-            xOffset = (GRID_SIZE_PX - width) / 2
-            yOffset = (GRID_SIZE_PX - height) / 2
-          }
-        }
-        // Position element precisely
-        setTopLeft(element, yPixels + yOffset, xPixels + xOffset)
-      }
-
-      function positionOnGridBySelector(selector, positions) {
-        const elements = document.querySelectorAll(selector)
-        elements.forEach((e, i) => {
-          const p = positions[i]
-          if (!p) {
-            console.warn(`no position specified for ${selector} #${i}`)
-            return
-          }
-
-          positionOnGrid(e, p.x, p.y, p.center)
-          setPositionAbsolute(e)
-        })
-      }
-
-      // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
-      function checkInsideCoords(x, y, coords) {
-        const endX = coords.endX ?? coords.startX
-        const endY = coords.endY ?? coords.startY
-        if (x >= coords.startX && x <= endX && y >= coords.startY && y <= endY) {
-          return true
-        }
-        return false
-      }
-
-      // Check if an (x, y) is beyond an area of {startX, startY, endX, endY} coordinates
-      function checkExceedCoords(x, y, coords) {
-        const endX = coords.endX ?? Infinity
-        const endY = coords.endY ?? Infinity
-        if (x < coords.startX || x > endX || y < coords.startY || y > endY) {
-          return true
-        }
-        return false
-      }
-
-      // Returns whether or not the coordinates overlap with an obstacle
-      // or a boundary
-      function canMoveTo(x, y) {
-        // Check boundaries first
-        for (let i = 0; i < state.boundaries.length; i++) {
-          const exceeds = checkExceedCoords(x, y, state.boundaries[i])
-          if (exceeds) {
-            return false
-          }
-        }
-        // Check obstacles next
-        for (let i = 0; i < state.obstacles.length; i++) {
-          const inside = checkInsideCoords(x, y, state.obstacles[i])
-          if (inside) {
-            return false
-          }
-        }
-        return true
-      }
-
-      function activateAreaIfOverlap(x, y) {
-        for (let i = 0; i < state.activeAreas.length; i++) {
-          const area = state.activeAreas[i]
-          const inside = checkInsideCoords(x, y, area)
-          const alreadyActive = state.activeArea === area
-          if (inside) {
-            if (!alreadyActive) {
-              state.activeArea = area
-              area.activation()
-            }
-            // We don't need to check other active points
-            // since there should only be one at once
-            return
-          }
-        }
-
-        // Since there aren't any active areas
-        // reset this state
-        state.activeArea = null
-      }
-
-      function positionAvatarOnGrid(element, x, y) {
-        const canMove = canMoveTo(x, y)
-        if (canMove) {
-          positionOnGrid(element, x, y)
-          activateAreaIfOverlap(x, y)
-          // TODO: scroll into view if off viewport
-        }
-      }
-
-      function moveDirectionOnGrid(element, direction) {
-        const { top, left } = element.getBoundingClientRect()
-        const { scrollX, scrollY } = window
-        // Convert element's position (with scroll) to grid coordinates
-        const gridX = pixelsToGrid(left + scrollX)
-        const gridY = pixelsToGrid(top + scrollY)
-        // console.log(`Nearest grid for (${left}px, ${top}px) is (${gridX}, ${gridY})`)
-        // Change grid coordinates based on direction
-        let nextGridX = gridX
-        let nextGridY = gridY
-        switch(direction) {
-          case UP:
-            nextGridY--
-            break
-          case DOWN:
-            nextGridY++
-            break
-          case LEFT:
-            nextGridX--
-            break
-          case RIGHT:
-            nextGridX++
-            break
-        }
-        // Position element with grid cooridnates
-        positionAvatarOnGrid(element, nextGridX, nextGridY)
-      }
-
-      function onKeyDown(event) {
-        const you = document.getElementById("you")
-        switch(event.key) {
-          case 'ArrowUp':
-            event.preventDefault()
-            moveDirectionOnGrid(you, UP)
-            break
-          case 'ArrowDown':
-            event.preventDefault()
-            moveDirectionOnGrid(you, DOWN)
-            break
-          case 'ArrowLeft':
-            event.preventDefault()
-            moveDirectionOnGrid(you, LEFT)
-            break
-          case 'ArrowRight':
-            event.preventDefault()
-            moveDirectionOnGrid(you, RIGHT)
-            break
-        }
       }
 
       document.addEventListener("DOMContentLoaded", () => {
