@@ -35,6 +35,7 @@
       const DOWN = 'down'
       const LEFT = 'left'
       const RIGHT = 'right'
+      const WINDOW_VIEW_GRID_BUFFER = 3;
 
       const initialPositions = {
         "#you": [{ x: 3, y: 4 }],
@@ -224,12 +225,37 @@
         state.activeArea = null
       }
 
+      // Scroll the element into view if it's moved off the screen
+      function scrollIntoView(element, x, y) {
+        const { scrollX, scrollY, innerHeight, innerWidth } = window
+        const minXGridInView = pixelsToGrid(scrollX) + WINDOW_VIEW_GRID_BUFFER
+        const minYGridInView = pixelsToGrid(scrollY) + WINDOW_VIEW_GRID_BUFFER
+        const maxXGridInView = pixelsToGrid(innerWidth + scrollX) - WINDOW_VIEW_GRID_BUFFER
+        const maxYGridInView = pixelsToGrid(innerHeight + scrollY) - WINDOW_VIEW_GRID_BUFFER
+        let scroll = false
+        const scrollOptions = { behavior: "instant", block: "nearest" }
+        if (x <= minXGridInView || x >= maxXGridInView) {
+          scroll = true
+          scrollOptions.left = x <= minXGridInView ? -GRID_SIZE_PX : GRID_SIZE_PX
+        }
+        if ( y <= minYGridInView || y >= maxYGridInView) {
+          scroll = true
+          scrollOptions.top = y <= minXGridInView ? -GRID_SIZE_PX : GRID_SIZE_PX
+        }
+        if (scroll) {
+          // console.log(`x: ${minXGridInView}-${maxXGridInView}, y: ${minYGridInView}-${maxYGridInView}`)
+          // console.log("scroll options:", scrollOptions)
+          // TODO: These calculations are a little buggy if the avatar is already in view
+          window.scrollBy(scrollOptions)
+        }
+      }
+
       function positionAvatarOnGrid(element, x, y) {
         const canMove = canMoveTo(x, y)
         if (canMove) {
           positionOnGrid(element, x, y)
           activateAreaIfOverlap(x, y)
-          // TODO: scroll into view if off viewport
+          scrollIntoView(element, x, y)
           // TODO: potentially resize html to cover explored area
         }
       }
