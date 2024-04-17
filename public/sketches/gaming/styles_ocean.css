@@ -55,35 +55,6 @@ a, a:visited {
   color: var(--golden-yellow);
 }
 
-.controls {
-  bottom: 0;
-  margin: 10px;
-  position: fixed;
-  right: 0;
-  text-align: right;
-}
-
-.movement-controls > button {
-  font-size: 1.5rem;
-  height: 30px;
-  width: 30px;
-  padding: 2px;
-}
-
-.toggle {
-  font-size: 1rem;
-}
-
-.rotate-90deg {
-  transform: rotate(90deg);
-}
-.rotate-180deg {
-  transform: rotate(180deg);
-}
-.rotate-270deg {
-  transform: rotate(270deg);
-}
-
 .cell {
   box-sizing: border-box;
   height: 49px;

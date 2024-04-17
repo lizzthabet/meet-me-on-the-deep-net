@@ -32,35 +32,6 @@ a, a:visited {
   color: blue;
 }
 
-.controls {
-  bottom: 0;
-  margin: 10px;
-  position: fixed;
-  right: 0;
-  text-align: right;
-}
-
-.movement-controls > button {
-  font-size: 1.5rem;
-  height: 30px;
-  width: 30px;
-  padding: 2px;
-}
-
-.toggle {
-  font-size: 1rem;
-}
-
-.rotate-90deg {
-  transform: rotate(90deg);
-}
-.rotate-180deg {
-  transform: rotate(180deg);
-}
-.rotate-270deg {
-  transform: rotate(270deg);
-}
-
 #you {
   z-index: 99;
   font-weight: bold;

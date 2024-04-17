@@ -91,7 +91,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-         // position elements on grid based on their pre-defined locations
+        // position elements on grid based on their pre-defined locations
         for (const selector of Object.keys(initialPositions)) {
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
@@ -149,11 +149,11 @@
       <a id="next" class="hidden center cell" href="./oceanvibe-scene2.html">next</a>
     </main>
     <section role="toolbar" class="controls">
-      <div class="movement-controls">
-        <button onclick="onArrowButtonClick('up')">^</button>
-        <button class="rotate-270deg" onclick="onArrowButtonClick('left')">^</button>
-        <button class="rotate-90deg" onclick="onArrowButtonClick('right')">^</button>
-        <button class="rotate-180deg" onclick="onArrowButtonClick('down')">^</button>
+      <div>
+        <button class="move-direction" onclick="onArrowButtonClick('up')">^</button>
+        <button class="move-direction rotate-270" onclick="onArrowButtonClick('left')">^</button>
+        <button class="move-direction rotate-90" onclick="onArrowButtonClick('right')">^</button>
+        <button class="move-direction rotate-180" onclick="onArrowButtonClick('down')">^</button>
       </div>
       <button class="toggle" onclick="toggleGrid()">toggle grid</button>
       <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
