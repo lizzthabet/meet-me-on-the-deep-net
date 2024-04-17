@@ -152,7 +152,6 @@
   <body>
     <nav>
       <a href="/">back</a>
-      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
     </nav>
     <main>
       <p id="direction" class="hidden"></p>
@@ -199,6 +198,16 @@
       </figure>
       <a id="next" class="hidden center cell" href="#doesn't-exist-yet">next</a>
     </main>
+    <section role="toolbar" class="controls">
+      <div class="movement-controls">
+        <button onclick="onArrowButtonClick('up')">^</button>
+        <button class="rotate-270deg" onclick="onArrowButtonClick('left')">^</button>
+        <button class="rotate-90deg" onclick="onArrowButtonClick('right')">^</button>
+        <button class="rotate-180deg" onclick="onArrowButtonClick('down')">^</button>
+      </div>
+      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
+      <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
+    </section>
   </body>
   <!-- Just for easy editing, can be removed later -->
   <script src="./draggable.js" defer></script>

@@ -10,11 +10,15 @@ const WINDOW_VIEW_GRID_BUFFER = 3;
 // Eek! But it simplifies the gameplay code into a central place.
 // It should be imported in the document head with `defer`.
 
-function updateDirection(html) {
+function updateDirection(html, { append } = { append: false }) {
   const direction = document.getElementById("direction")
   if (direction) {
+    if (append) {
+      direction.innerHTML = direction.innerHTML + " " + html
+    } else {
+      direction.innerHTML = html
+    }
     direction.classList.remove("hidden")
-    direction.innerHTML = html
   }
 }
 
@@ -33,6 +37,31 @@ function showOrHideSelector(selector, visibility = true) {
   } else if (element && !visibility) {
     element.classList.add("hidden")
   }
+}
+
+// TODO: I'm probably gonna need to refactor this to better
+// handle how text from multiple nodes may be triggered at
+// the same. It could move to a global direction queue, possibly?
+// Maybe with a global state = "animatingTextInProgress"?
+function displayOneByOne(htmlList, { append } = { append: false }) {
+  if (!Array.isArray(htmlList)) {
+    console.warn("Displaying elements one-by-one requires a list of elements")
+    return
+  }
+
+  if (htmlList.length === 0) {
+    return
+  }
+
+  // Treat the html string list like a queue that gets added
+  // one-by-one to the direction
+  const htmlString = htmlList.shift()
+  updateDirection(htmlString, { append })
+  setTimeout(() => displayOneByOne(htmlList, { append: true }), 250)
+}
+
+function stringList(string) {
+  return string.split(" ")
 }
 
 function positionInPlace(element) {
@@ -221,20 +250,51 @@ function moveDirectionOnGrid(element, direction) {
   positionAvatarOnGrid(element, nextGridX, nextGridY)
 }
 
-function onKeyDown(event) {
-  event.preventDefault()
+function onArrowButtonClick(direction) {
+  console.log("direction", direction)
   const you = document.getElementById("you")
+  switch(direction) {
+    case UP:
+      moveDirectionOnGrid(you, UP)
+      break
+    case DOWN:
+      moveDirectionOnGrid(you, DOWN)
+      break
+    case LEFT:
+      moveDirectionOnGrid(you, LEFT)
+      break
+    case RIGHT:
+      moveDirectionOnGrid(you, RIGHT)
+      break
+    default:
+      return
+  }
+}
+
+function onKeyDown(event) {
+  // TODO: It may be helpful to check if any content that
+  // has semantic control value is focused, instead of
+  // completely stopping native arrow key behavior that's
+  // very usefully for accessibility.
   switch(event.key) {
     case 'ArrowUp':
+    case 'w':
+      event.preventDefault()
       moveDirectionOnGrid(you, UP)
       break
     case 'ArrowDown':
+    case 's':
+      event.preventDefault()
       moveDirectionOnGrid(you, DOWN)
       break
     case 'ArrowLeft':
+    case 'a':
+      event.preventDefault()
       moveDirectionOnGrid(you, LEFT)
       break
     case 'ArrowRight':
+    case 'd':
+      event.preventDefault()
       moveDirectionOnGrid(you, RIGHT)
       break
     default:

@@ -46,13 +46,13 @@
         activeAreas: [
           // this isn't a very good activation lol
           // top border of the island will be activated
-          {startX: 5, startY: 5, endX: 40, endY: 5, activation: () => updateDirection("Your island is far away from any neighboring shores...")},
+          {startX: 5, startY: 5, endX: 40, endY: 5, activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores..."))},
           // bottom border of the island will be activated
-          {startX: 5, startY: 5, endX: 5, endY: 14, activation: () => updateDirection("Your island is far away from any neighboring shores...")},
-          {startX: 11, startY: 7, endX: 13, endY: 9, activation: () => updateDirection("But you have access to a network of fellow wayfinders who work to deliver messages all over.")},
+          {startX: 5, startY: 5, endX: 5, endY: 14, activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores..."))},
+          {startX: 11, startY: 7, endX: 13, endY: 9, activation: () => displayOneByOne(stringList("But you have access to a network of fellow wayfinders who work to deliver messages all over."))},
           {startX: 18, startY: 11, endX: 20, endY: 13,
             activation: () => {
-              updateDirection("Let's go find them.")
+              displayOneByOne(stringList("Let's go find them."))
               const next = document.getElementById("next")
               if (next) {
                 next.classList.remove("hidden")
@@ -105,8 +105,8 @@
   <body>
     <nav>
       <a href="/">back</a>
-      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
     </nav>
+    
     <main>
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
@@ -117,7 +117,18 @@
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
       <figure class="tree cell center" data-obstacle></figure>
+      <figure class="wave two-cell-h center">~~~~~~~~</figure>
       <a id="next" class="hidden center cell" href="./websitevibe-scene2.html">next</a>
+      <section role="toolbar" class="controls">
+        <div class="movement-controls">
+          <button onclick="onArrowButtonClick('up')">^</button>
+          <button class="rotate-270deg" onclick="onArrowButtonClick('left')">^</button>
+          <button class="rotate-90deg" onclick="onArrowButtonClick('right')">^</button>
+          <button class="rotate-180deg" onclick="onArrowButtonClick('down')">^</button>
+        </div>
+        <button class="toggle" onclick="toggleGrid()">toggle grid</button>
+        <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
+      </section>
       <!-- <figure class="crab cell center" data-obstacle>crab</figure> -->
       <!-- <figure class="shell cell center" data-obstacle>shell</figure> -->
     </main>
