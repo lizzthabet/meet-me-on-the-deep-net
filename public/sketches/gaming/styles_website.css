@@ -113,3 +113,54 @@ a, a:visited {
   background-color: sienna;
   color: white;
 }
+
+.wave {
+  overflow: hidden;
+  /* border: 1px dashed black; */
+}
+
+.wave.wave-inverse {
+  background-color: blue;
+  /* This is useful for not overlapping with border */
+  /* margin: 10px 0; */
+  /* height: 30px; */
+}
+
+.wave::before {
+  animation:
+    backNForth 2s linear infinite,
+    upNDown 1s linear infinite alternate;
+  content: "~~~~~~~~~~~~~~~~~~";
+  /* top: -35px;
+  text-decoration-style: wavy;
+  text-decoration-color: blue;
+  text-decoration-line: underline; */
+  font-size: 2.5rem;
+  color: blue;
+  width: 100%;
+  position: relative;
+}
+
+.wave.wave-inverse::before {
+  color: white;
+}
+
+@keyframes backNForth {
+  from {
+    left: 0px;
+  }
+  
+  to {
+    left: -50px;
+  }
+}
+
+@keyframes upNDown {
+  from {
+    top: -5px;
+  }
+  
+  to {
+    top: 5px;
+  }
+}

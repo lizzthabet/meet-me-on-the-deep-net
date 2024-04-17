@@ -30,8 +30,14 @@
           { x: 19, y: 12 },
           { x: 24, y: 6 },
         ],
-        ".crab": [{ x: 11, y: 15 }],
-        ".shell": [{ x: 15, y: 5 }],
+        ".wave": [
+          { x: 2, y: 13 },
+          { x: 10, y: 17, center: false },
+          { x: 13, y: 1, center: false },
+          { x: 16, y: 2, center: false },
+          { x: 25, y: 16, center: false },
+          { x: 33, y: 4, center: false },
+        ],
         "#island": [{ x: 5, y: 5, center: false }],
         "#ocean": [{ x: 4, y: 4, center: false }],
         "#next": [{ x: 38, y: 9 }],
@@ -117,7 +123,12 @@
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
       <figure class="tree cell center" data-obstacle></figure>
-      <figure class="wave two-cell-h center">~~~~~~~~</figure>
+      <figure class="wave cell center"></figure>
+      <figure class="wave two-cell-h center"></figure>
+      <figure class="wave three-cell-h center"></figure>
+      <figure class="wave cell center"></figure>
+      <figure class="wave two-cell-h center"></figure>
+      <figure class="wave wave-inverse two-cell-h center"></figure>
       <a id="next" class="hidden center cell" href="./websitevibe-scene2.html">next</a>
       <section role="toolbar" class="controls">
         <div>
@@ -132,5 +143,6 @@
       <!-- <figure class="crab cell center" data-obstacle>crab</figure> -->
       <!-- <figure class="shell cell center" data-obstacle>shell</figure> -->
     </main>
+    <script src="./draggable.js" defer></script>
   </body>
 </html>
