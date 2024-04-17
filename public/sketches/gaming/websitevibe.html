@@ -25,9 +25,9 @@
         "#you": [{ x: 1, y: 2 }],
         ".tree": [
           { x: 7, y: 10 },
-          { x: 12, y: 8 },
+          { x: 12, y: 8 }, // active
           { x: 18, y: 13 },
-          { x: 19, y: 12 },
+          { x: 19, y: 12 }, // active
           { x: 24, y: 6 },
         ],
         ".wave": [
@@ -43,30 +43,49 @@
         "#next": [{ x: 38, y: 9 }],
       }
 
+      const activeAreasToCreate = [
+        // top border of the island will be activated
+        {
+          point: initialPositions["#island"][0],
+          activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores...")),
+          options: { center: false, width: 36, height: 1 },
+        },
+        // bottom border of the island will be activated
+        {
+          point: initialPositions["#island"][0],
+          activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores...")),
+          options: { center: false, width: 1, height: 10 },
+        },
+        { 
+          point: initialPositions[".tree"][1],
+          activation: () => displayOneByOne(stringList("But you have access to a network of fellow wayfinders who work to deliver messages all over.")),
+        },
+        { 
+          point: initialPositions[".tree"][3],
+          activation: () => {
+            displayOneByOne(stringList("Let's go find them."))
+            const next = document.getElementById("next")
+            if (next) {
+              next.classList.remove("hidden")
+              // Add the active area attached to this item
+              state.activeAreas.push(
+                createActiveArea(
+                  initialPositions["#next"][0],
+                  () => window.location.assign("./websitevibe-scene2.html")
+                )
+              )
+            }
+          }
+        },
+      ]
+
       const state = {
         boundaries: [
           {startX: 0, startY: 0, endX: 2000/50 - 1, endY: 1000/50 - 1},
         ],
         obstacles: [],
         activeArea: null,
-        activeAreas: [
-          // this isn't a very good activation lol
-          // top border of the island will be activated
-          {startX: 5, startY: 5, endX: 40, endY: 5, activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores..."))},
-          // bottom border of the island will be activated
-          {startX: 5, startY: 5, endX: 5, endY: 14, activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores..."))},
-          {startX: 11, startY: 7, endX: 13, endY: 9, activation: () => displayOneByOne(stringList("But you have access to a network of fellow wayfinders who work to deliver messages all over."))},
-          {startX: 18, startY: 11, endX: 20, endY: 13,
-            activation: () => {
-              displayOneByOne(stringList("Let's go find them."))
-              const next = document.getElementById("next")
-              if (next) {
-                next.classList.remove("hidden")
-              }
-            }
-          },
-          {startX: 37, startY: 9, endX: 39, endY: 10, activation: () => window.location.assign("./websitevibe-scene2.html")}
-        ]
+        activeAreas: [],
       }
 
       function toggleGrid() {
@@ -102,6 +121,16 @@
           }
           state.obstacles.push(position)
         })
+
+        // Create any pre-defined active areas and add them
+        // to the global state
+        if (activeAreasToCreate && Array.isArray(activeAreasToCreate)) {
+          activeAreasToCreate.forEach(area => {
+            state.activeAreas.push(
+              createActiveArea(area.point, area.activation, area.options)
+            )
+          })
+        }
 
         // Move the avatar based on arrow presses
         document.addEventListener("keydown", onKeyDown)

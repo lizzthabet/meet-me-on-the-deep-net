@@ -124,6 +124,42 @@ function positionOnGridBySelector(selector, positions) {
   })
 }
 
+// Helper for defining an active area; returns:
+// {startX, startY, endX, endY, activation}.
+// Note: this only handles centering a 1x1 grid cell
+function createActiveArea(
+  point, // {x, y}
+  activeFunc, // Function to trigger on activation
+  // Defaults for creating an area around one grid cell
+  options = { height: 3, width: 3, center: true }
+) {
+  if (!point || ! activeFunc) {
+    console.warn("Cannot create active area with missing information")
+  }
+
+  const area = {
+    activation: activeFunc
+  }
+
+  if (options.center) {
+    const areaX = (options.width - 1) / 2
+    area.startX = point.x - areaX
+    area.endX = point.x + areaX
+    const areaY = (options.height - 1) / 2
+    area.startY = point.y - areaY
+    area.endY = point.y + areaY
+  } else {
+    area.startX = point.x
+    area.endX = point.x + options.width - 1
+    area.startY = point.y
+    area.endY = point.y + options.height - 1
+  }
+  // take a point of x,y, func, and options (size: height, width, center)
+  // it will calculate the 
+  // returns { startX, startY, endX, endY, activation }
+  return area
+}
+
 // Check if an (x, y) are within an area of {startX, startY, endX, endY} coordinates
 function checkInsideCoords(x, y, coords) {
   const endX = coords.endX ?? coords.startX
