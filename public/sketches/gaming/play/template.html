@@ -23,7 +23,7 @@
 
       // Elements to position with (x, y) grid coords
       const initialPositions = {
-        "#you": [{ x: 1, y: 2 }],
+        "#you": [{ x: 2, y: 2 }],
         ".tree": [
           { x: 7, y: 10 },
         ],
@@ -76,12 +76,12 @@
         const sceneBoundary = {
           startX: 0,
           startY: 0,
-          endX: pixelsToGrid(SCENE_WIDTH) - 1,
-          endY: pixelsToGrid(SCENE_HEIGHT) - 1,
+          endX: pixelsToGrid(SCENE_WIDTH),
+          endY: pixelsToGrid(SCENE_HEIGHT),
         }
         state.boundaries.push(sceneBoundary)
 
-        // get the tagged obstacles and record their grid positions
+        // Get the tagged obstacles and record their grid positions
         const obstacles = document.querySelectorAll('[data-obstacle]')
         obstacles.forEach((o) => {
           const { scrollX, scrollY } = window

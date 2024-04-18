@@ -31,6 +31,10 @@ figure, section {
   width: 50px;
 }
 
+.circle {
+  border-radius: 25px;
+}
+
 .hidden {
   display: none !important;
 }

@@ -3,16 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>less game, more website - scene 1</title>
-    <link rel="stylesheet" type="text/css" href="./play/styles_shared.css" />
-    <link rel="stylesheet" type="text/css" href="./play/styles_website.css" />
-    <script src="./play/gameplay.js" defer></script>
+    <title>you are offering</title>
+    <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
+    <script src="./gameplay.js" defer></script>
     <style>
       body {
-        /* unsure about the border area */
-        /* margin: 50px; */
+        border: unset;
         /* hardcoded page size */
-        height: 1000px;
+        height: 800px;
         width: 2000px;
       }
 
@@ -29,8 +28,13 @@
       }
     </style>
     <script>
+      // Hardcoded scene size for JS
+      const SCENE_WIDTH = 2000
+      const SCENE_HEIGHT = 800
+
+      // Elements to position with (x, y) grid coords
       const initialPositions = {
-        "#you": [{ x: 1, y: 2 }],
+        "#you": [{ x: 2, y: 2 }],
         ".tree": [
           { x: 7, y: 10 },
           { x: 12, y: 8 }, // active
@@ -51,6 +55,10 @@
         "#next": [{ x: 38, y: 9 }],
       }
 
+      // String array of storyline
+      const directions = []
+
+      // Params are point: {x, y}, activation: () => {}, options?: { height, width, center }
       const activeAreasToCreate = [
         // top border of the island will be activated
         {
@@ -71,48 +79,40 @@
         { 
           point: initialPositions[".tree"][3],
           activation: () => {
-            displayOneByOne(stringList("Let's go find them."))
-            const next = document.getElementById("next")
-            if (next) {
-              next.classList.remove("hidden")
-              // Add the active area attached to this item
-              state.activeAreas.push(
-                createActiveArea(
-                  initialPositions["#next"][0],
-                  () => window.location.assign("./websitevibe-scene2.html")
-                )
-              )
-            }
+            const displayAfterText = () => displayNextNode(initialPositions["#next"][0], "#doesn't-exist-yet")
+            displayOneByOne(
+              stringList("Let's go find them."),
+              { after: displayAfterText }
+            )
           }
         },
       ]
 
+      // Game state
       const state = {
-        boundaries: [
-          {startX: 1, startY: 1, endX: 2000/50 - 2, endY: 1000/50 - 2},
-        ],
+        boundaries: [],
         obstacles: [],
         activeArea: null,
         activeAreas: [],
       }
 
-      function toggleGrid() {
-        const html = document.documentElement
-        if (html && html.classList.contains("grid")) {
-          html.classList.remove("grid")
-        } else if (html) {
-          html.classList.add("grid")
-        }
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
-         // position elements on grid based on their pre-defined locations
+        // Position elements on grid based on their pre-defined locations
         for (const selector of Object.keys(initialPositions)) {
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
 
-        // get the tagged obstacles and record their grid positions
+        // Add boundary of the page to boundary list
+        const sceneBoundary = {
+          startX: 0,
+          startY: 0,
+          endX: pixelsToGrid(SCENE_WIDTH),
+          endY: pixelsToGrid(SCENE_HEIGHT),
+        }
+        state.boundaries.push(sceneBoundary)
+
+        // Get the tagged obstacles and record their grid positions
         const obstacles = document.querySelectorAll('[data-obstacle]')
         obstacles.forEach((o) => {
           const { scrollX, scrollY } = window
@@ -146,10 +146,6 @@
     </script>
   </head>
   <body>
-    <nav>
-      <a href="/">back</a>
-    </nav>
-    
     <main>
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
@@ -166,20 +162,21 @@
       <figure class="wave cell center"></figure>
       <figure class="wave two-cell-h center"></figure>
       <figure class="wave wave-inverse two-cell-h center"></figure>
-      <a id="next" class="next-backlit hidden center cell" href="./websitevibe-scene2.html">next</a>
-      <section role="toolbar" class="controls">
-        <div>
-          <button class="move-direction" onclick="onArrowButtonClick('up')">^</button>
-          <button class="move-direction rotate-270" onclick="onArrowButtonClick('left')">^</button>
-          <button class="move-direction rotate-90" onclick="onArrowButtonClick('right')">^</button>
-          <button class="move-direction rotate-180" onclick="onArrowButtonClick('down')">^</button>
-        </div>
-        <button class="toggle" onclick="toggleGrid()">toggle grid</button>
-        <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
-      </section>
-      <!-- <figure class="crab cell center" data-obstacle>crab</figure> -->
-      <!-- <figure class="shell cell center" data-obstacle>shell</figure> -->
+      <a id="next" class="next-backlit hidden center cell cirle" href="#doesn't-exist-yet">next</a>
     </main>
-    <script src="./draggable.js" defer></script>
+    <!-- Controls for game -->
+    <section role="toolbar" class="controls">
+      <div>
+        <button class="move-direction" onclick="onArrowButtonClick('up')">^</button>
+        <button class="move-direction rotate-270" onclick="onArrowButtonClick('left')">^</button>
+        <button class="move-direction rotate-90" onclick="onArrowButtonClick('right')">^</button>
+        <button class="move-direction rotate-180" onclick="onArrowButtonClick('down')">^</button>
+      </div>
+      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
+      <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
+    </section>
+    <div class="veil disappear" aria-hidden></div>
+    <!-- TODO: Remove after dev is complete -->
+    <script src="../draggable.js" defer></script>
   </body>
 </html>

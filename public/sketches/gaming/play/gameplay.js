@@ -52,13 +52,19 @@ function showOrHideSelector(selector, visibility = true) {
 // handle how text from multiple nodes may be triggered at
 // the same. It could move to a global direction queue, possibly?
 // Maybe with a global state = "animatingTextInProgress"?
-function displayOneByOne(htmlList, { append } = { append: false }) {
+function displayOneByOne(
+  htmlList,
+  { append, after } = { append: false, after: () => {} }
+) {
   if (!Array.isArray(htmlList)) {
     console.warn("Displaying elements one-by-one requires a list of elements")
     return
   }
 
   if (htmlList.length === 0) {
+    if (after) {
+      after()
+    }
     return
   }
 
@@ -66,7 +72,19 @@ function displayOneByOne(htmlList, { append } = { append: false }) {
   // one-by-one to the direction
   const htmlString = htmlList.shift()
   updateDirection(htmlString, { append })
-  setTimeout(() => displayOneByOne(htmlList, { append: true }), 250)
+  setTimeout(() => displayOneByOne(htmlList, { append: true, after }), 250)
+}
+
+// Display the #next node and add an active area to game state
+function displayNextNode(coords, href) {
+  const next = document.getElementById("next")
+  if (next) {
+    next.classList.remove("hidden")
+    // Add the active area attached to this item,
+    // so link can be triggered by proximity
+    const area = createActiveArea(coords, () => window.location.assign(href))
+    state.activeAreas.push(area)
+  }
 }
 
 function stringList(string) {

@@ -39,9 +39,11 @@ button {
 }
 
 #next {
-  background-color: white;
-  border-radius: 25px;
   padding: 0;
+}
+
+.next-backlit {
+  background-color: white;
 }
 
 #direction {
@@ -55,6 +57,9 @@ button {
   max-width: 700px;
   padding: 10px;
   position: fixed;
+  /* This may change with whole game border/margin */
+  /* top: 100px;
+  left: max(101px, calc(50% - 350px)); */
   top: 50px;
   left: max(51px, calc(50% - 350px));
   z-index: 2;
@@ -109,13 +114,19 @@ button {
   color: white;
 }
 
+.wave-text {
+  color: blue;
+}
+
 .wave {
   overflow: hidden;
   /* border: 1px dashed black; */
 }
 
-.wave.wave-inverse {
+.wave.wave-inverse,
+.wave-text.wave-inverse {
   background-color: blue;
+  color: white;
   /* This is useful for not overlapping with border */
   /* margin: 10px 0; */
   /* height: 30px; */
