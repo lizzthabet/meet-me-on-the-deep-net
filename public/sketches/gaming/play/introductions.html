@@ -10,8 +10,7 @@
     <style>
       /* I might remove this entirely */
       body {
-        padding: 50px;
-        margin: 50px;
+        border: unset;
         height: calc(100vh - 50px * 2);
       }
 
@@ -53,18 +52,16 @@
       ]
 
       function activateYes() {
-        const question = stringList(directions[1])
-        displayOneByOne(question)
         showOrHideSelector("#yes", false)
         showOrHideSelector("#hints", false)
         // TODO: Display these after the text animates, in a less hacky way?
-        const roughAnimationLength = 250 * (question.length + 5)
+        // const roughAnimationLength = 250 * (question.length + 5)
         const seekingArea = createActiveArea(
           { 
             x: initialPositions["#i-will-seek"][0].x - 1,
             y: initialPositions["#i-will-seek"][0].y - 1,
           },
-          () => window.location.assign("./seeking.html"),
+          () => window.location.assign("./start-of-seeking.html"),
           { height: 3, width: 7, center: false },
         )
         const offeringArea = createActiveArea(
@@ -72,17 +69,17 @@
             x: initialPositions["#i-will-offer"][0].x - 1,
             y: initialPositions["#i-will-offer"][0].y - 1,
           },
-          () => window.location.assign("./offering.html"),
+          () => window.location.assign("./start-of-offering.html"),
           { height: 3, width: 7, center: false },
         )
-        setTimeout(() => {
+        const afterTextDisplay = () => {
           showOrHideSelector("#i-will-seek")
           state.activeAreas.push(seekingArea)
-        }, roughAnimationLength)
-        setTimeout(() => {
           showOrHideSelector("#i-will-offer")
           state.activeAreas.push(offeringArea)
-        }, roughAnimationLength + 1000)
+        }
+        const question = stringList(directions[1])
+        displayOneByOne(question, { after: afterTextDisplay })
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -143,10 +140,10 @@
       <figure id="you" class="cell center" data-draggable>you</figure>
       <button id="yes" class="cell" onclick="activateYes()" data-obstacle data-draggable>yes</button>
       <p id="i-will-seek" class="a-choice hidden" data-draggable>
-        <a href="./seeking.html" class="a-linked-choice">Yes, I've been waiting for this invitation for a while now. I'm seeking connection.</a>
+        <a href="./start-of-seeking.html" class="a-linked-choice">Yes, I've been waiting for this invitation for a while now. I'm seeking connection.</a>
       </p>
       <p id="i-will-offer" class="a-choice hidden" data-draggable>
-        <a href="./offering.html" class="a-linked-choice">That sounds like a long journey to make. I'll offer connection to another stranger making the journey.</a>
+        <a href="./start-of-offering.html" class="a-linked-choice">That sounds like a long journey to make. I'll offer connection to another stranger making the journey.</a>
       </p>
 
       <!-- <section id="ocean" class="left"></section> -->
