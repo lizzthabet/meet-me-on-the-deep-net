@@ -7,9 +7,6 @@ body {
   border: 5px inset lightgray;
   box-sizing: border-box;
   margin: 0;
-  /* hardcoded page size */
-  height: 1000px;
-  width: 2000px;
 }
 
 .grid {
@@ -19,17 +16,15 @@ body {
     linear-gradient(to bottom, lightgray 1px, transparent 1px);
 }
 
-main {
-  margin: 2rem 0;
-}
-
-button, a {
-  margin: 2px;
-}
-
 a, a:visited {
   font-size: 1.25rem;
   color: blue;
+}
+
+button {
+  color: black;
+  /* font-family: 'Times New Roman', Times, serif; */
+  font-size: 1rem;
 }
 
 #you {
@@ -46,7 +41,6 @@ a, a:visited {
 #next {
   background-color: white;
   border-radius: 25px;
-  margin: 0;
   padding: 0;
 }
 
@@ -56,6 +50,7 @@ a, a:visited {
   display: inline-block;
   font-size: 1.125rem;
   font-style: italic;
+  font-weight: normal;
   margin: 1px;
   max-width: 700px;
   padding: 10px;

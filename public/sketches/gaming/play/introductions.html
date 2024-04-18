@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="grid">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>introductions & a choice</title>
+    <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
+    <script src="./gameplay.js" defer></script>
+    <style>
+      /* I might remove this entirely */
+      body {
+        padding: 50px;
+        margin: 50px;
+        height: calc(100vh - 50px * 2);
+      }
+
+      .a-choice {
+        max-width: 300px;
+        margin: 0;
+      }
+
+      .a-linked-choice {
+        font-size: unset;
+      }
+    </style>
+    <script>
+      const initialPositions = {
+        "#you": [{ x: 2, y: 3 }],
+        "#yes": [{ x: 13, y: 3 }],
+        "#hints": [{ x: 2, y: 6, center: false }],
+        "#i-will-seek": [{ x: 2, y: 7, center: false }],
+        "#i-will-offer": [{ x: 11, y: 7, center: false }],
+      }
+
+      const directions = [
+        "Would you like to try?",
+        "Can you imagine crossing an ocean to meet a stranger?"
+      ]
+
+      const state = {
+        boundaries: [],
+        obstacles: [],
+        activeArea: null,
+        activeAreas: []
+      }
+      // point: {x, y}, activation: () => {}, { height, width, center }
+      const activeAreasToCreate = [
+        {
+          point: initialPositions["#yes"][0],
+          activation: activateYes,
+        }
+      ]
+
+      function activateYes() {
+        const question = stringList(directions[1])
+        displayOneByOne(question)
+        showOrHideSelector("#yes", false)
+        showOrHideSelector("#hints", false)
+        // TODO: Display these after the text animates, in a less hacky way?
+        const roughAnimationLength = 250 * (question.length + 5)
+        const seekingArea = createActiveArea(
+          { 
+            x: initialPositions["#i-will-seek"][0].x - 1,
+            y: initialPositions["#i-will-seek"][0].y - 1,
+          },
+          () => window.location.assign("./seeking.html"),
+          { height: 3, width: 7, center: false },
+        )
+        const offeringArea = createActiveArea(
+          { 
+            x: initialPositions["#i-will-offer"][0].x - 1,
+            y: initialPositions["#i-will-offer"][0].y - 1,
+          },
+          () => window.location.assign("./offering.html"),
+          { height: 3, width: 7, center: false },
+        )
+        setTimeout(() => {
+          showOrHideSelector("#i-will-seek")
+          state.activeAreas.push(seekingArea)
+        }, roughAnimationLength)
+        setTimeout(() => {
+          showOrHideSelector("#i-will-offer")
+          state.activeAreas.push(offeringArea)
+        }, roughAnimationLength + 1000)
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // position elements on grid based on their pre-defined locations
+        for (const selector of Object.keys(initialPositions)) {
+          const positions = initialPositions[selector]
+          positionOnGridBySelector(selector, positions)
+        }
+
+        // Add boundary of the page to boundary list
+        const sceneBoundary = { startX: 0, startY: 0 }
+        state.boundaries.push(sceneBoundary)
+
+        // get the tagged obstacles and record their grid positions
+        const obstacles = document.querySelectorAll('[data-obstacle]')
+        obstacles.forEach((o) => {
+          const { scrollX, scrollY } = window
+          const { top, left, width, height } = o.getBoundingClientRect()
+          const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
+          if (width > GRID_SIZE_PX) {
+            const widthExceedingCell = width - GRID_SIZE_PX
+            position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
+          }
+
+          if (height > GRID_SIZE_PX) {
+            const heightExceedingCell = height - GRID_SIZE_PX
+            position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
+          }
+          state.obstacles.push(position)
+        })
+
+        // Create any pre-defined active areas and add them
+        // to the global state
+        if (activeAreasToCreate && Array.isArray(activeAreasToCreate)) {
+          activeAreasToCreate.forEach(area => {
+            state.activeAreas.push(
+              createActiveArea(area.point, area.activation, area.options)
+            )
+          })
+        }
+
+        // displayOneByOne(stringList(directions[0]))
+
+        // Move the avatar based on arrow presses
+        document.addEventListener("keydown", onKeyDown)
+      })
+    </script>
+  </head>
+  <body>
+    <main>
+      <!-- Idea: maybe this would read better if instructions where at top, and the directions could offer the "would you like to try?", then the layout resumes like the normal game when you complete that interaction? -->
+      <h1 id="direction">Would you like to try?</h1>
+      <section id="hints">
+        <p>Use your arrow keys or the controls in the lower right to move <b><u>you</u></b> around the space.</p>
+        <p>Elements in the landscape with text are interactive.</p>
+      </section>
+      <!-- <p id="direction" class="direction-override">Would you like to try?</p> -->
+      <figure id="you" class="cell center" data-draggable>you</figure>
+      <button id="yes" class="cell" onclick="activateYes()" data-obstacle data-draggable>yes</button>
+      <p id="i-will-seek" class="a-choice hidden" data-draggable>
+        <a href="./seeking.html" class="a-linked-choice">Yes, I've been waiting for this invitation for a while now. I'm seeking connection.</a>
+      </p>
+      <p id="i-will-offer" class="a-choice hidden" data-draggable>
+        <a href="./offering.html" class="a-linked-choice">That sounds like a long journey to make. I'll offer connection to another stranger making the journey.</a>
+      </p>
+
+      <!-- <section id="ocean" class="left"></section> -->
+      <!-- <section id="island" class="left">island</section> -->
+      <!-- <figure class="tree cell center" data-obstacle></figure> -->
+      <!-- <figure class="tree cell center" data-obstacle>tree</figure> -->
+      <!-- <figure class="tree cell center" data-obstacle></figure> -->
+      <!-- <figure class="tree cell center" data-obstacle>tree</figure> -->
+      <!-- <figure class="tree cell center" data-obstacle></figure> -->
+      <!-- <a id="next" class="hidden center cell" href="#next-slide-pls">next</a> -->
+    </main>
+    <section role="toolbar" class="controls">
+      <div>
+        <button class="move-direction" onclick="onArrowButtonClick('up')">^</button>
+        <button class="move-direction rotate-270" onclick="onArrowButtonClick('left')">^</button>
+        <button class="move-direction rotate-90" onclick="onArrowButtonClick('right')">^</button>
+        <button class="move-direction rotate-180" onclick="onArrowButtonClick('down')">^</button>
+      </div>
+      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
+      <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
+    </section>
+    <div class="veil disappear" aria-hidden></div>
+    <!-- TODO: Remove after dev is complete -->
+    <script src="../draggable.js" defer></script>
+  </body>
+</html>

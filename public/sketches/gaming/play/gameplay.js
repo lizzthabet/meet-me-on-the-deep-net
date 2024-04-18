@@ -10,6 +10,15 @@ const WINDOW_VIEW_GRID_BUFFER = 3;
 // Eek! But it simplifies the gameplay code into a central place.
 // It should be imported in the document head with `defer`.
 
+function toggleGrid() {
+  const html = document.documentElement
+  if (html && html.classList.contains("grid")) {
+    html.classList.remove("grid")
+  } else if (html) {
+    html.classList.add("grid")
+  }
+}
+
 function updateDirection(html, { append } = { append: false }) {
   const direction = document.getElementById("direction")
   if (direction) {
@@ -133,7 +142,7 @@ function createActiveArea(
   // Defaults for creating an area around one grid cell
   options = { height: 3, width: 3, center: true }
 ) {
-  if (!point || ! activeFunc) {
+  if (!point || !activeFunc) {
     console.warn("Cannot create active area with missing information")
   }
 
@@ -154,9 +163,6 @@ function createActiveArea(
     area.startY = point.y
     area.endY = point.y + options.height - 1
   }
-  // take a point of x,y, func, and options (size: height, width, center)
-  // it will calculate the 
-  // returns { startX, startY, endX, endY, activation }
   return area
 }
 
