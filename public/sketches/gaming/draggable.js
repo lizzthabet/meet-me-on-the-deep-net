@@ -37,6 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
   draggable.forEach((ele) => {
     ele.style.setProperty("position", "absolute")
     ele.style.setProperty("cursor", "move")
+    ele.style.setProperty("user-select", "none")
     ele.addEventListener("mousedown", moveOnMouseDown)
   })
 })
