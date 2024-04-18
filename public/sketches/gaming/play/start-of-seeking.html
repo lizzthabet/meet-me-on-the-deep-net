@@ -76,7 +76,7 @@
         {
           point: initialPositions[".wave-text"][2],
           activation: () => {
-            const after = () => displayNextNode(initialPositions["#next"][0], "./your-messengers.html")
+            const after = () => displayNextNode(initialPositions["#next"][0], "./your-messengers.html?while=seeking")
             displayOneByOne(
               stringList(directions[2]),
               { after: after },
@@ -179,7 +179,7 @@
       <figure class="wave wave-inverse cell center" data-obstacle data-draggable></figure>
       <figure class="wave wave-inverse cell center" data-obstacle data-draggable></figure>
       <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure> -->
-      <a id="next" class="hidden center cell" href="./websitevibe-scene2.html">next</a>
+      <a id="next" class="hidden center cell">next</a>
     </main>
     <!-- Controls for game -->
     <section role="toolbar" class="controls">

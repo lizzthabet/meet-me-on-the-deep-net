@@ -4,7 +4,6 @@ html {
 }
 
 body {
-  border: 5px inset lightgray;
   box-sizing: border-box;
   margin: 0;
 }
@@ -88,7 +87,8 @@ button {
   color: white;
 }
 
-.intro {
+.intro,
+.messenger {
   background-color: purple;
   color: white;
 }

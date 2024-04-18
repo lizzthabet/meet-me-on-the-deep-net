@@ -80,6 +80,7 @@ function displayNextNode(coords, href) {
   const next = document.getElementById("next")
   if (next) {
     next.classList.remove("hidden")
+    next.setAttribute("href", href)
     // Add the active area attached to this item,
     // so link can be triggered by proximity
     const area = createActiveArea(coords, () => window.location.assign(href))
