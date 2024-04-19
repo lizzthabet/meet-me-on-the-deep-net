@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" class="grid">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>thank you</title>
+    <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
+    <script src="./gameplay.js" defer></script>
+    <style>
+      /* I might remove this entirely */
+      body {
+        border: 5px inset lightgray;
+        padding: 50px;
+        margin: 50px;
+        height: calc(100vh - 50px * 2);
+        width: unset;
+      }
+
+      footer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        position: fixed;
+        bottom: 0;
+        left: 100px;
+        padding: 10px 0;
+        width: calc(100% - 200px);
+      }
+
+      footer > p {
+        margin: 0;
+        display: inline-block;
+      }
+
+      #ocean {
+        border-radius: 25px 0 0 25px;
+        height: calc(50px * 12);
+        width: calc(2000px - 50px * 4);
+      }
+
+      #island {
+        border-right: none;
+        height: calc(50px * 10);
+        width: calc(2000px - 50px * 5);
+      }
+
+      #you {
+        z-index: 1;
+      }
+    </style>
+    <script>
+      const initialPositions = {
+        "#you": [{ x: 8, y: 10 }],
+        ".stranger": [
+          { x: 2, y: 10, center: false },
+          { x: 13, y: 10, center: false },
+        ]
+      }
+
+      const state = {
+        boundaries: [],
+        obstacles: [],
+        activeArea: null,
+        activeAreas: []
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // position elements on grid based on their pre-defined locations
+        for (const selector of Object.keys(initialPositions)) {
+          const positions = initialPositions[selector]
+          positionOnGridBySelector(selector, positions)
+        }
+      })
+    </script>
+  </head>
+  <body>
+    <main>
+      <h1><i>What a journey</i></h1>
+      <p>This is a placeholder area where we'll wrap up the game.</p>
+      <p>
+        It might be a:
+        <ul>
+          <li>an about page where I talk about where this game came from and what it's about for me</li>
+          <li>an invitation to visit and contribute to an onion website that I have running in my home</li>
+          <li>something else? meditations on: finding comfort and connection in anonymity, tending to the past and present</li>
+        </ul>
+      </p>
+      <p>
+        <a href="./introductions.html">home</a>
+      </p>
+    </main>
+    <div class="veil disappear" aria-hidden></div>
+    <footer>
+      <a>Welcome to my homepage</a>
+      <p>This is where credits will go.</p>
+    </footer>
+  </body>
+</html>

@@ -130,8 +130,14 @@ input[type=radio] {
   z-index: 100;
 }
 
-.sand {
+.sand,
+.shell {
   background-color: wheat;
+}
+
+.star {
+  background-color: goldenrod;
+  color: white;
 }
 
 #ocean {
@@ -204,4 +210,17 @@ input[type=radio] {
   to {
     top: 5px;
   }
+}
+
+#finale {
+  align-items: center;
+  background-color: black;
+  color: white;
+  display: flex;
+  font-style: italic;
+  font-size: 2rem;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  width: 300px;
 }

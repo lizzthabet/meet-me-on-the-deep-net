@@ -14,13 +14,13 @@
         height: 800px;
         width: 3000px;
         /* TODO: unsure about this */
-        /* overflow: hidden; */
+        overflow: hidden;
       }
 
       /* any other custom styles */
       .big-rock {
         width: 300px;
-        height: 200px;
+        height: 250px;
       }
 
       .a-choice {
@@ -120,6 +120,8 @@
           {"x":18,"y":14},
           {"x":17,"y":15},
           {"x":21,"y":12,"center":false},
+          {"x":19,"y":16,"center":false},
+          {"x":22,"y":17,"center":false},
         ],
         ".clue": [
           {"x":12,"y":7}, // active
@@ -137,7 +139,7 @@
         ],
         // TODO: These aren't super visible on the screen
         // given the scroll position when they're triggered,
-        // so consider placing them elsewhere
+        // so consider placing them elsewhere or scrolling into view?
         ".a-choice": [
           {"x":37,"y":2,"center":false}, // active
           {"x":42,"y":7,"center":false}, // active
@@ -395,6 +397,8 @@
       <figure class="rock center cell" data-obstacle data-draggable></figure>
       <figure class="rock center cell" data-obstacle data-draggable></figure>
       <figure class="rock center big-rock" data-obstacle data-draggable></figure>
+      <figure class="rock center two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="rock center three-cell-h" data-obstacle data-draggable></figure>
 
       <!-- rendezvous -->
       <fieldset>
