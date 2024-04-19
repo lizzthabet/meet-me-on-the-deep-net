@@ -9,10 +9,12 @@
     <script src="./gameplay.js" defer></script>
     <style>
       body {
-        border: unset;
         /* hardcoded page size */
         height: 800px;
-        width: 2000px;
+        width: 1250px;
+        /* This is needed to extend the ocean + island
+        far offscreen */
+        overflow: hidden;
       }
 
       #ocean {
@@ -29,59 +31,73 @@
     </style>
     <script>
       // Hardcoded scene size for JS
-      const SCENE_WIDTH = 2000
+      const SCENE_WIDTH = 1250
       const SCENE_HEIGHT = 800
 
       // Elements to position with (x, y) grid coords
       const initialPositions = {
-        "#you": [{ x: 2, y: 2 }],
+        "#you": [
+          {"x":2,"y":2},
+        ],
+        // TODO: Add more trees on island
+        // Also consider shrinking size to about 1000px instead
         ".tree": [
-          { x: 7, y: 10 },
-          { x: 12, y: 8 }, // active
-          { x: 18, y: 13 },
-          { x: 19, y: 12 }, // active
-          { x: 24, y: 6 },
+          {"x":7,"y":10},
+          {"x":12,"y":8}, // active
+          {"x":18,"y":13},
+          {"x":19,"y":12}, // active
+          {"x":24,"y":6},
         ],
         ".wave": [
-          { x: 2, y: 13 },
-          { x: 10, y: 17, center: false },
-          { x: 13, y: 1, center: false },
-          { x: 16, y: 2, center: false },
-          { x: 25, y: 16, center: false },
-          { x: 33, y: 4, center: false },
+          {"x":2,"y":13},
+          {"x":10,"y":17,"center":false},
+          {"x":13,"y":1,"center":false},
+          {"x":16,"y":2},
+          {"x":12,"y":16,"center":false},
+          {"x":9,"y":4,"center":false},
         ],
-        "#island": [{ x: 5, y: 5, center: false }],
-        "#ocean": [{ x: 4, y: 4, center: false }],
-        "#next": [{ x: 38, y: 9 }],
-      }
+        "#island": [
+          {"x":5,"y":5,"center":false},
+        ],
+        ".island": [
+          {"x":6,"y":6},
+        ],
+        "#ocean": [
+          {"x":4,"y":4,"center":false},
+        ],
+        "#next": [
+          {"x":21,"y":14},
+        ],
+}
 
       // String array of storyline
-      const directions = []
+      const directions = [
+        "This is your island.",
+        "It's where you'll wait, offering connection to seeking strangers.",
+        "Your island is far away from any neighboring shores, but you have access to a network of fellow wayfinders who work together to deliver messages all over.",
+        "Let's go find them.",
+      ]
 
       // Params are point: {x, y}, activation: () => {}, options?: { height, width, center }
       const activeAreasToCreate = [
-        // top border of the island will be activated
         {
-          point: initialPositions["#island"][0],
-          activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores...")),
-          options: { center: false, width: 36, height: 1 },
-        },
-        // bottom border of the island will be activated
-        {
-          point: initialPositions["#island"][0],
-          activation: () => displayOneByOne(stringList("Your island is far away from any neighboring shores...")),
-          options: { center: false, width: 1, height: 10 },
+          point: initialPositions[".island"][0],
+          activation: () => displayOneByOne(stringList(directions[0]))
         },
         { 
           point: initialPositions[".tree"][1],
-          activation: () => displayOneByOne(stringList("But you have access to a network of fellow wayfinders who work to deliver messages all over.")),
+          activation: () => displayOneByOne(stringList(directions[1])),
         },
         { 
           point: initialPositions[".tree"][3],
+          activation: () => displayOneByOne(stringList(directions[2])),
+        },
+        { 
+          point: initialPositions[".tree"][4],
           activation: () => {
-            const displayAfterText = () => displayNextNode(initialPositions["#next"][0], "./your-messengers?while=offering")
+            const displayAfterText = () => displayNextNode(initialPositions["#next"][0], "./your-messengers.html?while=offering")
             displayOneByOne(
-              stringList("Let's go find them."),
+              stringList(directions[3]),
               { after: displayAfterText }
             )
           }
@@ -149,20 +165,21 @@
     <main>
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
-      <section id="ocean" class="left"></section>
-      <section id="island" class="left">island</section>
+      <section id="ocean"></section>
+      <section id="island"></section>
+      <figure class="island cell center" data-obstacle>island</figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
-      <figure class="tree cell center" data-obstacle></figure>
-      <figure class="wave cell center"></figure>
-      <figure class="wave two-cell-h center"></figure>
-      <figure class="wave three-cell-h center"></figure>
-      <figure class="wave cell center"></figure>
-      <figure class="wave two-cell-h center"></figure>
-      <figure class="wave wave-inverse two-cell-h center"></figure>
-      <a id="next" class="next-backlit hidden center cell circle">next</a>
+      <figure class="tree cell center" data-obstacle>tree</figure>
+      <figure class="wave cell center" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave cell center" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure>
+      <a id="next" class="next-backlit hidden center cell circle" data-draggable>next</a>
     </main>
     <!-- Controls for game -->
     <section role="toolbar" class="controls">

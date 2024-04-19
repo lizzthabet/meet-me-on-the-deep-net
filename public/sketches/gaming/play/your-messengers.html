@@ -203,11 +203,11 @@
         }
 
         if (params.has(QUERY_NAME, OFFERING_QUERY)) {
-          // TODO: replace with the real sequence
           return "./offering-trust.html"
         }
 
-        // This shouldn't happen
+        // This shouldn't happen so at least provide a fallback
+        // that does nothing!
         return "#where-are-you-going?"
       }
 

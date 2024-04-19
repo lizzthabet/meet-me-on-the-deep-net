@@ -41,18 +41,9 @@
         { 
           point: initialPositions[".tree"][0],
           activation: () => {
-            displayOneByOne(stringList("Let's go find them."))
-            const next = document.getElementById("next")
-            if (next) {
-              next.classList.remove("hidden")
-              // Add the active area attached to this item
-              state.activeAreas.push(
-                createActiveArea(
-                  { x: 10, y: 10 },
-                  () => window.location.assign("./websitevibe-scene2.html")
-                )
-              )
-            }
+            displayOneByOne(
+              stringList("Let's go find them."),
+              { after: () => displayNextNode(initialPositions["#next"][0], "#somewhere") })
           }
         },
       ]

@@ -74,8 +74,8 @@
         )
         const afterTextDisplay = () => {
           showOrHideSelector("#i-will-seek")
-          state.activeAreas.push(seekingArea)
           showOrHideSelector("#i-will-offer")
+          state.activeAreas.push(seekingArea)
           state.activeAreas.push(offeringArea)
         }
         const question = stringList(directions[1])
@@ -139,10 +139,10 @@
       <!-- <p id="direction" class="direction-override">Would you like to try?</p> -->
       <figure id="you" class="cell center" data-draggable>you</figure>
       <button id="yes" class="cell" onclick="activateYes()" data-obstacle data-draggable>yes</button>
-      <p id="i-will-seek" class="a-choice hidden" data-draggable>
+      <p id="i-will-seek" class="a-choice fade hidden-with-fade" data-draggable>
         <a href="./start-of-seeking.html" class="a-linked-choice">Yes, I've been waiting for this invitation for a while now. I'm seeking connection.</a>
       </p>
-      <p id="i-will-offer" class="a-choice hidden" data-draggable>
+      <p id="i-will-offer" class="a-choice fade hidden-with-fade" data-draggable>
         <a href="./start-of-offering.html" class="a-linked-choice">That sounds like a long journey to make. I'll offer connection to another stranger making the journey.</a>
       </p>
 
