@@ -90,7 +90,7 @@
           options: { height: 3, width: 4 },
         },
         {
-          point: { 
+          point: {
             x: initialPositions[".messenger"][2].x - 1,
             y: initialPositions[".messenger"][2].y - 1,
           },
@@ -199,11 +199,12 @@
         const query = window.location.search
         const params = new URLSearchParams(query)
         if (params.has(QUERY_NAME, SEEKING_QUERY)) {
-          return "./seeking-next.html"
+          return "./seeking-clues.html"
         }
 
         if (params.has(QUERY_NAME, OFFERING_QUERY)) {
-          return "./offering-next.html"
+          // TODO: replace with the real sequence
+          return "./offering-trust.html"
         }
 
         // This shouldn't happen
@@ -295,6 +296,7 @@
       </div>
       <button class="toggle" onclick="toggleGrid()">toggle grid</button>
       <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
+      <button class="toggle" onclick="printPositions()">print (dev)</button>
     </section>
     <div class="veil disappear" aria-hidden></div>
     <!-- TODO: Remove after dev is complete -->

@@ -80,6 +80,7 @@ function displayNextNode(coords, href) {
   const next = document.getElementById("next")
   if (next) {
     next.classList.remove("hidden")
+    // Update the URL
     next.setAttribute("href", href)
     // Add the active area attached to this item,
     // so link can be triggered by proximity
@@ -89,6 +90,10 @@ function displayNextNode(coords, href) {
 }
 
 function stringList(string) {
+  if (!string) {
+    return []
+  }
+
   return string.split(" ")
 }
 
@@ -279,7 +284,6 @@ function positionAvatarOnGrid(element, x, y) {
     positionOnGrid(element, x, y)
     activateAreaIfOverlap(x, y)
     scrollIntoView(element, x, y)
-    // TODO: potentially resize html to cover explored area
   }
 }
 
@@ -360,5 +364,65 @@ function onKeyDown(event) {
       break
     default:
       return
+  }
+}
+
+// Just for dev :)
+// This lets me drag elements around and then just print
+// their grid positions to paste into code config,
+// instead of manually recording the positions I've arranged.
+
+// Note: sorting is super helful for organizing the state,
+// but it adds extra work since I have to rearrange the html
+// elements in the correct order, so default to off for now.
+function printPositions(sort = false, selector) {
+  const currentPositions = {}
+  const selectors = selector ? [selector] : Object.keys(initialPositions)
+  const { scrollX, scrollY } = window
+  for (const s of selectors) {
+    const elements = document.querySelectorAll(s)
+    currentPositions[s] = []
+    elements.forEach((e) => {
+      const { left, top, height, width } = e.getBoundingClientRect()
+      const position = {
+        x: pixelsToGrid(left + scrollX),
+        y: pixelsToGrid(top + scrollY),
+      }
+      if (height > GRID_SIZE_PX || width > GRID_SIZE_PX) {
+        position.center = false
+      }
+      currentPositions[s].push(position)
+    })
+    if (sort) {
+      currentPositions[s].sort((a, b) => {
+        if (a.x === b.x) {
+          return a.y - b.y
+        }
+        return a.x - b.x
+      })
+    }
+  }
+  console.log("~ ~ elements are positioned like so ~ ~")
+  console.log(currentPositions)
+  let formatted = '{'
+  for (const s of Object.keys(currentPositions)) {
+    formatted += `\n  "${s}": [`
+    currentPositions[s].forEach(pos => {
+      formatted += `\n    ${JSON.stringify(pos)},`
+    })
+    formatted += `\n  ],`
+  }
+  formatted += `\n}`
+  if (selector) {
+    console.log(formatted)
+  } else {
+    // This will error out when the browser window
+    // isn't in focus, so don't use when this function
+    // is manually invoked from the console with a selector
+    try {
+      navigator.clipboard.writeText(formatted)
+    } catch (error) {
+      console.error("could not copy dev helper to clipboard", error)
+    }
   }
 }

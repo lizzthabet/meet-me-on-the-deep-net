@@ -1,5 +1,7 @@
 /* important for sizing and positioning */
-figure, section {
+figure,
+section,
+fieldset {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -37,6 +39,18 @@ figure, section {
 
 .hidden {
   display: none !important;
+}
+
+.hidden-with-fade {
+  opacity: 0 !important;
+}
+
+/* To be used with .hidden-with-fade,
+either add or remove .hidden-with-fade
+while keeping .fade */
+.fade {
+  transition: opacity 2s ease;
+  opacity: 1;
 }
 
 /* For text */
