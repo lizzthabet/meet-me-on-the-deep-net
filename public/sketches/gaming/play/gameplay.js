@@ -349,6 +349,15 @@ function onKeyDown(event) {
   // has semantic control value is focused, instead of
   // completely stopping native arrow key behavior that's
   // very usefully for accessibility.
+
+  // Here's a very specific override to make sure that
+  // typing in input text elements works when they're selected
+  const activeElement = document.activeElement
+  const isInput = activeElement.tagName.toLowerCase() === "input"
+  if (isInput && activeElement.type === "text") {
+    return
+  }
+
   switch(event.key) {
     case 'ArrowUp':
     case 'w':
