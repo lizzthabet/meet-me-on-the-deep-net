@@ -42,9 +42,17 @@ function resetDirection() {
 function showOrHideSelector(selector, visibility = true) {
   const element = document.querySelector(selector)
   if (element && visibility) {
-    element.classList.remove("hidden")
+    if (element.classList.contains("fade")) {
+      element.classList.remove("hidden-with-fade")
+    } else {
+      element.classList.remove("hidden")
+    }
   } else if (element && !visibility) {
-    element.classList.add("hidden")
+    if (element.classList.contains("fade")) {
+      element.classList.add("hidden-with-fade")
+    } else {
+      element.classList.add("hidden")
+    }
   }
 }
 
