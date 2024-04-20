@@ -14,9 +14,23 @@
         /* hardcoded scene size in increments of 50px */
         height: 800px;
         width: 3000px;
+        /* overflow: hidden; */
       }
 
       /* any other custom styles */
+      #island {
+        border-left: none;
+        height: 500px;
+        width: 700px;
+      }
+
+      #ocean {
+        background-color: blue;
+        border-radius: 0 25px 25px 0;
+        color: white;
+        height: 600px;
+        width: 750px;
+      }
     </style>
     <script>
       // Hardcoded scene size for JS
@@ -26,54 +40,97 @@
       // Elements to position with (x, y) grid coords
       const initialPositions = {
         "#you": [
-          {"x":2,"y":12},
+          {"x":2,"y":7},
         ],
-        ".tree": [
-          {"x":17,"y":7},
+        "#ocean": [
+          {"x":0,"y":4,"center":false},
+        ],
+        "#island": [
+          {"x":0,"y":5,"center":false},
+        ],
+        "#dock": [
+          {"x":14,"y":12},
+        ],
+        ".island": [
+          {"x":14,"y":10,"center":false},
+          {"x":12,"y":12,"center":false},
+          {"x":14,"y":12},
+        ],
+        ".bottle": [
+          {"x":4,"y":4,"center":false},
+          {"x":10,"y":7},
+          {"x":12,"y":9},
         ],
         ".wave": [
         ],
-        ".star": [
-          {"x":30,"y":3},
-          {"x":33,"y":5},
+        ".wave-text": [
+          {"x":20,"y":8},
+          {"x":29,"y":13},
+          {"x":35,"y":10},
         ],
-        ".shell": [
-          {"x":7,"y":11},
+        ".star": [
+          {"x":36,"y":3},
+          {"x":41,"y":5},
         ],
         "#finale": [
-          {"x":41,"y":4,"center":false},
+          {"x":47,"y":4,"center":false},
         ],
         "#next": [
-          {"x":43,"y":15, center:false},
+          {"x":49,"y":15, center:false},
         ],
       }
 
       // String array of storyline
       const directions = [
-        "Oh! Look at that. The stranger has sent ahead their own messenger with the secret gift you sent them.",
-        "The secrets match up, so it's safe to let them join you now.",
+        "Oh! Look at that. One of your trusted contacts has a message for you.",
+        "It looks like someone or something is interested in connecting.",
+        "They've sent you a rendezvous location and a secret gift.",
+        // TODO: Make the rendezvous location make sense for the setting and
+        // how the avatar is traveling
+        "The rendezvous is a grassy knoll not too far from here. Are you ready?",
+        "Let's send one of your messengers ahead to meet them. You'll send along the secret gift so they know that it's really you coming to meet them.",
+        "Tada! Your messenger and verification have been accepted.",
         "Joined messenger to messenger to messenger, with the help of your fellow travelers, connection is established now.",
         "The stranger is here to meet you.",
-        "You have crossed an ocean for a stranger who has offered you a connection.",
       ]
 
       // Params are point: {x, y}, activation: () => {}, options?: { height, width, center }
       const activeAreasToCreate = [
         {
-          point: initialPositions[".shell"][0],
+          point: initialPositions[".bottle"][0],
           activation: () => displayOneByOne(stringList(directions[0])),
         },
         {
-          point: initialPositions[".tree"][0],
+          point: initialPositions[".bottle"][1],
           activation: () => displayOneByOne(stringList(directions[1])),
         },
         {
-          point: initialPositions[".star"][0],
+          point: initialPositions[".bottle"][2],
           activation: () => displayOneByOne(stringList(directions[2])),
         },
         {
+          point: initialPositions["#dock"][0],
+          activation: () => displayOneByOne(stringList(directions[3])),
+        },
+        {
+          point: initialPositions[".wave-text"][0],
+          activation: () => displayOneByOne(stringList(directions[4])),
+        },
+        {
+          point: initialPositions[".wave-text"][1],
+          activation: () => displayOneByOne(stringList(directions[5])),
+        },
+        {
+          point: initialPositions[".wave-text"][2],
+          activation: () => displayOneByOne(stringList(directions[6])),
+        },
+        {
+          point: initialPositions[".star"][0],
+          activation: () => displayOneByOne(stringList(directions[7])),
+        },
+        {
           point: initialPositions[".star"][1],
-          activation: () => displayOneByOne(stringList(directions[3]), { after: displayFinale }),
+          activation: () => displayOneByOne(stringList(directions[8]), { after: displayFinale }),
         },
       ]
 
@@ -95,17 +152,6 @@
         }
         showOrHideSelector("#finale", true)
         setTimeout(() => displayNextNode(initialPositions["#next"][0], "./gratitude.html"), 1000)
-      }
-
-      
-      function updateLandscapeForLocation() {
-        // Based on the rendezvous location, maybe change some styles?
-        // case "overlook":
-        //   return "./seeking-rendezvous.html?at=overlook"
-        // case "open-field":
-        //   return "./seeking-rendezvous.html?at=open-field"
-        // case "river-edge":
-        //   return "./seeking-rendezvous.html?at=river-edge"
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -162,29 +208,42 @@
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
 
+      <!-- landscape -->
+      <section id="ocean"></section>
+      <section id="island"></section>
+
+      <!-- dock -->
+      <figure class="island two-cell-v center" data-draggable></figure>
+      <figure class="island two-cell-h center" data-draggable></figure>
+      <figure id="dock" class="island cell center" data-obstacle data-draggable>dock</figure>
+
       <!-- shells -->
-      <figure class="shell cell center" data-obstacle data-draggable>shell</figure>
+      <!-- <figure class="shell cell center" data-obstacle data-draggable>shell</figure> -->
+      <!-- stuff to make into other stuff -->
+      <figure class="bottle two-cell-h center" data-obstacle data-draggable>bottle</figure>
+      <figure class="bottle cell center" data-obstacle data-draggable>look</figure>
+      <figure class="bottle cell center" data-obstacle data-draggable>open</figure>
 
 
       <!-- trees -->
-      <figure class="tree cell center" data-obstacle data-draggable>tree</figure>
+      <!-- <figure class="tree cell center" data-obstacle data-draggable>tree</figure> -->
 
 
       <!-- stars -->
       <figure class="star cell center" data-obstacle data-draggable>star</figure>
       <figure class="star cell center" data-obstacle data-draggable>star</figure>
 
+      <!-- text waves -->
+      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
+      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
+      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
+
       <section id="finale" class="fade hidden-with-fade" data-obstacle data-draggable>
         <p>
-          You have crossed an ocean for a stranger who has offered you connection.
+          You have offered connection to a stranger who has crossed an ocean to meet you.
         </p>
       </section>
 
-
-      <!-- <section id="ocean" class="left"></section> -->
-      <!-- <section id="island" class="left">island</section> -->
-      <!-- <figure class="tree cell center" data-obstacle data-draggable></figure> -->
-      <!-- <figure class="wave cell center"></figure> -->
       <a id="next" class="center two-cell-h hidden">thank you</a>
     </main>
     <!-- Controls for game -->

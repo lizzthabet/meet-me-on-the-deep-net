@@ -20,16 +20,16 @@
 
       #island {
         border-left: none;
-        border-right: none;
         height: 500px;
-        width: 3000px;
+        width: 2250px;
       }
 
       #ocean {
         background-color: blue;
+        border-radius: 0 25px 25px 0;
         color: white;
         height: 600px;
-        width: 3000px;
+        width: 2300px;
       }
 
       #trust-guide {
@@ -77,6 +77,8 @@
           { x: 6, y: 7 },
           { x: 10, y:12 }, // active
         ],
+        // TODO: Add some waves pls
+        ".wave": [],
         ".intro": [
           { x: 17, y: 6 },
           { x: 15, y: 10 },
@@ -85,12 +87,20 @@
           { x: 23, y: 10 },
           { x: 21, y: 14 },
         ],
-        ".pen": [{x: 27, y: 8}],
+        ".pen": [{x: 27, y: 8}], // active
         "#trust-guide": [{x: 17, y: 9, center: false}],
         "#island": [{ x: 0, y: 5, center: false }],
+        ".island": [
+          {x: 45, y: 10, center: false},
+          {x: 43, y: 12, center: false},
+          {x: 45, y: 12}, // duplicate, oops
+        ],
+        "#dock": [
+          {x: 45, y: 12}, // will be active
+        ],
         "#ocean": [{ x: 0, y: 4, center: false }],
         "#signature": [{x: 32, y: 9, center: false }],
-        "#next": [{ x: 42, y: 7 }],
+        "#next": [{ x: 45, y: 7 }], // will be active
       }
 
       // String array of storyline
@@ -98,8 +108,9 @@
         "Back on your island, you must find three travelers you trust to act as introduction points to you and the outside world.",
         "These three connections are the only contacts you'll trust. Got it?",
         "Next, you pick a unique hard-to-forge signature that will identify you in place of your name or where you live.",
-        "Now, it's time to send off these signed introduction points.",
-        "You wait."
+        "It's time to release these signed introduction points for others to find.",
+        // TODO: Maybe animate a bird flying in + off the screen?
+        "And now, you wait."
       ]
 
       // Params are point: {x, y}, activation: () => {}, options?: { height, width, center }
@@ -138,26 +149,18 @@
         },
         { 
           point: initialPositions[".pen"][0],
-          // TODO: Figure out interactivity here!
           activation: () => displayOneByOne(
             stringList(directions[2]),
             { after: displayUniqueSignature }
           ),
         },
-        // { 
-        //   point: initialPositions[".tree"][3],
-        //   activation: () => displayOneByOne(stringList(directions[2])),
-        // },
-        // { 
-        //   point: initialPositions[".tree"][4],
-        //   activation: () => {
-        //     const displayAfterText = () => displayNextNode(initialPositions["#next"][0], "./your-messengers.html?while=offering")
-        //     displayOneByOne(
-        //       stringList(directions[3]),
-        //       { after: displayAfterText }
-        //     )
-        //   }
-        // },
+        { 
+          point: initialPositions["#dock"][0],
+          activation: () => displayOneByOne(
+            stringList(directions[4]),
+            { after: displayNextNode(initialPositions["#next"][0], "offering-rendezvous.html") }
+          ),
+        },
       ]
 
       // Game state
@@ -196,13 +199,18 @@
         // TODO: It'd be nice to add active areas and obstacles
         // for the input and buttons, so you don't need mouse
         // interactions and can't walk over them
-        // Maybe even add a few poetic promptings about things
-        // that no one else may know about you
+        // TODO: At least treat the button like it's own active cell with positioning!
+        // that triggers when you get near to it
         showOrHideSelector("#signature")
       }
 
-      function displayNext() {
-        displayNextNode(initialPositions["#next"][0], "#tbd")
+      function displayNextDirection() {
+        displayOneByOne(
+          stringList(directions[3]),
+          { after: () => {
+            showOrHideSelector("#dock")
+          }}
+        )
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -216,7 +224,7 @@
         const sceneBoundary = {
           startX: 0,
           startY: 0,
-          endX: pixelsToGrid(SCENE_WIDTH),
+          endX: pixelsToGrid(2250), // End a little early so you can't go off the island
           endY: pixelsToGrid(SCENE_HEIGHT),
         }
         state.boundaries.push(sceneBoundary)
@@ -301,8 +309,13 @@
       <figure id="signature" class="fade hidden-with-fade" data-draggable>
         <input id="signature-write" type="text" required minlength="5"/>
         <label for="signature-write" class="signature-info">Enter an unique phrase, like your least favorite color and the name of your first imaginary friend, or perhaps the first place you'd go if you had a bad day.</label>
-        <button class="signature-sign" type="submit" onclick="displayNext()">sign</button>
+        <button class="signature-sign cell" type="submit" onclick="displayNextDirection()">sign</button>
       </figure>
+
+      <!-- dock -->
+      <figure class="island two-cell-v center" data-draggable></figure>
+      <figure class="island two-cell-h center" data-draggable></figure>
+      <figure id="dock" class="island cell center" data-obstacle data-draggable>dock</figure>
 
       <!-- next -->
       <a id="next" class="next-backlit hidden center cell circle">next</a>
