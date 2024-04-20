@@ -10,9 +10,6 @@ This is a story about two strangers finding a way to each other without revealin
 // Feeling of: early internet communication, like getting lost, the expansiveness of cyberspace
 
 Would you like to try?
-// Or: You are a stranger. (And you get to remain one.) There are many other strangers, too.
-// Connection and intimacy arrive in many forms.
-// This is a small space where you can connect without identifying yourself.
 // Should there be a kind of poetic prompting reflecting on identity (its many forms), its burdens, (surveillance), fatigue of surveillance and being identifiable / legible?
 
 <<declare $role = "">>
@@ -36,6 +33,8 @@ This might be a long journey to make.
 
 Thankfully, you have a network of fellow travelers who will be aiding you along the way, passing along your messages and going the distance with you.
 
+Let's go meet them.
+
 <<jump relays>>
 
 ===
@@ -48,7 +47,7 @@ It's where you'll wait, offering connection to seeking strangers.
 
 Your island is far away from any neighboring shores, but you have access to a network of fellow wayfinders who work together to deliver messages all over.
 
-Let's go meet them.
+Let's go find them.
 
 <<jump relays>>
 
@@ -108,11 +107,13 @@ Oh! Look at that. The stranger has sent ahead their own messenger with the secre
 
 The secrets match up, so it's safe to let them join you now.
 
-And just like that, connection has been established.
+Joined messenger to messenger to messenger, with the help of your fellow travelers, connection is established now.
 
 The stranger is here to meet you.
 
 You have crossed an ocean for a stranger who has offered you a connection.
+
+// What now? / What next?
 
 ===
 title: offeringPublish
@@ -124,10 +125,9 @@ These three connections are the only contacts you'll trust. Got it?
 -> Okay.
 
 Next, you pick a unique hard-to-forge signature that will identify you in place of your name or where you live.
--> Draw a special signature
 -> Write a special phrase
 
-Now, it's time to send off these signed introduction points.
+Now, it's time to release these signed introduction points for others to find.
 // Maybe there's an illustration of this directory entry or an animation where ships in a bottle or a letter gets released and fade off the browser.
 
 // Add something about a directory?
@@ -147,14 +147,11 @@ It looks like someone or something is interested in connecting.
 
 They've sent you a rendezvous location and a secret gift.
 
-// Eh, this should be a more compelling interaction...
-Would you like to like to take a look?
--> Yes
--> No?
-  -> If you're not ready, let's set a reminder.
--> I'm not sure
+// This can be tweaked / workshoped a bit!
+The rendezvous is a grassy knoll not too far from here. Are you ready?
 
-Let's send one of our messengers ahead to meet them. You'll send along the secret gift so they know that it's really you coming to meet them.
+// You can send one of your messengers ahead to meet them, along with the secret gift, so they know it's really you coming to meet them.
+Let's send one of your messengers ahead to meet them. You'll send along the secret gift so they know that it's really you coming to meet them.
 
 <<jump offeringVerified>>
 
@@ -164,12 +161,42 @@ title: offeringVerified
 position: -278,539
 ---
 
-And just like that, your messenger and verification have been accepted.
+Tada! Your messenger and verification have been accepted.
 
-Connection has been established.
+Joined messenger to messenger to messenger, with the help of your fellow travelers, connection is established now.
 
-The stranger is here to meet you.
+The stranger is waiting to meet you.
 
 You have offered connection to a stranger who has crossed an ocean to meet you.
+
+// Thank you for all you've offered.
+
+// What now?
+
+===
+
+title: extras
+---
+
+Now that you've made it this far, would you like to leave behind a seashell?
+
+Your browser will cross an ocean to meet the web server sitting on a desk in my house.
+
+The web server won't know where you're coming from, and your browser won't know where my web server is.
+
+// Extra text about the game ending, prompting reflection, giving context.
+// What do I want to leave participants with?
+
+// Or: You are a stranger. (And you get to remain one.) There are many other strangers, too.
+// Connection and intimacy arrive in many forms.
+// This is a small space where you can connect without identifying yourself.
+
+// There is refuge in the illegibility and anonymity (in an increasing surveilled world).
+// Learning about alternative logics and structures of the internet is a way of tending to the contestations of the past and the present
+
+// Three things top of mind for me:
+// A story about web requests and personal technology -- awe in this process
+// My increasing interest in being illegible and invisible online
+// Learning about alternative logics of networked communication is part of contesting them in the present. (Thinking about Alexis Shotwell's writing.)
 
 ===
