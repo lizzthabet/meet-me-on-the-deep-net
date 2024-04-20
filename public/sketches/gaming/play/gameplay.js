@@ -264,24 +264,43 @@ function activateAreaIfOverlap(x, y) {
 // Scroll the element into view if it's moved off the screen
 function scrollIntoView(element, x, y) {
   const { scrollX, scrollY, innerHeight, innerWidth } = window
-  const minXGridInView = pixelsToGrid(scrollX) + WINDOW_VIEW_GRID_BUFFER
-  const minYGridInView = pixelsToGrid(scrollY) + WINDOW_VIEW_GRID_BUFFER
-  const maxXGridInView = pixelsToGrid(innerWidth + scrollX) - WINDOW_VIEW_GRID_BUFFER
-  const maxYGridInView = pixelsToGrid(innerHeight + scrollY) - WINDOW_VIEW_GRID_BUFFER
+  const minXGridInView= pixelsToGrid(scrollX)
+  const minYGridInView= pixelsToGrid(scrollY)
+  const maxXGridInView= pixelsToGrid(innerWidth + scrollX)
+  const maxYGridInView= pixelsToGrid(innerHeight + scrollY)
+
+  // If element is out of view entirely, just scroll it into view,
+  // and don't scroll incrementally
+  if (
+    x < minXGridInView ||
+    x > maxXGridInView ||
+    y < minYGridInView ||
+    y > maxYGridInView
+  ) {
+    element.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+    return
+  }
+
+  // Otherwise, check if element is in the buffer where scrolling
+  // should be incremented slightly to keep the element in view
+  const minXGridBuffer = minXGridInView + WINDOW_VIEW_GRID_BUFFER
+  const minYGridBuffer = minYGridInView + WINDOW_VIEW_GRID_BUFFER
+  const maxXGridBuffer = maxXGridInView - WINDOW_VIEW_GRID_BUFFER
+  const maxYGridBuffer = maxYGridInView - WINDOW_VIEW_GRID_BUFFER
+
   let scroll = false
   const scrollOptions = { behavior: "instant", block: "nearest" }
-  if (x <= minXGridInView || x >= maxXGridInView) {
+  if (x <= minXGridBuffer || x >= maxXGridBuffer) {
     scroll = true
-    scrollOptions.left = x <= minXGridInView ? -GRID_SIZE_PX : GRID_SIZE_PX
+    scrollOptions.left = x <= minXGridBuffer ? -GRID_SIZE_PX : GRID_SIZE_PX
   }
-  if ( y <= minYGridInView || y >= maxYGridInView) {
+  if ( y <= minYGridBuffer || y >= maxYGridBuffer) {
     scroll = true
-    scrollOptions.top = y <= minXGridInView ? -GRID_SIZE_PX : GRID_SIZE_PX
+    scrollOptions.top = y <= minXGridBuffer ? -GRID_SIZE_PX : GRID_SIZE_PX
   }
   if (scroll) {
     // console.log(`x: ${minXGridInView}-${maxXGridInView}, y: ${minYGridInView}-${maxYGridInView}`)
     // console.log("scroll options:", scrollOptions)
-    // TODO: These calculations are a little buggy if the avatar is already in view OR if the avatar is completely out of view
     window.scrollBy(scrollOptions)
   }
 }
