@@ -118,8 +118,9 @@
       function activateYes() {
         showOrHideSelector("#yes", false)
         showOrHideSelector("#hints", false)
-        // Clear existing active areas since active elements are hidden
+        // Clear existing active areas + obstacles since active elements are hidden
         state.activeAreas = []
+        state.obstacles = []
         showOrHideSelectorList(".wave:not(.wave-inverse)", true)
         const seekingArea = createActiveArea(
           { 
@@ -216,19 +217,19 @@
       </p>
 
       <!-- waves -->
-      <figure class="fade hidden-with-fade wave three-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave three-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave two-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave two-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave two-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave two-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave two-cell-h" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave cell" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave cell" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave cell" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave cell" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave cell" data-obstacle data-draggable></figure>
-      <figure class="fade hidden-with-fade wave cell" data-obstacle data-draggable></figure>
+      <figure class="fade hidden-with-fade wave three-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave three-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave two-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave two-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave two-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave two-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave two-cell-h" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
+      <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
       <figure class="wave wave-inverse three-cell-h top-corner fade hidden-with-fade" data-draggable></figure>
       <figure class="wave wave-inverse two-cell-h bottom-corner fade hidden-with-fade" data-draggable></figure>
     </main>

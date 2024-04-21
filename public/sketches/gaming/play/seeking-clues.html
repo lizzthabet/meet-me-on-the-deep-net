@@ -235,10 +235,10 @@
           point: initialPositions[".wave-text"][2],
           activation: () => {
             const route = routeToRendezvous()
-            // const after = () => displayNextNode(initialPositions["#next"][0], routeToRendezvous())
+            const after = () => displayNextNode(initialPositions["#next"][0], routeToRendezvous())
             displayOneByOne(
               stringList(directions[6]),
-              // { after },
+              { after },
             )
           }
         },
