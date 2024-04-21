@@ -27,33 +27,42 @@ function updateDirection(html, { append } = { append: false }) {
     } else {
       direction.innerHTML = html
     }
-    direction.classList.remove("hidden")
+    toggleHiddenClass(direction, true)
   }
 }
 
 function resetDirection() {
   const direction = document.getElementById("direction")
   if (direction) {
-    direction.classList.add("hidden")
+    toggleHiddenClass(direction, false)
     direction.innerHTML = ""
   }
 }
 
-function showOrHideSelector(selector, visibility = true) {
-  const element = document.querySelector(selector)
-  if (element && visibility) {
+function toggleHiddenClass(element, visible = true) {
+  if (element && visible) {
     if (element.classList.contains("fade")) {
       element.classList.remove("hidden-with-fade")
     } else {
       element.classList.remove("hidden")
     }
-  } else if (element && !visibility) {
+  } else if (element && !visible) {
     if (element.classList.contains("fade")) {
       element.classList.add("hidden-with-fade")
     } else {
       element.classList.add("hidden")
     }
   }
+}
+
+function showOrHideSelector(selector, visible = true) {
+  const element = document.querySelector(selector)
+  toggleHiddenClass(element, visible)
+}
+
+function showOrHideSelectorList(selector, visible = true) {
+  const elements = document.querySelectorAll(selector)
+  elements.forEach(e => toggleHiddenClass(e, visible))
 }
 
 // TODO: I'm probably gonna need to refactor this to better

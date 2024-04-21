@@ -22,7 +22,6 @@ a, a:visited {
 
 button {
   color: black;
-  /* font-family: 'Times New Roman', Times, serif; */
   font-size: 1rem;
 }
 
@@ -54,6 +53,7 @@ input[type=radio] {
 }
 
 #direction {
+  /* TODO: Improve positioning on small screens */
   background-color: white;
   color: black;
   display: inline-block;
@@ -64,9 +64,6 @@ input[type=radio] {
   max-width: 700px;
   padding: 10px;
   position: fixed;
-  /* This may change with whole game border/margin */
-  /* top: 100px;
-  left: max(101px, calc(50% - 350px)); */
   top: 50px;
   left: max(51px, calc(50% - 350px));
   z-index: 2;
@@ -149,16 +146,12 @@ input[type=radio] {
 
 .wave {
   overflow: hidden;
-  /* border: 1px dashed black; */
 }
 
 .wave.wave-inverse,
 .wave-text.wave-inverse {
   background-color: blue;
   color: white;
-  /* This is useful for not overlapping with border */
-  /* margin: 10px 0; */
-  /* height: 30px; */
 }
 
 .wave::before {
@@ -166,10 +159,6 @@ input[type=radio] {
     backNForth 2s linear infinite,
     upNDown 1s linear infinite alternate;
   content: "~~~~~~~~~~~~~~~~~~";
-  /* top: -35px;
-  text-decoration-style: wavy;
-  text-decoration-color: blue;
-  text-decoration-line: underline; */
   font-size: 2.5rem;
   color: blue;
   width: 100%;
