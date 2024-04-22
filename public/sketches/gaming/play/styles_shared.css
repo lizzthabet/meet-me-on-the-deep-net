@@ -7,6 +7,10 @@ fieldset {
   box-sizing: border-box;
 }
 
+fieldset {
+  border: unset;
+}
+
 /* Basic helper styles */
 .cell {
   height: 50px;

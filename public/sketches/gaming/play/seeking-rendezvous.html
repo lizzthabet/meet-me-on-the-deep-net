@@ -55,7 +55,6 @@
         "The secrets match up, so it's safe to let them join you now.",
         "Joined messenger to messenger to messenger, with the help of your fellow travelers, connection is established now.",
         "The stranger is here to meet you.",
-        "You have crossed an ocean for a stranger who has offered you a connection.",
       ]
 
       // Params are point: {x, y}, activation: () => {}, options?: { height, width, center }
@@ -66,7 +65,10 @@
         },
         {
           point: initialPositions[".tree"][0],
-          activation: () => displayOneByOne(stringList(directions[1])),
+          activation: () => {
+            displayOneByOne(stringList(directions[1]))
+            setUpMelody()
+          },
         },
         {
           point: initialPositions[".star"][0],
@@ -115,6 +117,9 @@
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
+
+        // Set up sounds
+        const audio = setUpMainAudio()
 
         // Add boundary of the page to boundary list
         const sceneBoundary = {

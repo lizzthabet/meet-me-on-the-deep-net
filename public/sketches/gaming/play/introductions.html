@@ -152,6 +152,9 @@
           positionOnGridBySelector(selector, positions)
         }
 
+        // Set up sounds
+        const audio = setUpMainAudio()
+
         // Add boundary of the page to boundary list
         const sceneBoundary = { startX: 0, startY: 0 }
         state.boundaries.push(sceneBoundary)

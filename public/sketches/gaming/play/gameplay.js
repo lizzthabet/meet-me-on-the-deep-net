@@ -471,3 +471,19 @@ function printPositions(sort = false, selector) {
     }
   }
 }
+
+function setUpMainAudio(autoplay = true) {
+  const mainAudioTrack = new Audio("../assets/static-chirps.m4a")
+  mainAudioTrack.preload = "auto"
+  mainAudioTrack.loop = true
+  mainAudioTrack.autoplay = autoplay
+  return mainAudioTrack
+}
+
+function setUpMelody(autoplay = true) {
+  const melodyTrack = new Audio("../assets/melody-strum.m4a")
+  melodyTrack.preload = "auto"
+  melodyTrack.loop = true
+  melodyTrack.autoplay = autoplay
+  return melodyTrack
+}

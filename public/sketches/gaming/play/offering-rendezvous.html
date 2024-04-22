@@ -118,19 +118,22 @@
         },
         {
           point: initialPositions[".wave-text"][1],
-          activation: () => displayOneByOne(stringList(directions[5])),
+          activation: () => {
+            displayOneByOne(stringList(directions[5]))
+            setUpMelody()
+          },
         },
+        // {
+        //   point: initialPositions[".wave-text"][2],
+        //   activation: () => displayOneByOne(stringList(directions[6])),
+        // },
         {
-          point: initialPositions[".wave-text"][2],
+          point: initialPositions[".star"][0],
           activation: () => displayOneByOne(stringList(directions[6])),
         },
         {
-          point: initialPositions[".star"][0],
-          activation: () => displayOneByOne(stringList(directions[7])),
-        },
-        {
           point: initialPositions[".star"][1],
-          activation: () => displayOneByOne(stringList(directions[8]), { after: displayFinale }),
+          activation: () => displayOneByOne(stringList(directions[7]), { after: displayFinale }),
         },
       ]
 
@@ -147,6 +150,7 @@
         // TODO: This might mean avatar is out of view now!
         // Also this is kind of fast, so I wonder if moving both
         // the scroll and the avatar at the same time might be nice?
+        // There also seems to kind of be an issue with the trigger?
         if (finale) {
           finale.scrollIntoView({ behavior: "smooth", inline: "center" })
         }
@@ -160,6 +164,9 @@
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
+
+        // Set up sounds
+        const audio = setUpMainAudio()
 
         // Add boundary of the page to boundary list
         const sceneBoundary = {
@@ -236,7 +243,7 @@
       <!-- text waves -->
       <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
       <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
-      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
+      <!-- <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure> -->
 
       <section id="finale" class="fade hidden-with-fade" data-obstacle data-draggable>
         <p>
