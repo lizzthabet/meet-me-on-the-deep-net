@@ -1,9 +1,7 @@
-# html sketches
+# meet me on the deep net (a game)
 ☁  ☁  ☁  ☁  ☁  ☁  ☁  ☁  ☁
 
-a messy space for sketching w html, css, js
-
-(\*・‿・)ノ⌒\*:･ﾟ✧
+(more coming soon)
 
 ## local dev
 ```sh
