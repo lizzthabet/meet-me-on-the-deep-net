@@ -3,7 +3,7 @@ const UP = 'up'
 const DOWN = 'down'
 const LEFT = 'left'
 const RIGHT = 'right'
-const WINDOW_VIEW_GRID_BUFFER = 3;
+const WINDOW_VIEW_GRID_BUFFER = 6;
 
 // Note: this code is pretty tightly coupled with the CSS
 // and document structure of the game pages that import it.
