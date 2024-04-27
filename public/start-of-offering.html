@@ -146,18 +146,7 @@
         // Get the tagged obstacles and record their grid positions
         const obstacles = document.querySelectorAll('[data-obstacle]')
         obstacles.forEach((o) => {
-          const { scrollX, scrollY } = window
-          const { top, left, width, height } = o.getBoundingClientRect()
-          const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
-          if (width > GRID_SIZE_PX) {
-            const widthExceedingCell = width - GRID_SIZE_PX
-            position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
-          }
-
-          if (height > GRID_SIZE_PX) {
-            const heightExceedingCell = height - GRID_SIZE_PX
-            position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
-          }
+          const position = getPositionOnGrid(o)
           state.obstacles.push(position)
         })
 
