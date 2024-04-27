@@ -32,6 +32,21 @@
         height: 600px;
         width: 750px;
       }
+
+      #grassy {
+        background-color: green;
+        border: 10px dashed blue;
+        border-radius: 25px;
+        height: 300px;
+        width: 500px;
+      }
+
+      #more-ocean {
+        background-color: blue;
+        border-radius: 25px;
+        height: 400px;
+        width: 600px;
+      }
     </style>
     <script>
       // Hardcoded scene size for JS
@@ -49,6 +64,12 @@
         "#island": [
           {"x":0,"y":5,"center":false},
         ],
+        "#more-ocean": [
+          {"x":44,"y":14,"center":false},
+        ],
+        "#grassy": [
+          {"x":45,"y":15,"center":false},
+        ],
         "#dock": [
           {"x":14,"y":12},
         ],
@@ -62,7 +83,43 @@
           {"x":10,"y":7},
           {"x":12,"y":9},
         ],
-        ".wave": [
+        ".tree": [
+          {"x":4,"y":6},
+          {"x":6,"y":8},
+          {"x":10,"y":8,"center":false},
+          {"x":11,"y":7,"center":false},
+          {"x":4,"y":7,"center":false},
+          {"x":2,"y":13,"center":false},
+          {"x":1,"y":12,"center":false},
+          {"x":0,"y":13,"center":false},
+        ],
+        ".wave:not(.wave-inverse)": [
+          {"x":26,"y":5},
+          {"x":6,"y":2},
+          {"x":19,"y":6},
+          {"x":17,"y":11,"center":false},
+          {"x":19,"y":12,"center":false},
+          {"x":21,"y":7,"center":false},
+          {"x":21,"y":1,"center":false},
+          {"x":2,"y":17,"center":false},
+          {"x":1,"y":1,"center":false},
+          {"x":15,"y":13,"center":false},
+          {"x":44,"y":7},
+          {"x":45,"y":6},
+          {"x":32,"y":1},
+          {"x":27,"y":13,"center":false},
+          {"x":31,"y":17,"center":false},
+          {"x":30,"y":11,"center":false},
+          {"x":33,"y":9,"center":false},
+          {"x":38,"y":7,"center":false},
+          {"x":41,"y":15,"center":false},
+          {"x":52,"y":10,"center":false},
+          {"x":33,"y":9,"center":false},
+        ],
+        ".wave.wave-inverse": [
+          {"x":11,"y":4,"center":false},
+          {"x":45,"y":14,"center":false},
+          {"x":9,"y":15,"center":false},
         ],
         ".wave-text": [
           {"x":20,"y":8},
@@ -72,12 +129,17 @@
         ".star": [
           {"x":36,"y":3},
           {"x":41,"y":5},
+          {"x":40,"y":4},
+          {"x":42,"y":12},
+          {"x":52,"y":1},
+          {"x":55,"y":5},
+          {"x":38,"y":6},
         ],
         "#finale": [
           {"x":47,"y":4,"center":false},
         ],
         "#next": [
-          {"x":49,"y":15, center:false},
+          {"x":49,"y":13, center:false},
         ],
       }
 
@@ -124,10 +186,6 @@
             setUpMelody()
           },
         },
-        // {
-        //   point: initialPositions[".wave-text"][2],
-        //   activation: () => displayOneByOne(stringList(directions[6])),
-        // },
         {
           point: initialPositions[".star"][0],
           activation: () => displayOneByOne(stringList(directions[6])),
@@ -153,7 +211,7 @@
         // the scroll and the avatar at the same time might be nice?
         // There also seems to kind of be an issue with the trigger?
         if (finale) {
-          finale.scrollIntoView({ behavior: "smooth", inline: "center" })
+          finale.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
         }
         showOrHideSelector("#finale", true)
         setTimeout(() => displayNextNode(initialPositions["#next"][0], "./gratitude.html"), 1000)
@@ -219,32 +277,70 @@
       <!-- landscape -->
       <section id="ocean"></section>
       <section id="island"></section>
+      <section id="more-ocean" data-draggable></section>
+      <section id="grassy" data-draggable></section>
 
       <!-- dock -->
       <figure class="island two-cell-v center" data-draggable></figure>
       <figure class="island two-cell-h center" data-draggable></figure>
       <figure id="dock" class="island cell center" data-obstacle data-draggable>dock</figure>
 
-      <!-- shells -->
-      <!-- <figure class="shell cell center" data-obstacle data-draggable>shell</figure> -->
       <!-- stuff to make into other stuff -->
       <figure class="bottle two-cell-h center" data-obstacle data-draggable>bottle</figure>
       <figure class="bottle cell center" data-obstacle data-draggable>look</figure>
       <figure class="bottle cell center" data-obstacle data-draggable>open</figure>
 
-
       <!-- trees -->
-      <!-- <figure class="tree cell center" data-obstacle data-draggable>tree</figure> -->
-
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree three-cell-h center" data-obstacle data-draggable></figure>
 
       <!-- stars -->
-      <figure class="star cell center" data-obstacle data-draggable>star</figure>
-      <figure class="star cell center" data-obstacle data-draggable>star</figure>
+      <figure class="star cell center glow" data-obstacle data-draggable>star</figure>
+      <figure class="star cell center glow" data-obstacle data-draggable>star</figure>
+      <figure class="star cell center" data-obstacle data-draggable></figure>
+      <figure class="star cell center glow" data-obstacle data-draggable></figure>
+      <figure class="star cell center" data-obstacle data-draggable></figure>
+      <figure class="star cell center glow" data-obstacle data-draggable></figure>
+      <figure class="star cell center" data-obstacle data-draggable></figure>
 
       <!-- text waves -->
       <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
       <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
-      <!-- <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure> -->
+
+      <!-- waves -->
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+
+      <!-- inverse-waves -->
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
 
       <section id="finale" class="fade hidden-with-fade" data-obstacle data-draggable>
         <p>
