@@ -13,7 +13,6 @@
         /* hardcoded scene size in increments of 50px */
         height: 900px;
         width: 1000px;
-        /* TODO: this might be nice and fine? */
         overflow: hidden;
       }
 
@@ -39,24 +38,61 @@
         // TODO: not sure about this start position,
         // might need to test on mobile especially,
         // if it's out of frame
-        "#you": [{ x: 1, y: 15 }],
+        "#you": [{ x: 5, y: 14 }],
         ".messenger": [
           { x: 8, y: 12, center: false }, // active
           { x: 11, y: 8, center: false }, // active
           { x: 14, y: 4, center: false }, // active
           { x: 17, y: 8, center: false }, // will be activated
           { x: 5, y: 8, center: false }, // will be activated
-          { x: 0, y: 8 },
-          { x: 2, y: 4, center: false },
-          { x: 2, y: 12, center: false },
-          { x: 8, y: 4, center: false },
-          { x: 14, y: 12, center: false },
-          { x: 20, y: 4, center: false },
-          { x: 20, y: 12, center: false },
-          { x: 23, y: 8, center: false },
+          {"x":0,"y":0},
+          {"x":0,"y":8},
+          {"x":0,"y":16},
+          {"x":0,"y":24},
+          {"x":2,"y":4,"center":false},
+          {"x":2,"y":12,"center":false},
+          {"x":2,"y":20,"center":false},
+          {"x":5,"y":0,"center":false},
+          {"x":5,"y":16,"center":false},
+          {"x":5,"y":24,"center":false},
+          {"x":8,"y":4,"center":false},
+          {"x":8,"y":20,"center":false},
+          {"x":11,"y":0,"center":false},
+          {"x":11,"y":16,"center":false},
+          {"x":11,"y":24,"center":false},
+          {"x":14,"y":12,"center":false},
+          {"x":14,"y":20,"center":false},
+          {"x":17,"y":0,"center":false},
+          {"x":17,"y":16,"center":false},
+          {"x":17,"y":23,"center":false},
+          {"x":20,"y":4,"center":false},
+          {"x":20,"y":12,"center":false},
+          {"x":20,"y":20,"center":false},
+          {"x":23,"y":0,"center":false},
+          {"x":23,"y":8,"center":false},
+          {"x":23,"y":16,"center":false},
+          {"x":23,"y":24,"center":false},
+          {"x":26,"y":4,"center":false},
+          {"x":26,"y":12,"center":false},
+          {"x":26,"y":20,"center":false},
+          {"x":29,"y":0,"center":false},
+          {"x":29,"y":8,"center":false},
+          {"x":29,"y":16,"center":false},
+          {"x":29,"y":24,"center":false},
         ],
         ".wave": [
-          { x: 2, y: 13 },
+          {"x":1,"y":0},
+          {"x":10,"y":14},
+          {"x":16,"y":21},
+          {"x":27,"y":15},
+          {"x":24,"y":1,"center":false},
+          {"x":2,"y":16,"center":false},
+          {"x":13,"y":22,"center":false},
+          {"x":26,"y":2,"center":false},
+          {"x":0,"y":17,"center":false},
+          {"x":2,"y":1,"center":false},
+          {"x":18,"y":9,"center":false},
+          {"x":19,"y":10,"center":false},
         ],
         "#next": [{ x: 2, y: 3 }],
       }
@@ -265,6 +301,9 @@
       <figure id="messenger-5" class="messenger hidden-text two-cell-h center" data-obstacle data-draggable>messenger</figure>
       <!-- non-interactive messengers -->
       <figure class="messenger cell center" data-obstacle data-draggable></figure>
+      <figure class="messenger cell center" data-obstacle data-draggable></figure>
+      <figure class="messenger cell center" data-obstacle data-draggable></figure>
+      <figure class="messenger cell center" data-obstacle data-draggable></figure>
       <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
       <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
       <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
@@ -272,11 +311,44 @@
       <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
       <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
       <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
-      <!-- TODO: consider the sizing of this page and if there should be more or less volume -->
-      <!-- <section id="ocean" class="left"></section> -->
-      <!-- <section id="island" class="left">island</section> -->
-      <!-- <figure class="tree cell center" data-obstacle></figure> -->
-      <!-- <figure class="wave cell center"></figure> -->
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="messenger two-cell-h center" data-obstacle data-draggable></figure>
+
+      <!-- waves -->
+      <figure class="wave cell center" data-obstacle data-draggable></figure>
+      <figure class="wave cell center" data-obstacle data-draggable></figure>
+      <figure class="wave cell center" data-obstacle data-draggable></figure>
+      <figure class="wave cell center" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
+
       <a id="next" class="hidden center cell" data-obstacle data-draggable>next</a>
     </main>
     <!-- Controls for game -->
