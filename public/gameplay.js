@@ -174,6 +174,35 @@ function positionOnGridBySelector(selector, positions) {
   })
 }
 
+// Returns {startX, startY, endX?, endY?} in grid coordinates for
+// an element to be used in calculations, like obstacle definition
+function getPositionOnGrid(element) {
+  const { scrollX, scrollY } = window
+  const { top, left, width, height } = element.getBoundingClientRect()
+  const position = {
+    startX: pixelsToGrid(scrollX + left),
+    startY: pixelsToGrid(scrollY + top)
+  }
+  if (width > GRID_SIZE_PX) {
+    const widthExceedingCell = width - GRID_SIZE_PX
+    position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
+  }
+
+  if (height > GRID_SIZE_PX) {
+    const heightExceedingCell = height - GRID_SIZE_PX
+    position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
+  }
+
+  return position
+}
+
+function getPositionOnGridBySelector(selector) {
+  const element = document.querySelector(selector)
+  if (element) {
+    return getPositionOnGrid(element)
+  }
+}
+
 // Helper for defining an active area; returns:
 // {startX, startY, endX, endY, activation}.
 // Note: this only handles centering a 1x1 grid cell
@@ -185,6 +214,10 @@ function createActiveArea(
 ) {
   if (!point || !activeFunc) {
     console.warn("Cannot create active area with missing information")
+  }
+  
+  if (typeof point.x !== "number" || typeof point.y !== "number") {
+    console.warn("Cannot create active area with invalid coordinates")
   }
 
   const area = {
@@ -419,6 +452,7 @@ function setUpMainAudio(autoplay = true) {
   mainAudioTrack.loop = true
   mainAudioTrack.autoplay = autoplay
 
+  // TODO: This could be improved by adding a click listener to the document that only fires once and triggers the document has been interacted with
   // Maybe a failsafe if audio doesn't play?
   mainAudioTrack.addEventListener("canplay", () => {
     setTimeout(() => {

@@ -10,7 +10,6 @@
     <script src="./gameplay.js" defer></script>
     <style>
       body {
-        border: 1px dotted yellow;
         /* hardcoded page size */
         height: 800px;
         width: 3000px;
@@ -47,17 +46,29 @@
       .signature-info {
         display: block;
         font-style: italic;
-        font-size: 0.95rem;
-        margin: 10px 0;
+        font-size: 1rem;
+        margin: 10px 0 0 0;
       }
 
       #signature-write {
         font-size: 1rem;
-        width: 100%;
+        width: 95%;
+      }
+
+      #signature-write:focus {
+        outline: 5px dashed blue;
       }
 
       .signature-sign {
         display: inline-block;
+      }
+
+      .island {
+        transition: color 1s ease-in;
+      }
+
+      .island.hidden-text {
+        color: sienna;
       }
     </style>
     <script>
@@ -78,8 +89,39 @@
           { x: 6, y: 7 },
           { x: 10, y:12 }, // active
         ],
-        // TODO: Add some waves pls
-        ".wave": [],
+        ".wave:not(.wave-inverse)": [
+          {"x":27,"y":15},
+          {"x":46,"y":1},
+          {"x":29,"y":18},
+          {"x":5,"y":18},
+          {"x":25,"y":17,"center":false},
+          {"x":26,"y":1,"center":false},
+          {"x":8,"y":1,"center":false},
+          {"x":17,"y":15,"center":false},
+          {"x":29,"y":2,"center":false},
+          {"x":1,"y":17,"center":false},
+          {"x":9,"y":2,"center":false},
+          {"x":0,"y":2},
+          {"x":46,"y":13},
+          {"x":51,"y":11},
+          {"x":30,"y":16},
+          {"x":46,"y":14,"center":false},
+          {"x":47,"y":2,"center":false},
+          {"x":37,"y":16,"center":false},
+          {"x":36,"y":15,"center":false},
+          {"x":48,"y":7,"center":false},
+          {"x":51,"y":6,"center":false},
+        ],
+        ".wave.wave-inverse": [
+          {"x":38,"y":4,"center":false},
+          {"x":8,"y":15,"center":false},
+          {"x":21,"y":4,"center":false},
+          {"x":14,"y":15,"center":false},
+          {"x":2,"y":4,"center":false},
+          {"x":31,"y":15,"center":false},
+          {"x":41,"y":15,"center":false},
+          {"x":33,"y":4,"center":false},
+        ],
         ".intro": [
           { x: 17, y: 6 },
           { x: 15, y: 10 },
@@ -100,7 +142,8 @@
           {x: 45, y: 12}, // will be active
         ],
         "#ocean": [{ x: 0, y: 4, center: false }],
-        "#signature": [{x: 32, y: 9, center: false }],
+        "#signature": [{x: 32, y: 9, center: false }], // will be active
+        "#sign": [{"x":40,"y":8}], // will be active
         "#next": [{ x: 45, y: 7 }], // will be active
       }
 
@@ -155,13 +198,6 @@
             { after: displayUniqueSignature }
           ),
         },
-        { 
-          point: initialPositions["#dock"][0],
-          activation: () => displayOneByOne(
-            stringList(directions[4]),
-            { after: displayNextNode(initialPositions["#next"][0], "offering-rendezvous.html") }
-          ),
-        },
       ]
 
       // Game state
@@ -196,20 +232,65 @@
         }
       }
 
+      function activateSignatureField() {
+        const input = document.getElementById("signature-write")
+        if (input) {
+          input.focus()
+        }
+      }
+
       function displayUniqueSignature() {
-        // TODO: It'd be nice to add active areas and obstacles
-        // for the input and buttons, so you don't need mouse
-        // interactions and can't walk over them
-        // TODO: At least treat the button like it's own active cell with positioning!
-        // that triggers when you get near to it
+        // Display signature form elements
         showOrHideSelector("#signature")
+        showOrHideSelector("#sign")
+
+        // Create active areas for elements
+        const signatureArea = createActiveArea(
+          {
+            x: initialPositions["#signature"][0].x - 1,
+            y: initialPositions["#signature"][0].y - 1,
+          },
+          activateSignatureField,
+          { height: 5, width: 8, center: false }
+        )
+        state.activeAreas.push(signatureArea)
+        const signArea = createActiveArea(initialPositions["#sign"][0], displayNextDirection)
+        state.activeAreas.push(signArea)
+
+        // Create obstacle areas for elements
+        const signaturePosition = getPositionOnGridBySelector("#signature")
+        if (signaturePosition) {
+          state.obstacles.push(signaturePosition)
+        }
+        const signPosition = getPositionOnGridBySelector("#sign")
+        if (signPosition) {
+          state.obstacles.push(signPosition)
+        }
+      }
+
+      function enableSignButton(enable = true) {
+        const submitButton = document.getElementById("sign")
+        if (sign) {
+          submitButton.disabled = !enable
+        }
       }
 
       function displayNextDirection() {
+        const dockArea = createActiveArea(
+          initialPositions["#dock"][0],
+          () => displayOneByOne(
+            stringList(directions[4]),
+            { after: displayNextNode(initialPositions["#next"][0], "offering-rendezvous.html") }
+          ),
+        )
         displayOneByOne(
           stringList(directions[3]),
           { after: () => {
-            showOrHideSelector("#dock")
+            state.activeAreas.push(dockArea)
+            const dock = document.getElementById("dock")
+            if (dock) {
+              dock.classList.remove("hidden-text")
+            }
           }}
         )
       }
@@ -263,6 +344,19 @@
 
         // Move the avatar based on arrow presses
         document.addEventListener("keydown", onKeyDown)
+
+        // Add listener for escape key on input field
+        const input = document.getElementById("signature-write")
+        if (input) {
+          input.addEventListener("keyup", (event) => {
+            const { target } = event
+            if (event.key === "Escape" || event.key === "Enter") {
+              target.blur()
+            } else {
+              enableSignButton(target.value.length >= target.minLength)
+            }
+          })
+        }
       })
     </script>
   </head>
@@ -270,8 +364,11 @@
     <main>
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
+      <!-- landscape -->
       <section id="ocean"></section>
       <section id="island"></section>
+
+      <!-- trees -->
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle></figure>
@@ -280,6 +377,38 @@
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
+
+      <!-- waves -->
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
+
 
       <!-- Introduction points of trust -->
       <figure class="intro cell center" data-obstacle>
@@ -311,15 +440,15 @@
       <!-- pen -->
       <figure class="pen cell center fade hidden-with-fade" data-obstacle data-draggable>pen</figure>
       <figure id="signature" class="fade hidden-with-fade" data-draggable>
-        <input id="signature-write" type="text" required minlength="5"/>
-        <label for="signature-write" class="signature-info">Enter an unique phrase, like your least favorite color and the name of your first imaginary friend, or perhaps the first place you'd go if you had a bad day.</label>
-        <button class="signature-sign cell" type="submit" onclick="displayNextDirection()">sign</button>
+        <input id="signature-write" type="text" required minlength="5" placeholder="sign here"/>
+        <label for="signature-write" class="signature-info">Enter an unique phrase, like your least favorite color and the name of your first imaginary friend.</label>
       </figure>
+      <button id="sign" class="signature-sign cell fade hidden-with-fade" type="submit" onclick="displayNextDirection()" disabled data-draggable>sign</button>
 
       <!-- dock -->
       <figure class="island two-cell-v center" data-draggable></figure>
       <figure class="island two-cell-h center" data-draggable></figure>
-      <figure id="dock" class="island cell center" data-obstacle data-draggable>dock</figure>
+      <figure id="dock" class="island cell center hidden-text" data-obstacle data-draggable>dock</figure>
 
       <!-- next -->
       <a id="next" class="next-backlit hidden center cell circle">next</a>
