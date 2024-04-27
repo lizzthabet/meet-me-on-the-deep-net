@@ -418,6 +418,16 @@ function setUpMainAudio(autoplay = true) {
   mainAudioTrack.preload = "auto"
   mainAudioTrack.loop = true
   mainAudioTrack.autoplay = autoplay
+
+  // Maybe a failsafe if audio doesn't play?
+  mainAudioTrack.addEventListener("canplay", () => {
+    setTimeout(() => {
+      if (mainAudioTrack.paused) {
+        mainAudioTrack.play()
+      }
+    }, 2000)
+  })
+
   return mainAudioTrack
 }
 

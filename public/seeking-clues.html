@@ -13,7 +13,6 @@
         /* hardcoded scene size in increments of 50px */
         height: 800px;
         width: 3000px;
-        /* TODO: unsure about this */
         overflow: hidden;
       }
 
@@ -318,6 +317,9 @@
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
+
+        // Set up sounds
+        const audio = setUpMainAudio()
 
         // Add boundary of the page to boundary list
         const sceneBoundary = {
