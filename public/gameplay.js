@@ -412,6 +412,23 @@ function onKeyDown(event) {
   }
 }
 
+// Audio functions
+function setUpMainAudio(autoplay = true) {
+  const mainAudioTrack = new Audio("../assets/static-chirps.m4a")
+  mainAudioTrack.preload = "auto"
+  mainAudioTrack.loop = true
+  mainAudioTrack.autoplay = autoplay
+  return mainAudioTrack
+}
+
+function setUpMelody(autoplay = true) {
+  const melodyTrack = new Audio("../assets/melody-strum.m4a")
+  melodyTrack.preload = "auto"
+  melodyTrack.loop = true
+  melodyTrack.autoplay = autoplay
+  return melodyTrack
+}
+
 // Just for dev :)
 // This lets me drag elements around and then just print
 // their grid positions to paste into code config,
@@ -470,20 +487,4 @@ function printPositions(sort = false, selector) {
       console.error("could not copy dev helper to clipboard", error)
     }
   }
-}
-
-function setUpMainAudio(autoplay = true) {
-  const mainAudioTrack = new Audio("../assets/static-chirps.m4a")
-  mainAudioTrack.preload = "auto"
-  mainAudioTrack.loop = true
-  mainAudioTrack.autoplay = autoplay
-  return mainAudioTrack
-}
-
-function setUpMelody(autoplay = true) {
-  const melodyTrack = new Audio("../assets/melody-strum.m4a")
-  melodyTrack.preload = "auto"
-  melodyTrack.loop = true
-  melodyTrack.autoplay = autoplay
-  return melodyTrack
 }
