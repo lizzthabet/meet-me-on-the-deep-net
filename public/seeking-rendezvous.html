@@ -43,6 +43,7 @@
       // Hardcoded scene size for JS
       const SCENE_WIDTH = 3000
       const SCENE_HEIGHT = 800
+      const EVENT_PLAY_MELODY = "play-melody"
 
       // Elements to position with (x, y) grid coords
       const initialPositions = {
@@ -141,7 +142,8 @@
           point: initialPositions[".tree"][0],
           activation: () => {
             displayOneByOne(stringList(directions[1]))
-            setUpMelody()
+            // Tell the parent window (which has audio) to play it
+            window.parent.postMessage(EVENT_PLAY_MELODY, window.location.origin)
           },
         },
         {
@@ -191,9 +193,6 @@
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
-
-        // Set up sounds
-        const audio = setUpMainAudio()
 
         // Add boundary of the page to boundary list
         const sceneBoundary = {

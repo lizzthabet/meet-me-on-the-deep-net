@@ -9,6 +9,10 @@
     <link rel="stylesheet" type="text/css" href="./styles_website.css" />
     <script src="./gameplay.js" defer></script>
     <style>
+      body {
+        overflow: hidden;
+      }
+
       .a-choice {
         width: 300px;
         margin: 0;
@@ -50,6 +54,8 @@
       }
     </style>
     <script>
+      const EVENT_PLAY_MAIN_TRACK = "play-main-track"
+
       const initialPositions = {
         "#you": [
           {"x":3,"y":7},
@@ -66,7 +72,7 @@
         "#i-will-offer": [
           {"x":12,"y":5,"center":false},
         ],
-        ".wave.cell": [
+        ".wave.cell:not(.wave-inverse)": [
           {"x":0,"y":11},
           {"x":3,"y":8},
           {"x":3,"y":14},
@@ -74,14 +80,14 @@
           {"x":13,"y":16},
           {"x":17,"y":14},
         ],
-        ".wave.two-cell-h": [
+        ".wave.two-cell-h:not(.wave-inverse)": [
           {"x":4,"y":0,"center":false},
           {"x":4,"y":12,"center":false},
           {"x":5,"y":6,"center":false},
           {"x":7,"y":14,"center":false},
           {"x":11,"y":12,"center":false},
         ],
-        ".wave.three-cell-h": [
+        ".wave.three-cell-h:not(.wave-inverse)": [
           {"x":1,"y":5,"center":false},
           {"x":16,"y":4,"center":false},
         ],
@@ -111,6 +117,8 @@
       ]
 
       function activateYes() {
+        window.parent.postMessage(EVENT_PLAY_MAIN_TRACK, window.location.origin)
+
         showOrHideSelector("#yes", false)
         showOrHideSelector("#hints", false)
         // Clear existing active areas + obstacles since active elements are hidden
@@ -152,9 +160,6 @@
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
-
-        // Set up sounds
-        const audio = setUpMainAudio()
 
         // Add boundary of the page to boundary list
         const sceneBoundary = { startX: 0, startY: 0 }
@@ -229,7 +234,7 @@
       </div>
       <button class="toggle" onclick="toggleGrid()">toggle grid</button>
       <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
-      <button class="toggle" onclick="printPositions()">print (dev)</button>
+      <!-- <button class="toggle" onclick="printPositions()">print (dev)</button> -->
     </section>
     <div class="veil disappear" aria-hidden></div>
     <!-- TODO: Remove after dev is complete -->

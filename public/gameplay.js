@@ -3,7 +3,7 @@ const UP = 'up'
 const DOWN = 'down'
 const LEFT = 'left'
 const RIGHT = 'right'
-const WINDOW_VIEW_GRID_BUFFER = 6;
+const WINDOW_VIEW_GRID_BUFFER = 5;
 
 // Note: this code is pretty tightly coupled with the CSS
 // and document structure of the game pages that import it.
@@ -447,25 +447,6 @@ function onKeyDown(event) {
 }
 
 // Audio functions
-function setUpMainAudio(autoplay = true) {
-  const mainAudioTrack = new Audio("../assets/static-chirps.m4a")
-  mainAudioTrack.preload = "auto"
-  mainAudioTrack.loop = true
-  mainAudioTrack.autoplay = autoplay
-
-  // TODO: This could be improved by adding a click listener to the document that only fires once and triggers the document has been interacted with
-  // Maybe a failsafe if audio doesn't play?
-  mainAudioTrack.addEventListener("canplay", () => {
-    setTimeout(() => {
-      if (mainAudioTrack.paused) {
-        mainAudioTrack.play()
-      }
-    }, 2000)
-  })
-
-  return mainAudioTrack
-}
-
 function setUpMelody(autoplay = true) {
   const melodyTrack = new Audio("../assets/melody-strum.m4a")
   melodyTrack.preload = "auto"

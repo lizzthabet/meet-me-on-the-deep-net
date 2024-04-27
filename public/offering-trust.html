@@ -212,6 +212,7 @@
         const trusted = document.querySelectorAll("input:checked")
         const guide = document.getElementById("trust-guide")
         // TODO: It'd be nice to add / remove the pen activation + obstacle areas
+        // but this is tricky because this can be run multiple times
         if (trusted.length === 3) {
           showOrHideSelector(".pen", true)
         } else {
@@ -240,6 +241,7 @@
       }
 
       function displayUniqueSignature() {
+        // TODO: It would help to scroll these into view
         // Display signature form elements
         showOrHideSelector("#signature")
         showOrHideSelector("#sign")
@@ -280,7 +282,7 @@
           initialPositions["#dock"][0],
           () => displayOneByOne(
             stringList(directions[4]),
-            { after: displayNextNode(initialPositions["#next"][0], "offering-rendezvous.html") }
+            { after: () => displayNextNode(initialPositions["#next"][0], "offering-rendezvous.html") }
           ),
         )
         displayOneByOne(
@@ -301,9 +303,6 @@
           const positions = initialPositions[selector]
           positionOnGridBySelector(selector, positions)
         }
-
-        // Set up sounds
-        const audio = setUpMainAudio()
 
         // Add boundary of the page to boundary list
         const sceneBoundary = {

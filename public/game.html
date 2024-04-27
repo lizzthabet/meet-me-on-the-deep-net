@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>let's do this (can you figure out how to make the title work?</title>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="./styles_shared.css" />
+    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
+    <style>
+      body {
+        overflow: hidden;
+      }
+
+      main {
+        height: 100%;
+        width: 100%;
+      }
+
+      iframe {
+        border: none;
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+    <script>
+      const EVENT_PLAY_MAIN_TRACK = "play-main-track"
+      const EVENT_PLAY_MELODY = "play-melody"
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const game = document.getElementById("game")
+        if (game) {
+          // Because game scene windows are nested in an iframe,
+          // listen for iframe load events to get the scene's title
+          // and set it to this parent page's title
+          game.addEventListener("load", () => {
+            const pageTitle = game.contentDocument.title ?? "meet me on the deep net"
+            window.document.title = pageTitle
+          })
+
+          // Focus on the game scene to make sure key events are loaded
+          game.contentWindow.focus()
+        }
+
+        function setUpMainAudioLoop(autoplay = true) {
+          const mainAudioTrack = new Audio("../assets/static-chirps.m4a")
+          mainAudioTrack.preload = "auto"
+          mainAudioTrack.loop = true
+          mainAudioTrack.autoplay = autoplay
+
+          return mainAudioTrack
+        }
+
+        function setUpMelody(autoplay = true) {
+          const melodyTrack = new Audio("../assets/melody-strum.m4a")
+          melodyTrack.preload = "auto"
+          melodyTrack.loop = true
+          melodyTrack.autoplay = autoplay
+          return melodyTrack
+        }
+
+        window.addEventListener("message", (event) => {
+          // Only allow messages from same-origin
+          if (event.origin !== window.location.origin) {
+            return
+          }
+
+          switch(event.data) {
+            case EVENT_PLAY_MAIN_TRACK:
+              setUpMainAudioLoop()
+              return
+            case EVENT_PLAY_MELODY:
+              setUpMelody()
+              return
+          }
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <main>
+      <iframe
+        id="game"
+        src="./introductions.html"
+        loading="eager"
+        allowfullscreen></iframe>
+        <!-- sandbox="allow-forms allow-scripts allow-same-origin" -->
+    </main>
+    <div class="veil disappear" aria-hidden></div>
+  </body>
+</html>
