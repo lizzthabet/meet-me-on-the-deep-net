@@ -18,6 +18,44 @@
         overflow: hidden;
       }
 
+      #ocean {
+        height: 800px;
+        width: 350px;
+      }
+
+      #ocean-end {
+        height: 800px;
+        width: 1200px;
+      }
+
+      .island-large {
+        height: 800px;
+        width: 1500px;
+      }
+
+      .island-chunk-two {
+        width: 1000px;
+        height: 400px;
+      }
+
+      .glow {
+        animation: glow 2s ease-in-out infinite;
+      }
+
+      @keyframes glow {
+        0% {
+          box-shadow: none;
+        }
+
+        50% {
+          box-shadow: 0px 0px 10px 3px goldenrod;
+        }
+
+        100% {
+          box-shadow: none;
+        }
+      }
+
       /* any other custom styles */
     </style>
     <script>
@@ -30,23 +68,77 @@
         "#you": [
           {"x":2,"y":12},
         ],
-        ".tree": [
-          {"x":17,"y":7},
+        ".wave.wave-inverse": [
+          {"x":0,"y":14,"center":false},
+          {"x":2,"y":15},
+          {"x":4,"y":16,"center":false},
+          {"x":49,"y":15},
+          {"x":47,"y":16,"center":false},
+          {"x":44,"y":15,"center":false},
+          {"x":37,"y":15,"center":false},
         ],
-        ".wave": [
+        ".wave-text.wave-inverse": [
+          {"x":37,"y":15,"center":false},
+        ],
+        ".wave:not(.wave-inverse)": [
+          {"x":37,"y":11},
+          {"x":6,"y":8,"center":false},
+          {"x":4,"y":9,"center":false},
+          {"x":51,"y":13,"center":false},
+          {"x":49,"y":11,"center":false},
+          {"x":39,"y":13,"center":false},
+        ],
+        ".island-large": [
+          {"x":7,"y":12,"center":false},
+        ],
+        ".island-chunk-two": [
+          {"x":13,"y":9,"center":false},
+        ],
+        ".island": [
+          {"x":7,"y":12,"center":false},
+          {"x":13,"y":8,"center":false},
+          {"x":20,"y":7,"center":false},
+          {"x":5,"y":15,"center":false},
+          {"x":5,"y":15,"center":false},
+          {"x":5,"y":12,"center":false},
+          {"x":4,"y":14,"center":false},
+          {"x":4,"y":13,"center":false},
+          {"x":11,"y":10,"center":false},
+          {"x":10,"y":11,"center":false},
+        ],
+        ".tree": [
+          {"x":19,"y":6}, // active
+          {"x":12,"y":9},
+          {"x":19,"y":8},
+          {"x":18,"y":7,"center":false},
+          {"x":12,"y":8,"center":false},
+          {"x":14,"y":8,"center":false},
+          {"x":17,"y":8,"center":false},
+        ],
+        ".rock": [
+          {"x":32,"y":8},
+          {"x":33,"y":9,"center":false},
+          {"x":34,"y":11,"center":false},
+          {"x":33,"y":10,"center":false},
+          {"x":8,"y":11,"center":false},
         ],
         ".star": [
-          {"x":30,"y":3},
+          {"x":30,"y":3}, // active
+          {"x":34,"y":6}, // active
           {"x":33,"y":5},
+          {"x":43,"y":11},
+          {"x":47,"y":1},
+          {"x":48,"y":2},
+          {"x":55,"y":8},
         ],
         ".shell": [
-          {"x":7,"y":11},
+          {"x":7,"y":11}, // active
         ],
         "#finale": [
           {"x":41,"y":4,"center":false},
         ],
         "#next": [
-          {"x":43,"y":15, center:false},
+          {"x":43,"y":14, center:false},
         ],
       }
 
@@ -95,7 +187,7 @@
         // Also this is kind of fast, so I wonder if moving both
         // the scroll and the avatar at the same time might be nice?
         if (finale) {
-          finale.scrollIntoView({ behavior: "smooth", inline: "center" })
+          finale.scrollIntoView({ behavior: "smooth", inline: "center", "block": "nearest" })
         }
         showOrHideSelector("#finale", true)
         setTimeout(() => displayNextNode(initialPositions["#next"][0], "./gratitude.html"), 1000)
@@ -169,29 +261,68 @@
       <p id="direction" class="hidden"></p>
       <figure id="you" class="cell center">you</figure>
 
+      <!-- ocean -->
+      <figure id="ocean" class="wave wave-inverse" data-obstacle data-draggable></figure>
+      <figure id="ocean-end" class="wave-text wave-inverse" data-obstacle data-draggable></figure>
+      <figure class="wave cell wave-inverse" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h wave-inverse" data-obstacle data-draggable></figure>
+      <figure class="wave cell wave-inverse" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h wave-inverse" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h wave-inverse" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h wave-inverse" data-obstacle data-draggable></figure>
+
+      <!-- plain waves -->
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+
+      <!-- ground -->
+      <figure class="island island-large" data-draggable></figure>
+      <figure class="island island-chunk-two" data-draggable></figure>
+      <figure class="island two-cell-h" data-draggable></figure>
+      <figure class="island two-cell-h" data-draggable></figure>
+      <figure class="island two-cell-h" data-draggable></figure>
+      <figure class="island two-cell-h" data-draggable></figure>
+      <figure class="island three-cell-h" data-draggable></figure>
+      <figure class="island three-cell-h" data-draggable></figure>
+      <figure class="island three-cell-h" data-draggable></figure>
+      <figure class="island three-cell-h" data-draggable></figure>
+
+      <!-- rocks -->
+      <figure class="rock center cell" data-obstacle data-draggable></figure>
+      <figure class="rock center three-cell-v" data-obstacle data-draggable></figure>
+      <figure class="rock center three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="rock center two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="rock center two-cell-h" data-obstacle data-draggable></figure>
+
       <!-- shells -->
       <figure class="shell cell center" data-obstacle data-draggable>shell</figure>
 
-
       <!-- trees -->
       <figure class="tree cell center" data-obstacle data-draggable>tree</figure>
-
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree three-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree three-cell-h center" data-obstacle data-draggable></figure>
 
       <!-- stars -->
-      <figure class="star cell center" data-obstacle data-draggable>star</figure>
-      <figure class="star cell center" data-obstacle data-draggable>star</figure>
+      <figure class="star cell center glow" data-obstacle data-draggable>star</figure>
+      <figure class="star cell center glow" data-obstacle data-draggable>star</figure>
+      <figure class="star cell center" data-obstacle data-draggable></figure>
+      <figure class="star cell center glow" data-obstacle data-draggable></figure>
+      <figure class="star cell center" data-obstacle data-draggable></figure>
+      <figure class="star cell center glow" data-obstacle data-draggable></figure>
+      <figure class="star cell center" data-obstacle data-draggable></figure>
 
       <section id="finale" class="fade hidden-with-fade" data-obstacle data-draggable>
         <p>
           You have crossed an ocean for a stranger who has offered you connection.
         </p>
       </section>
-
-
-      <!-- <section id="ocean" class="left"></section> -->
-      <!-- <section id="island" class="left">island</section> -->
-      <!-- <figure class="tree cell center" data-obstacle data-draggable></figure> -->
-      <!-- <figure class="wave cell center"></figure> -->
       <a id="next" class="center two-cell-h hidden">thank you</a>
     </main>
     <!-- Controls for game -->
