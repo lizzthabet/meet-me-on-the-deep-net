@@ -319,6 +319,7 @@ function scrollIntoView(element, x, y) {
     y < minYGridInView ||
     y > maxYGridInView
   ) {
+    // console.log(`(${x}, ${y}) x: ${minXGridInView}-${maxXGridInView}, y: ${minYGridInView}-${maxYGridInView}`)
     element.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
     return
   }
@@ -336,12 +337,12 @@ function scrollIntoView(element, x, y) {
     scroll = true
     scrollOptions.left = x <= minXGridBuffer ? -GRID_SIZE_PX : GRID_SIZE_PX
   }
-  if ( y <= minYGridBuffer || y >= maxYGridBuffer) {
+  if (y <= minYGridBuffer || y >= maxYGridBuffer) {
     scroll = true
-    scrollOptions.top = y <= minXGridBuffer ? -GRID_SIZE_PX : GRID_SIZE_PX
+    scrollOptions.top = y <= minYGridBuffer ? -GRID_SIZE_PX : GRID_SIZE_PX
   }
   if (scroll) {
-    // console.log(`x: ${minXGridInView}-${maxXGridInView}, y: ${minYGridInView}-${maxYGridInView}`)
+    // console.log(`(${x}, ${y}) x: ${minXGridBuffer}-${maxXGridBuffer}, y: ${minYGridBuffer}-${maxYGridBuffer}`)
     // console.log("scroll options:", scrollOptions)
     window.scrollBy(scrollOptions)
   }
