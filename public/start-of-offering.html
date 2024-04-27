@@ -21,13 +21,13 @@
       #ocean {
         border-radius: 25px 0 0 25px;
         height: calc(50px * 12);
-        width: calc(2000px - 50px * 4);
+        width: 3050px;
       }
 
       #island {
         border-right: none;
         height: calc(50px * 10);
-        width: calc(2000px - 50px * 5);
+        width: 3000px;
       }
     </style>
     <script>
@@ -41,13 +41,18 @@
           {"x":2,"y":2},
         ],
         // TODO: Add more trees on island
-        // Also consider shrinking size to about 1000px instead
         ".tree": [
           {"x":7,"y":10},
           {"x":12,"y":8}, // active
           {"x":18,"y":13},
           {"x":19,"y":12}, // active
           {"x":24,"y":6},
+          {"x":17,"y":13},
+          {"x":18,"y":8},
+          {"x":13,"y":6},
+          {"x":12,"y":7,"center":false},
+          {"x":7,"y":11,"center":false},
+          {"x":6,"y":10,"center":false},
         ],
         ".wave": [
           {"x":2,"y":13},
@@ -56,6 +61,12 @@
           {"x":16,"y":2},
           {"x":12,"y":16,"center":false},
           {"x":9,"y":4,"center":false},
+          {"x":5,"y":15,"center":false},
+          {"x":19,"y":15,"center":false},
+          {"x":6,"y":2},
+          {"x":2,"y":18,"center":false},
+          {"x":16,"y":20,"center":false},
+          {"x":25,"y":2,"center":false},
         ],
         "#island": [
           {"x":5,"y":5,"center":false},
@@ -172,17 +183,33 @@
       <section id="ocean"></section>
       <section id="island"></section>
       <figure class="island cell center" data-obstacle>island</figure>
+
+      <!-- trees -->
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
       <figure class="tree cell center" data-obstacle></figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
       <figure class="tree cell center" data-obstacle>tree</figure>
-      <figure class="wave cell center" data-obstacle data-draggable></figure>
-      <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave cell center" data-obstacle data-draggable></figure>
-      <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree cell center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure class="tree three-cell-h center" data-obstacle data-draggable></figure>
+
+      <!-- waves -->
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave wave-inverse three-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave cell" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave two-cell-h" data-obstacle data-draggable></figure>
+      <figure class="wave three-cell-h" data-obstacle data-draggable></figure>
       <a id="next" class="next-backlit hidden center cell circle" data-draggable>next</a>
     </main>
     <!-- Controls for game -->
