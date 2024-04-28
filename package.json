@@ -7,6 +7,9 @@
     "dev": "npx nodemon ./dev-server.js --ext js,html,css"
   },
   "author": "lizz thabet",
+  "contributors": [
+      "Chiara Marcial Martínez"
+  ],
   "devDependencies": {
     "nodemon": "^3.0.3",
     "ws": "^8.16.0"
