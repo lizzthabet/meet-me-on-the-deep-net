@@ -58,13 +58,24 @@
 
       const initialPositions = {
         "#you": [
-          {"x":3,"y":7},
+          {"x":2,"y":7},
         ],
         "#yes": [
-          {"x":7,"y":9},
+          {"x":12,"y":9},
         ],
         "#hints": [
           {"x":2,"y":2,"center":false},
+        ],
+        ".tree": [
+          {"x":5,"y":8}, // active
+          {"x":2,"y":10},
+          {"x":3,"y":9, center: false},
+          {"x":4,"y":10, center: false},
+        ],
+        ".island": [
+          {"x":8,"y":10,"center":false}, // active
+          {"x":6,"y":10,"center":false},
+          {"x":7,"y":11,"center":false},
         ],
         "#i-will-seek": [
           {"x":12,"y":11,"center":false},
@@ -72,7 +83,7 @@
         "#i-will-offer": [
           {"x":12,"y":5,"center":false},
         ],
-        ".wave.cell:not(.wave-inverse)": [
+        ".wave.cell:not(.wave-transparent)": [
           {"x":0,"y":11},
           {"x":3,"y":8},
           {"x":3,"y":14},
@@ -80,25 +91,26 @@
           {"x":13,"y":16},
           {"x":17,"y":14},
         ],
-        ".wave.two-cell-h:not(.wave-inverse)": [
+        ".wave.two-cell-h:not(.wave-transparent)": [
           {"x":4,"y":0,"center":false},
           {"x":4,"y":12,"center":false},
           {"x":5,"y":6,"center":false},
           {"x":7,"y":14,"center":false},
           {"x":11,"y":12,"center":false},
         ],
-        ".wave.three-cell-h:not(.wave-inverse)": [
+        ".wave.three-cell-h:not(.wave-transparent)": [
           {"x":1,"y":5,"center":false},
           {"x":16,"y":4,"center":false},
         ],
-        ".wave.wave-inverse": [
+        ".wave.wave-transparent": [
           {"x":12,"y":11,"center":false},
           {"x":18,"y":13,"center":false},
         ],
       }
 
       const directions = [
-        "Would you like to try?",
+        "You're getting the hang of it. Elements with text in the landscape will unfold the story and prompts from left-to-right as you explore.",
+        "Just like that! Are you ready to begin?",
         "Can you imagine crossing an ocean to meet a stranger?"
       ]
 
@@ -111,20 +123,39 @@
       // point: {x, y}, activation: () => {}, { height, width, center }
       const activeAreasToCreate = [
         {
+          point: initialPositions[".tree"][0],
+          activation: () => displayOneByOne(stringList(directions[0])),
+        },
+        {
+          point: initialPositions[".island"][0],
+          activation: () => displayOneByOne(stringList(directions[1]), { after: changeButtonText }),
+        },
+        {
           point: initialPositions["#yes"][0],
           activation: activateYes,
         }
       ]
 
+      function changeButtonText() {
+        const button = document.getElementById("yes")
+        if (button) {
+          button.innerText = "yes"
+        }
+      }
+
       function activateYes() {
+        // Trigger music on the parent window, so it can play continuously
         window.parent.postMessage(EVENT_PLAY_MAIN_TRACK, window.location.origin)
 
+        // Hide all the introduction elements
         showOrHideSelector("#yes", false)
         showOrHideSelector("#hints", false)
+        showOrHideSelectorList(".tree", false)
+        showOrHideSelectorList(".island", false)
         // Clear existing active areas + obstacles since active elements are hidden
         state.activeAreas = []
         state.obstacles = []
-        showOrHideSelectorList(".wave:not(.wave-inverse)", true)
+        showOrHideSelectorList(".wave:not(.wave-transparent)", true)
         const seekingArea = createActiveArea(
           { 
             x: initialPositions["#i-will-seek"][0].x - 1,
@@ -146,11 +177,10 @@
           showOrHideSelector("#i-will-offer")
           state.activeAreas.push(seekingArea)
           state.activeAreas.push(offeringArea)
-          // TODO: fix weird timing fade issue
-          showOrHideSelector(".wave-inverse.top-corner")
-          showOrHideSelector(".wave-inverse.bottom-corner")
+          showOrHideSelector(".wave-transparent.top-corner")
+          showOrHideSelector(".wave-transparent.bottom-corner")
         }
-        const question = stringList(directions[1])
+        const question = stringList(directions[2])
         displayOneByOne(question, { after: afterTextDisplay })
       }
 
@@ -189,16 +219,28 @@
   </head>
   <body>
     <main>
-      <!-- Idea: maybe this would read better if instructions where at top, and the directions could offer the "would you like to try?", then the layout resumes like the normal game when you complete that interaction? -->
-      <h1 id="direction">Would you like to try?</h1>
+      <h1 id="direction">Before you begin, let's get a sense of the movement.</h1>
       <section id="hints">
         <p>Use your arrow keys or the controls in the lower right to move <b><u>you</u></b> around the space.</p>
         <p>Elements in the landscape that have text are interactive.</p>
         <p><b><u>You</u></b> can trigger interactive elements by moving next to them or by clicking on them.</p>
-        <p>This game is best played on desktop.</p>
+        <p>This game is best played on desktop. Sound on.</p>
       </section>
       <figure id="you" class="cell center">you</figure>
-      <button id="yes" class="cell" onclick="activateYes()" data-obstacle>yes</button>
+
+      <!-- warm-up landscape -->
+      <figure id="first" class="tree cell center" data-obstacle data-draggable>first</figure>
+      <figure id="first" class="tree cell center" data-obstacle data-draggable></figure>
+      <figure id="first" class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure id="first" class="tree two-cell-h center" data-obstacle data-draggable></figure>
+      <figure id="second" class="island two-cell-h center" data-obstacle data-draggable>second</figure>
+      <figure id="second" class="island two-cell-h center" data-obstacle data-draggable></figure>
+      <figure id="second" class="island three-cell-h center" data-obstacle data-draggable></figure>
+
+      <!-- the game begins -->
+      <!-- <button id="yes" class="cell" onclick="activateYes()" data-obstacle data-draggable>yes</button> -->
+      <button id="yes" class="cell" onclick="" data-obstacle data-draggable>third</button>
+      <!-- choices -->
       <p id="i-will-seek" class="a-choice ocean-choice fade hidden-with-fade" data-draggable>
         I'm ready to make a long journey. <br />
         <a href="./start-of-seeking.html" class="a-linked-choice"> I'll seek connection from a stranger offering it.</a>
@@ -222,8 +264,8 @@
       <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
       <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
       <figure class="fade hidden-with-fade wave cell" data-draggable></figure>
-      <figure class="wave wave-inverse three-cell-h top-corner fade hidden-with-fade" data-draggable></figure>
-      <figure class="wave wave-inverse two-cell-h bottom-corner fade hidden-with-fade" data-draggable></figure>
+      <figure class="wave wave-transparent three-cell-h top-corner fade hidden-with-fade" data-draggable></figure>
+      <figure class="wave wave-transparent two-cell-h bottom-corner fade hidden-with-fade" data-draggable></figure>
     </main>
     <section role="toolbar" class="controls">
       <div>
@@ -234,10 +276,10 @@
       </div>
       <button class="toggle" onclick="toggleGrid()">toggle grid</button>
       <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
-      <!-- <button class="toggle" onclick="printPositions()">print (dev)</button> -->
+      <button class="toggle" onclick="printPositions()">print (dev)</button>
     </section>
     <div class="veil disappear" aria-hidden></div>
     <!-- TODO: Remove after dev is complete -->
-    <!-- <script src="./draggable.js" defer></script> -->
+    <script src="./draggable.js" defer></script>
   </body>
 </html>

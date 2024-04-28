@@ -183,7 +183,8 @@ input[type=radio] {
   position: relative;
 }
 
-.wave.wave-inverse::before {
+.wave.wave-inverse::before,
+.wave.wave-transparent::before {
   color: white;
 }
 
