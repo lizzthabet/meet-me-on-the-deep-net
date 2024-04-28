@@ -103,12 +103,7 @@ input[type=radio] {
 }
 
 .clue {
-  /* TODO: consider another color? */
-  /* background-color: purple; */
   background-color: violet;
-  /* background-color: darkorange; */
-  /* box-shadow: 0px 0px 10px 3px violet; */
-  /* box-shadow: 0px 0px 10px 3px goldenrod; */
   color: white;
   transition: box-shadow 1s ease;
   /* needed for glowy animation */
@@ -123,6 +118,8 @@ input[type=radio] {
 .star {
   background-color: goldenrod;
   color: white;
+  /* needed for glowy animation */
+  z-index: 100;
 }
 
 .star.glow {
@@ -212,7 +209,6 @@ input[type=radio] {
   align-items: center;
   background-color: black;
   box-shadow: 0px 0px 20px 3px gray;
-  /* box-shadow: 0px 0px 20px 3px goldenrod; */
   color: white;
   display: flex;
   font-style: italic;

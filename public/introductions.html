@@ -78,7 +78,7 @@
           {"x":7,"y":11,"center":false},
         ],
         "#i-will-seek": [
-          {"x":12,"y":11,"center":false},
+          {"x":3,"y":11,"center":false},
         ],
         "#i-will-offer": [
           {"x":12,"y":5,"center":false},
@@ -86,16 +86,16 @@
         ".wave.cell:not(.wave-transparent)": [
           {"x":0,"y":11},
           {"x":3,"y":8},
-          {"x":3,"y":14},
+          {"x":8,"y":6},
           {"x":13,"y":3},
           {"x":13,"y":16},
           {"x":17,"y":14},
         ],
         ".wave.two-cell-h:not(.wave-transparent)": [
           {"x":4,"y":0,"center":false},
-          {"x":4,"y":12,"center":false},
+          {"x":16,"y":9,"center":false},
           {"x":5,"y":6,"center":false},
-          {"x":7,"y":14,"center":false},
+          {"x":7,"y":15,"center":false},
           {"x":11,"y":12,"center":false},
         ],
         ".wave.three-cell-h:not(.wave-transparent)": [
@@ -103,14 +103,14 @@
           {"x":16,"y":4,"center":false},
         ],
         ".wave.wave-transparent": [
-          {"x":12,"y":11,"center":false},
-          {"x":18,"y":13,"center":false},
+          {"x":3,"y":11,"center":false},
+          {"x":9,"y":13,"center":false},
         ],
       }
 
       const directions = [
-        "You're getting the hang of it. Elements with text in the landscape will unfold the story and prompts from left-to-right as you explore.",
-        "Just like that! Are you ready to begin?",
+        "Elements that have text in the landscape will unfold the story from left-to-right as you explore.",
+        "You're getting the hang of it. Are you ready to begin?",
         "Can you imagine crossing an ocean to meet a stranger?"
       ]
 
@@ -224,7 +224,7 @@
         <p>Use your arrow keys or the controls in the lower right to move <b><u>you</u></b> around the space.</p>
         <p>Elements in the landscape that have text are interactive.</p>
         <p><b><u>You</u></b> can trigger interactive elements by moving next to them or by clicking on them.</p>
-        <p>This game is best played on desktop. Sound on.</p>
+        <p>This game is best played on desktop with sound on.</p>
       </section>
       <figure id="you" class="cell center">you</figure>
 
@@ -238,8 +238,7 @@
       <figure id="second" class="island three-cell-h center" data-obstacle data-draggable></figure>
 
       <!-- the game begins -->
-      <!-- <button id="yes" class="cell" onclick="activateYes()" data-obstacle data-draggable>yes</button> -->
-      <button id="yes" class="cell" onclick="" data-obstacle data-draggable>third</button>
+      <button id="yes" class="cell" onclick="activateYes()" data-obstacle data-draggable>third</button>
       <!-- choices -->
       <p id="i-will-seek" class="a-choice ocean-choice fade hidden-with-fade" data-draggable>
         I'm ready to make a long journey. <br />
@@ -276,10 +275,10 @@
       </div>
       <button class="toggle" onclick="toggleGrid()">toggle grid</button>
       <button class="toggle" onclick="alert('not implemented yet sorry')">hide controls</button>
-      <button class="toggle" onclick="printPositions()">print (dev)</button>
+      <!-- <button class="toggle" onclick="printPositions()">print (dev)</button> -->
     </section>
     <div class="veil disappear" aria-hidden></div>
     <!-- TODO: Remove after dev is complete -->
-    <script src="./draggable.js" defer></script>
+    <!-- <script src="./draggable.js" defer></script> -->
   </body>
 </html>

@@ -47,6 +47,8 @@ fieldset {
 
 .hidden-with-fade {
   opacity: 0 !important;
+  user-select: none;
+  pointer-events: none;
 }
 
 /* To be used with .hidden-with-fade,
