@@ -24,8 +24,22 @@
       }
     </style>
     <script>
+      // will receive these events
       const EVENT_PLAY_MAIN_TRACK = "play-main-track"
       const EVENT_PLAY_MELODY = "play-melody"
+
+      // will send these events
+      const EVENT_MOVE_UP = 'move-up'
+      const EVENT_MOVE_DOWN = 'move-down'
+      const EVENT_MOVE_LEFT = 'move-left'
+      const EVENT_MOVE_RIGHT = 'move-right'
+
+      function sendMessageToMove(eventName) {
+        const iframe = document.getElementById("game")
+        if (iframe) {
+          iframe.contentWindow.postMessage(eventName, window.location.origin)
+        }
+      }
 
       document.addEventListener("DOMContentLoaded", () => {
         const game = document.getElementById("game")
@@ -92,12 +106,24 @@
   </head>
   <body>
     <main>
+      <!-- ze game :3 -->
       <iframe
         id="game"
         src="./introductions.html"
         loading="eager"
         allowfullscreen></iframe>
-        <!-- sandbox="allow-forms allow-scripts allow-same-origin" -->
+        <!-- Controls for game -->
+        <section role="toolbar" class="controls">
+          <details class="controls-details">
+            <summary class="controls-label">
+              controls
+            </summary>
+            <button class="move-direction" aria-label="move up" onclick="sendMessageToMove('move-up')">↑</button>
+            <button class="move-direction" aria-label="move left" onclick="sendMessageToMove('move-left')">←</button>
+            <button class="move-direction" aria-label="move right" onclick="sendMessageToMove('move-right')">→</button>
+            <button class="move-direction" aria-label="move down" onclick="sendMessageToMove('move-down')">↓</button>
+          </details>
+        </section>
     </main>
     <div class="veil disappear" aria-hidden></div>
   </body>

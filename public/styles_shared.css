@@ -78,17 +78,28 @@ while keeping .fade */
 /* For common game elements */
 .controls {
   bottom: 0;
-  margin: 10px;
   position: fixed;
   right: 0;
   text-align: right;
 }
 
-/* TODO: Improve mobile experience! */
+.controls-details {
+  padding: 1rem;
+}
+
+.controls-details[open] > .controls-label {
+  margin-bottom: 1rem;
+}
+
+.controls-label {
+  cursor: pointer;
+}
+
 .move-direction {
+  text-align: center;
   font-size: 1.5rem;
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
   padding: 2px;
 }
 

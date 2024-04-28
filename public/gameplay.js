@@ -4,6 +4,10 @@ const DOWN = 'down'
 const LEFT = 'left'
 const RIGHT = 'right'
 const WINDOW_VIEW_GRID_BUFFER = 5;
+const EVENT_MOVE_UP = 'move-up'
+const EVENT_MOVE_DOWN = 'move-down'
+const EVENT_MOVE_LEFT = 'move-left'
+const EVENT_MOVE_RIGHT = 'move-right'
 
 // Note: this code is pretty tightly coupled with the CSS
 // and document structure of the game pages that import it.
@@ -386,7 +390,6 @@ function moveDirectionOnGrid(element, direction) {
 }
 
 function onArrowButtonClick(direction) {
-  console.log("direction", direction)
   const you = document.getElementById("you")
   switch(direction) {
     case UP:
@@ -446,14 +449,30 @@ function onKeyDown(event) {
   }
 }
 
-// Audio functions
-function setUpMelody(autoplay = true) {
-  const melodyTrack = new Audio("../assets/melody-strum.m4a")
-  melodyTrack.preload = "auto"
-  melodyTrack.loop = true
-  melodyTrack.autoplay = autoplay
-  return melodyTrack
-}
+
+// Controls for the game may exist outside this scene,
+// so listen for events and respond to them
+window.addEventListener("message", (event) => {
+  // Only allow messages from same-origin
+  if (event.origin !== window.location.origin) {
+    return
+  }
+
+  switch(event.data) {
+    case EVENT_MOVE_UP:
+      onArrowButtonClick(UP)
+      return
+    case EVENT_MOVE_DOWN:
+      onArrowButtonClick(DOWN)
+      return
+    case EVENT_MOVE_LEFT:
+      onArrowButtonClick(LEFT)
+      return
+    case EVENT_MOVE_RIGHT:
+      onArrowButtonClick(RIGHT)
+      return
+  }
+})
 
 // Just for dev :)
 // This lets me drag elements around and then just print
