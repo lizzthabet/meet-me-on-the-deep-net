@@ -10,12 +10,9 @@
     <script src="./gameplay.js" defer></script>
     <style>
       body {
-        /* styles i'm not sure about */
-        /* margin: 50px; */
-        border: unset;
         /* hardcoded scene size in increments of 50px */
         height: 800px;
-        width: 1000px;
+        width: 1100px;
         overflow: hidden;
       }
 
@@ -23,7 +20,7 @@
     </style>
     <script>
       // Hardcoded scene size for JS
-      const SCENE_WIDTH = 1000
+      const SCENE_WIDTH = 1100
       const SCENE_HEIGHT = 800
 
       // Elements to position with (x, y) grid coords
@@ -104,8 +101,8 @@
 
         // Add boundary of the page to boundary list
         const sceneBoundary = {
-          startX: 1,
-          startY: 1,
+          startX: 0,
+          startY: 0,
           endX: pixelsToGrid(SCENE_WIDTH),
           endY: pixelsToGrid(SCENE_HEIGHT),
         }
@@ -141,12 +138,6 @@
       <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
       <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable>wave</figure>
 
-      <!-- blue blocks -->
-      <!-- <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable></figure>
-      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable></figure>
-      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable></figure>
-      <figure class="wave-text wave-inverse cell center" data-obstacle data-draggable></figure> -->
-
       <!-- regular waves -->
       <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
       <figure class="wave three-cell-h center" data-obstacle data-draggable></figure>
@@ -159,17 +150,6 @@
       <figure class="wave cell center" data-obstacle data-draggable></figure>
       <figure class="wave two-cell-h center" data-obstacle data-draggable></figure>
 
-      <!-- inverse waves -->
-      <!-- <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse three-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse three-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse cell center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse three-cell-h center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse cell center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse cell center" data-obstacle data-draggable></figure>
-      <figure class="wave wave-inverse two-cell-h center" data-obstacle data-draggable></figure> -->
       <a id="next" class="hidden center cell">next</a>
     </main>
     <!-- Controls for game -->
