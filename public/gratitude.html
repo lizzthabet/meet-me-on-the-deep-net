@@ -9,89 +9,61 @@
     <link rel="stylesheet" type="text/css" href="./styles_website.css" />
     <script src="./gameplay.js" defer></script>
     <style>
-      body {
+      main, footer {
         margin: 100px;
-        width: unset;
+        max-width: 800px;
       }
 
-      footer {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-around;
-        position: fixed;
-        bottom: 0;
-        left: 100px;
-        padding: 10px 0;
-        width: calc(100% - 200px);
+      .thank-you {
+        font-size: 1.25rem;
       }
 
-      footer > p {
-        margin: 0;
-        display: inline-block;
+      a {
+        text-decoration: blue 1px underline wavy;
+        text-underline-offset: 5px;
       }
 
-      #ocean {
-        border-radius: 25px 0 0 25px;
-        height: calc(50px * 12);
-        width: calc(2000px - 50px * 4);
-      }
-
-      #island {
-        border-right: none;
-        height: calc(50px * 10);
-        width: calc(2000px - 50px * 5);
-      }
-
-      #you {
-        z-index: 1;
+      .footer-link + .footer-link {
+        margin-left: 20px;
       }
     </style>
-    <script>
-      const initialPositions = {
-        "#you": [{ x: 8, y: 10 }],
-        ".stranger": [
-          { x: 2, y: 10, center: false },
-          { x: 13, y: 10, center: false },
-        ]
-      }
-
-      const state = {
-        boundaries: [],
-        obstacles: [],
-        activeArea: null,
-        activeAreas: []
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        // position elements on grid based on their pre-defined locations
-        for (const selector of Object.keys(initialPositions)) {
-          const positions = initialPositions[selector]
-          positionOnGridBySelector(selector, positions)
-        }
-      })
-    </script>
   </head>
   <body>
     <main>
-      <h1><i>Thank you for making this journey</i></h1>
-      <p>This is a placeholder area where we'll wrap up the game.</p>
-      <p>
-        It might be a:
-        <ul>
-          <li>an about page where I talk about where this game came from and what it's about for me</li>
-          <li>an invitation to visit and contribute to an onion website that I have running in my home</li>
-          <li>something else? meditations on: finding comfort and connection in anonymity, tending to the past and present</li>
-        </ul>
+      <h1><i>Thank you for making this journey</i> ☁</h1>
+      <p class="thank-you">
+        The journey you've made is inspired by how secure rendezvous points are established in the Tor network to allow websites to be visited and hosted anonymously.
       </p>
-      <p>
-        <a href="/">home</a>
+      <p class="thank-you">
+        As a technologist and general internet user, this process fills me with such awe and wonder. I like to think about it as being able to send a letter to someone (and receive a response!) without knowing their mailing address or revealing mine.
       </p>
+      <p class="thank-you">
+        In a web that's increasingly surveilled, extractive, and monopolized, this kind of network communication that's open-source, designed with privacy, and supported by volunteers around the world presents a counter-narrative.
+        <!-- Say more? -->
+      </p>
+      <p class="thank-you">
+         <!-- As Alexis Shotwell says in <i>Against Purity</i>... Contesting the past -->
+         Learning about how systems like Tor operate helps me contest the logic and inevitability of technologies that we have. Connection and intimacy do come in many forms. I'm finding more and more of it through anonymity these days.
+      </p>
+      <!-- You can visit one of these websites that I host from a tiny computer on my desk, and let your browser cross an ocean to visit my computer -->
+      <p class="thank-you">See you (or not ◕ᴗ◕) on the deep net,<br/>xo lizz</p>
     </main>
-    <div class="veil disappear" aria-hidden></div>
     <footer>
-      <a>Welcome to my homepage</a>
-      <p>This is where credits will go.</p>
+      <p class="glow">Handcoded by <a href="https://lizz.website">Lizz Thabet</a> with music by <button>Dave</button></p>
+      <p>
+        Made with <span class="blue">✎♡☁</span> during <a class="glow" href="https://www.welcometomyhomepage.net" target="_blank">Welcome to my Homepage</a>
+      </p>
+      <!-- TODO: add this pls :) -->
+      <p class="glow">
+        Many thanks to both the new & old friends who listened, played, and guided this game along with me
+        <!-- :<br/> Rachel Stuckey, Coby West, and Walt Mitchell. -->
+      </p>
+      <p>
+        <a class="footer-link" href="/">Play again</a>
+        <a class="footer-link" href="https://github.com/lizzthabet/meet-me-on-the-deep-net">View  code</a>
+        <a class="footer-link" href="https://self-host.lizz.website">Learn about hosting websites with Tor</a>
+      </p>
     </footer>
+    <div class="veil disappear" aria-hidden></div>
   </body>
 </html>

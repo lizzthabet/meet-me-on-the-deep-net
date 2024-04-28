@@ -93,7 +93,6 @@ You'll offer to meet the stranger somewhere safe for both of you.
 -> There's a shady patch underneath a few trees along the edge of a river you saw in a postcard.
 
 You choose a gift to send along with your meeting place invitation and hand it off to a messenger to deliver.
-// Maybe this is interactive?
 
 Let's head to the rendezvous point.
 
@@ -113,7 +112,6 @@ The stranger is here to meet you.
 
 You have crossed an ocean for a stranger who has offered you a connection.
 
-// What now? / What next?
 
 ===
 title: offeringPublish
@@ -129,8 +127,6 @@ Next, you pick a unique hard-to-forge signature that will identify you in place 
 
 Now, it's time to release these signed introduction points for others to find.
 // Maybe there's an illustration of this directory entry or an animation where ships in a bottle or a letter gets released and fade off the browser.
-
-// Add something about a directory?
 
 You wait.
 
@@ -150,7 +146,6 @@ They've sent you a rendezvous location and a secret gift.
 // This can be tweaked / workshoped a bit!
 The rendezvous is a grassy knoll not too far from here. Are you ready?
 
-// You can send one of your messengers ahead to meet them, along with the secret gift, so they know it's really you coming to meet them.
 Let's send one of your messengers ahead to meet them. You'll send along the secret gift so they know that it's really you coming to meet them.
 
 <<jump offeringVerified>>
@@ -170,8 +165,6 @@ The stranger is waiting to meet you.
 You have offered connection to a stranger who has crossed an ocean to meet you.
 
 // Thank you for all you've offered.
-
-// What now?
 
 ===
 
