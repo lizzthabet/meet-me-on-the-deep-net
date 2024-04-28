@@ -18,9 +18,10 @@
         max-width: 800px;
       }
 
-      footer {
-        /* TODO: consider removing margin at mobile screens sizes */
-        margin-top: 450px;
+      @media (max-width: 500px) {
+        main, footer {
+          margin: 50px 25px;
+        }
       }
 
       .welcome {
@@ -40,6 +41,10 @@
         text-shadow: white 1px 0px 15px, white 1px 0px 10px, white 1px 0px 5px;
       }
 
+      .small {
+        font-size: 1rem;
+      }
+
       #ocean {
         border-radius: 25px 0 0 25px;
         height: calc(50px * 12);
@@ -54,12 +59,12 @@
         z-index: -1;
       }
 
-      .wave {
-        z-index: -1;
+      dialog#about {
+        max-width: min(500px, 100%);
       }
 
-      #you {
-        z-index: 1;
+      .wave {
+        z-index: -1;
       }
     </style>
     <script>
@@ -72,23 +77,23 @@
         ],
         ".wave.cell": [
           {"x":0,"y":13},
-          {"x":1,"y":8},
+          {"x":0,"y":8},
           {"x":2,"y":1},
           {"x":3,"y":14},
-          {"x":7,"y":10},
+          {"x":10,"y":15},
           {"x":10,"y":2},
         ],
         ".wave.two-cell-h": [
-          {"x":3,"y":10,"center":false},
+          {"x":7,"y":13,"center":false},
           {"x":4,"y":12,"center":false},
           {"x":6,"y":12,"center":false},
-          {"x":9,"y":7,"center":false},
+          {"x":9,"y":5,"center":false},
           {"x":13,"y":12,"center":false},
           {"x":16,"y":5,"center":false},
         ],
         ".wave.three-cell-h": [
           {"x":0,"y":0,"center":false},
-          {"x":10,"y":9,"center":false},
+          {"x":15,"y":14,"center":false},
           {"x":13,"y":7,"center":false},
         ],
         ".wave.wave-inverse": [
@@ -166,9 +171,27 @@
       <figure class="wave wave-inverse two-cell-h center" data-draggable></figure>
 
       <dialog id="about">
-        <p>
-          This is where some stuff about me will go.
-        </p>
+        <!-- list bio v0.1.0 (experimental) -->
+        <ol>
+          <li>lizz thabet is: an artist, programmer, powerlifter, cyclist, aspiring teacher</li>
+          <li>also, an ongoing student of: photography, publishing, poetic computation, too many other things to list</li>
+          <li>also, makes: wearables, drawings, books, sculptures, softwares</li>
+          <li>lately, has been thinking about:
+            <ul>
+              <li>ways to disinvest from extractive everyday technologies</li>
+              <li>refusals, sabotage, and illegibility as strategies for resistance</li>
+              <li>living entangled and moving beyond an individual scale of change</li>
+            </ul>
+          </li>
+          <li>lately, has been doing:
+            <ul>
+              <li>teaching about privacy-centric tools on the web and self-hosting websites</li>
+              <li>making speculative camouflage suits based on her neighborhood</li>
+              <li>collaborating on a tiny zine about cycling in nyc</li>
+            </ul>
+          </li>
+          <li>often, is on the internet at <a class="small" href="https://lizz.website">lizz.website</a></li>
+        </ol>
         <form method="dialog"><button>close</button></form>
       </dialog>
     </main>
@@ -180,7 +203,7 @@
       <!-- TODO: add this pls :) -->
       <p class="glow">
         Many thanks to both the new & old friends who listened, played, and guided this game along with me
-        <!-- :<br/> Rachel Stuckey, Coby West, and Walt Mitchell. -->
+        <!-- especially <br/> Rachel Stuckey, Coby West, Walt Mitchell, and Chiara Marcial Martínez. -->
       </p>
     </footer>
     <div class="veil disappear" aria-hidden></div>
