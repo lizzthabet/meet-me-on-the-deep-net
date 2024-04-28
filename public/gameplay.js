@@ -65,31 +65,34 @@ function showOrHideSelectorList(selector, visible = true) {
   elements.forEach(e => toggleHiddenClass(e, visible))
 }
 
-// TODO: I'm probably gonna need to refactor this to better
-// handle how text from multiple nodes may be triggered at
-// the same. It could move to a global direction queue, possibly?
-// Maybe with a global state = "animatingTextInProgress"?
-function displayOneByOne(
-  htmlList,
-  { append, after } = { append: false, after: () => {} }
-) {
+function displayOneByOne(htmlList, { append, after } = { append: false, after: () => {} }) {
+  // Because there might be multiple timeout processes trying
+  // to write to the same element, clear the existing timeout process
+  // and only proceed with the current one
+  if (state.animatingTextInProgress) {
+    clearTimeout(state.animatingTextInProgress)
+    state.animatingTextInProgress = null
+  }
+
   if (!Array.isArray(htmlList)) {
     console.warn("Displaying elements one-by-one requires a list of elements")
     return
   }
-
-  if (htmlList.length === 0) {
+  
+  if (htmlList.length === 0) { 
     if (after) {
       after()
     }
     return
   }
-
+  
   // Treat the html string list like a queue that gets added
   // one-by-one to the direction
   const htmlString = htmlList.shift()
   updateDirection(htmlString, { append })
-  setTimeout(() => displayOneByOne(htmlList, { append: true, after }), 250)
+  const timeOutId = setTimeout(() => displayOneByOne(htmlList, { append: true, after }), 250)
+  // Track the timeout id on the state field "animatingTextInProgress"
+  state.animatingTextInProgress = timeOutId
 }
 
 // Display the #next node and add an active area to game state
