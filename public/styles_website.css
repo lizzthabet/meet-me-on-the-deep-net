@@ -106,8 +106,6 @@ input[type=radio] {
   background-color: violet;
   color: white;
   transition: box-shadow 1s ease;
-  /* needed for glowy animation */
-  z-index: 100;
 }
 
 .sand,
@@ -118,8 +116,6 @@ input[type=radio] {
 .star {
   background-color: goldenrod;
   color: white;
-  /* needed for glowy animation */
-  z-index: 100;
 }
 
 .star.glow {

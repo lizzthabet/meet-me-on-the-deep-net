@@ -10,6 +10,9 @@
     <script src="./gameplay.js" defer></script>
     <style>
       body {
+        /* hardcoded scene size in increments of 50px */
+        height: 800px;
+        width: 1100px;
         overflow: hidden;
       }
 
@@ -54,6 +57,9 @@
       }
     </style>
     <script>
+      // Hardcoded scene size for JS
+      const SCENE_WIDTH = 1100
+      const SCENE_HEIGHT = 800
       const EVENT_PLAY_MAIN_TRACK = "play-main-track"
 
       const initialPositions = {
@@ -192,7 +198,12 @@
         }
 
         // Add boundary of the page to boundary list
-        const sceneBoundary = { startX: 0, startY: 0 }
+        const sceneBoundary = {
+          startX: 0,
+          startY: 0,
+          endX: pixelsToGrid(SCENE_WIDTH),
+          endY: pixelsToGrid(SCENE_HEIGHT),
+        }
         state.boundaries.push(sceneBoundary)
 
         // get the tagged obstacles and record their grid positions
