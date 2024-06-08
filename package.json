@@ -1,17 +1,28 @@
 {
-  "name": "html-sketches",
-  "version": "0.1.0",
-  "description": "a messy space for sketching w html, css, js",
-  "main": "index.html",
+  "name": "meet-me-on-the-deep-net",
+  "version": "1.0.0",
+  "description": "a browser game about intimacy, trust, and establishing connection while being anonymous",
+  "main": "public/index.html",
   "scripts": {
-    "dev": "npx nodemon ./dev-server.js --ext js,html,css"
+    "dev": "npx nodemon ./dev-server.js --ext js,html,css",
+    "build-epilogue": "npx tsc",
+    "lint-epilogue": "npx eslint epilogue/"
   },
   "author": "lizz thabet",
   "contributors": [
-      "Chiara Marcial Martínez"
+    "Chiara Marcial Martínez"
   ],
   "devDependencies": {
+    "@eslint/js": "^9.4.0",
+    "@types/node": "^20.14.2",
+    "eslint": "^8.57.0",
     "nodemon": "^3.0.3",
+    "tsm": "^2.3.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.12.0",
     "ws": "^8.16.0"
+  },
+  "dependencies": {
+    "@tinyhttp/app": "^2.2.3"
   }
 }
