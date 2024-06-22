@@ -71,3 +71,7 @@ jspm_packages/
 # typescript compilation
 dist/
 **/dist
+
+# tor files
+dev.torrc
+hidden_service
