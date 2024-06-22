@@ -1,0 +1,162 @@
+/* important for sizing and positioning */
+figure,
+section,
+fieldset {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+fieldset {
+  border: unset;
+}
+
+/* Basic helper styles */
+.cell {
+  height: 50px;
+  width: 50px;
+}
+
+.two-cell-h {
+  height: 50px;
+  width: 100px;
+}
+
+.two-cell-v {
+  height: 100px;
+  width: 50px;
+}
+
+.three-cell-h {
+  height: 50px;
+  width: 150px;
+}
+
+.three-cell-v {
+  height: 150px;
+  width: 50px;
+}
+
+.circle {
+  border-radius: 25px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hidden-with-fade {
+  opacity: 0 !important;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* To be used with .hidden-with-fade,
+either add or remove .hidden-with-fade
+while keeping .fade */
+.fade {
+  transition: opacity 2s ease;
+  opacity: 1;
+}
+
+/* For text */
+.left { 
+  padding: 10px;
+  user-select: none;
+}
+
+/* For text */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+/* For common game elements */
+.controls {
+  bottom: 0;
+  position: fixed;
+  right: 0;
+  text-align: right;
+}
+
+.controls-details {
+  padding: 1rem;
+}
+
+.controls-details[open] > .controls-label {
+  margin-bottom: 1rem;
+}
+
+.controls-label {
+  cursor: pointer;
+}
+
+.move-direction {
+  text-align: center;
+  font-size: 1.5rem;
+  height: 50px;
+  width: 50px;
+  padding: 2px;
+}
+
+.toggle {
+  font-size: 1rem;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+.rotate-180 {
+  transform: rotate(180deg);
+}
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
+/* Animations for making stuff appear & disappear */
+@keyframes appear {
+  0% {
+    opacity: 0;
+    z-index: -1;
+  }
+  100% {
+    opacity: 1;
+    z-index: 1000;
+  }
+}
+@keyframes disappear {
+  0% {
+    opacity: 1;
+    z-index: 1000;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+.appear {
+  animation-name: appear;
+  animation-duration: 2s; 
+}
+
+.disappear {
+  animation-name: disappear;
+  animation-duration: 2s; 
+}
+
+.veil {
+  background-color: white;
+  left: 0;
+  height: 100vh;
+  overflow: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: -1;
+}

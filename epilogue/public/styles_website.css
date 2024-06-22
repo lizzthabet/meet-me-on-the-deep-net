@@ -1,0 +1,216 @@
+html {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 18px;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.grid {
+  background-size: 50px 50px;
+  background-image:
+    linear-gradient(to right, lightgray 1px, transparent 1px),
+    linear-gradient(to bottom, lightgray 1px, transparent 1px);
+}
+
+a, a:visited {
+  font-size: 1.25rem;
+  color: blue;
+}
+
+button {
+  color: black;
+  font-size: 1rem;
+}
+
+input[type=radio] {
+  height: 20px;
+  width: 20px;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+#you {
+  z-index: 99;
+  font-weight: bold;
+  text-decoration: underline;
+  color: black;
+  background-color: white;
+  border-radius: 25px;
+  height: 45px;
+  width: 45px;
+}
+
+#next {
+  padding: 0;
+}
+
+.next-backlit {
+  background-color: white;
+}
+
+#direction {
+  /* TODO: Improve positioning on small screens */
+  background-color: white;
+  color: black;
+  display: inline-block;
+  font-size: 1.125rem;
+  font-style: italic;
+  font-weight: normal;
+  margin: 1px;
+  max-width: 700px;
+  padding: 10px;
+  position: fixed;
+  top: 50px;
+  left: max(51px, calc(50% - 350px));
+  z-index: 2;
+}
+
+.seaweed,
+.tree {
+  background-color: green;
+  color: white;
+}
+
+.intro,
+.messenger {
+  background-color: purple;
+  color: white;
+}
+
+.intro > input {
+  width: 15px;
+  height: 15px;
+}
+
+.pen {
+  background-color: black;
+  color: white;
+}
+
+.rock {
+  background-color: gray;
+  color: white;
+}
+
+.bottle {
+  background-color: darkslategray;
+  /* dimgray, darkslategray */
+  color: white;
+}
+
+.clue {
+  background-color: violet;
+  color: white;
+  transition: box-shadow 1s ease;
+}
+
+.sand,
+.shell {
+  background-color: wheat;
+}
+
+.star {
+  background-color: goldenrod;
+  color: white;
+}
+
+.star.glow {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: none;
+  }
+
+  50% {
+    box-shadow: 0px 0px 10px 3px goldenrod;
+  }
+
+  100% {
+    box-shadow: none;
+  }
+}
+
+#ocean {
+  background-color: blue;
+  color: white;
+}
+
+#island,
+.island {
+  background-color: sienna;
+  color: white;
+}
+
+#island {
+  border: 10px dashed blue;
+}
+
+.wave-text {
+  color: blue;
+}
+
+.wave {
+  overflow: hidden;
+}
+
+.wave.wave-inverse,
+.wave-text.wave-inverse {
+  background-color: blue;
+  color: white;
+}
+
+.wave::before {
+  animation:
+    backNForth 2s linear infinite,
+    upNDown 1s linear infinite alternate;
+  content: "~~~~~~~~~~~~~~~~~~";
+  font-size: 2.5rem;
+  color: blue;
+  width: 100%;
+  position: relative;
+}
+
+.wave.wave-inverse::before,
+.wave.wave-transparent::before {
+  color: white;
+}
+
+@keyframes backNForth {
+  from {
+    left: 0px;
+  }
+  
+  to {
+    left: -50px;
+  }
+}
+
+@keyframes upNDown {
+  from {
+    top: -5px;
+  }
+  
+  to {
+    top: 5px;
+  }
+}
+
+#finale {
+  align-items: center;
+  background-color: black;
+  box-shadow: 0px 0px 20px 3px gray;
+  color: white;
+  display: flex;
+  font-style: italic;
+  font-size: 2rem;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  width: 300px;
+}

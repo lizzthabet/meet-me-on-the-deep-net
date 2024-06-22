@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx nodemon ./dev-server.js --ext js,html,css",
     "build-epilogue": "npx tsc",
-    "lint-epilogue": "npx eslint epilogue/"
+    "lint-epilogue": "npx eslint epilogue/",
+    "dev-epilogue": "npx nodemon --ignore './epilogue/test/' --exec 'tsm --env-file=./epilogue/dev.env' ./epilogue/src/server.ts"
   },
   "author": "lizz thabet",
   "contributors": [
@@ -15,14 +16,18 @@
   "devDependencies": {
     "@eslint/js": "^9.4.0",
     "@types/node": "^20.14.2",
+    "@types/node-cron": "^3.0.11",
     "eslint": "^8.57.0",
-    "nodemon": "^3.0.3",
+    "nodemon": "^3.1.3",
     "tsm": "^2.3.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.12.0",
     "ws": "^8.16.0"
   },
   "dependencies": {
-    "@tinyhttp/app": "^2.2.3"
+    "@tinyhttp/app": "^2.2.3",
+    "milliparsec": "^2.3.0",
+    "node-cron": "^3.0.3",
+    "sirv": "^2.0.4"
   }
 }

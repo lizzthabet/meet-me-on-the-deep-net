@@ -1,0 +1,18 @@
+{
+  "something": [
+    {
+      "position": {
+        "startX": 4,
+        "startY": 13
+      },
+      "color": "peru"
+    },
+    {
+      "position": {
+        "startX": 5,
+        "startY": 13
+      },
+      "color": "peru"
+    }
+  ]
+}
