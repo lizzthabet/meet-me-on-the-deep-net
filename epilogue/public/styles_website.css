@@ -32,6 +32,160 @@ input[type=radio] {
   margin: 0;
   flex-shrink: 0;
 }
+/* important for sizing and positioning */
+figure,
+section,
+fieldset {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+fieldset {
+  border: unset;
+}
+
+/* Basic helper styles */
+.cell {
+  height: 50px;
+  width: 50px;
+}
+
+.two-cell-h {
+  height: 50px;
+  width: 100px;
+}
+
+.two-cell-v {
+  height: 100px;
+  width: 50px;
+}
+
+.three-cell-h {
+  height: 50px;
+  width: 150px;
+}
+
+.three-cell-v {
+  height: 150px;
+  width: 50px;
+}
+
+.circle {
+  border-radius: 25px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hidden-with-fade {
+  opacity: 0 !important;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* To be used with .hidden-with-fade,
+either add or remove .hidden-with-fade
+while keeping .fade */
+.fade {
+  transition: opacity 2s ease;
+  opacity: 1;
+}
+
+/* For text */
+.left { 
+  padding: 10px;
+  user-select: none;
+}
+
+/* For text */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+/* For common game elements */
+.controls {
+  bottom: 0;
+  position: fixed;
+  right: 0;
+  text-align: right;
+}
+
+.controls-details {
+  padding: 1rem;
+}
+
+.controls-details[open] > .controls-label {
+  margin-bottom: 1rem;
+}
+
+.controls-label {
+  cursor: pointer;
+}
+
+.move-direction {
+  text-align: center;
+  font-size: 1.5rem;
+  height: 50px;
+  width: 50px;
+  padding: 2px;
+}
+
+.toggle {
+  font-size: 1rem;
+}
+
+/* Animations for making stuff appear & disappear */
+@keyframes appear {
+  0% {
+    opacity: 0;
+    z-index: -1;
+  }
+  100% {
+    opacity: 1;
+    z-index: 1000;
+  }
+}
+@keyframes disappear {
+  0% {
+    opacity: 1;
+    z-index: 1000;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+.appear {
+  animation-name: appear;
+  animation-duration: 2s; 
+}
+
+.disappear {
+  animation-name: disappear;
+  animation-duration: 2s; 
+}
+
+.veil {
+  background-color: white;
+  left: 0;
+  height: 100vh;
+  overflow: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: -1;
+}
+
+/* More common game elements */
 
 #you {
   z-index: 99;
@@ -42,14 +196,6 @@ input[type=radio] {
   border-radius: 25px;
   height: 45px;
   width: 45px;
-}
-
-#next {
-  padding: 0;
-}
-
-.next-backlit {
-  background-color: white;
 }
 
 #direction {
@@ -67,88 +213,6 @@ input[type=radio] {
   top: 50px;
   left: max(51px, calc(50% - 350px));
   z-index: 2;
-}
-
-.seaweed,
-.tree {
-  background-color: green;
-  color: white;
-}
-
-.intro,
-.messenger {
-  background-color: purple;
-  color: white;
-}
-
-.intro > input {
-  width: 15px;
-  height: 15px;
-}
-
-.pen {
-  background-color: black;
-  color: white;
-}
-
-.rock {
-  background-color: gray;
-  color: white;
-}
-
-.bottle {
-  background-color: darkslategray;
-  /* dimgray, darkslategray */
-  color: white;
-}
-
-.clue {
-  background-color: violet;
-  color: white;
-  transition: box-shadow 1s ease;
-}
-
-.sand,
-.shell {
-  background-color: wheat;
-}
-
-.star {
-  background-color: goldenrod;
-  color: white;
-}
-
-.star.glow {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: none;
-  }
-
-  50% {
-    box-shadow: 0px 0px 10px 3px goldenrod;
-  }
-
-  100% {
-    box-shadow: none;
-  }
-}
-
-#ocean {
-  background-color: blue;
-  color: white;
-}
-
-#island,
-.island {
-  background-color: sienna;
-  color: white;
-}
-
-#island {
-  border: 10px dashed blue;
 }
 
 .wave-text {
@@ -199,18 +263,4 @@ input[type=radio] {
   to {
     top: 5px;
   }
-}
-
-#finale {
-  align-items: center;
-  background-color: black;
-  box-shadow: 0px 0px 20px 3px gray;
-  color: white;
-  display: flex;
-  font-style: italic;
-  font-size: 2rem;
-  justify-content: center;
-  text-align: center;
-  padding: 10px;
-  width: 300px;
 }
