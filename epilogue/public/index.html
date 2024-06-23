@@ -16,53 +16,80 @@
         display: inline-block;
         font-size: 1.125rem;
         margin: 1px;
+        max-width: 500px;
         padding: 10px;
         z-index: 2;
       }
+
+      .info.info-mini {
+        font-size: 0.9rem;
+        z-index: -2;
+      }
+      .info.info-mini > code {
+        font-size: 0.8rem;
+      }
+
+      .wave.move-direction {
+        /* a bit hacky for sure */
+        position: relative;
+        bottom: -10px; 
+      }
+
+      .move-direction {
+        border-radius: 3px;
+        border: 1px outset buttonborder;
+      }
+
+      .veil-landscape {
+        background:
+          linear-gradient(to right, transparent 650px, white 1000px),
+          linear-gradient(to bottom, transparent 650px, white 900px);
+        height: 100vh;
+        position: fixed;
+        overflow: hidden;
+        top: 0;
+        right: 0;
+        width: 100vw;
+        z-index: -1;
+      }
     </style>
     <script>
-      const CHOSEN_PALETTE = [ "darkgreen", "green", "forestgreen", "blue", "mediumblue", "royalblue", "gray", "darkgray", "silver", "lightgray", "dodgerblue", "deepskyblue", "darkviolet", "blueviolet", "darkorchid", "mediumpurple", "mediumorchid", "violet", "mediumslateblue", "slateblue", "darkslateblue", "deeppink", "hotpink", "palevioletred", "crimson", "orangered", "tomato", "orange", "darkorange", "gold", "darkkhaki", "rosybrown", "burlywood", "goldenrod", "chocolate", "saddlebrown", "sienna", "peru", "steelblue", "dimgray", "slategray", "darkslategray", "olivedrab", "darkolivegreen", "midnightblue", "mediumaquamarine", "limegreen", "yellowgreen", "salmon", "lightcoral", "indianred", "darksalmon", "thistle", "lavender", "plum", "pink", "orchid", "mediumseagreen", "brown", "lightsteelblue", "paleturquoise", "darkturquoise", "darkcyan", "turquoise", "springgreen"]
-      const LANDSCAPE_KEY = 'landscape'
+      const COLOR_PALETTE = ["sienna", "green", "blue", "gray", "wheat", "goldenrod", "purple", "violet", "wave", "wave-inverse"]
 
       const initialPositions = {
         "#you": [{ x: 2, y: 12 }],
         ".info": [
           { x: 2, y: 3, center: false },
-          { x: 2, y: 5, center: false },
+          { x: 2, y: 4, center: false },
+          { x: 2, y: 6, center: false },
+          { x: 2, y: 8, center: false },
+          { x: 2, y: 15, center: false },
         ],
-        ".cell": [],
+        "#explore": [{ x: 10, y: 12, center: false }],
       }
 
-      const activeAreasToCreate = []
+      const activeAreasToCreate = [
+        {
+          point: {
+            x: initialPositions["#explore"][0].x - 1,
+            y: initialPositions["#explore"][0].y - 1,
+          },
+          activation: onExploreClick,
+          options: { height: 3, width: 4, center: false },
+        },
+      ]
 
       const state = {
-        boundaries: [{ startX: 0, startY: 0}],
+        boundaries: [{ startX: 0, startY: 0 }],
         obstacles: [],
         activeArea: null,
         activeAreas: [],
         landscapeMap: {},
         newLandscapeMap: {}, // indexed by location, { position: {startX, startY}, color: ''}
-        newLandscapeColor: '',
+        newLandscapeColor: COLOR_PALETTE[9],
       }
 
-      function toggleGrid() {
-        const html = document.documentElement
-        if (html && html.classList.contains("grid")) {
-          html.classList.remove("grid")
-        } else if (html) {
-          html.classList.add("grid")
-        }
-      }
-
-      function getRandomElement(list) {
-        return list[Math.round(Math.random() * (list.length - 1))]
-      }
-
-      function setLandscapeColor() {
-        state.newLandscapeColor = getRandomElement(CHOSEN_PALETTE)
-      }
-
-      function createIdFromPosition(pos) {
+      function hashPosition(pos) {
         const id = `${pos.startX},${pos.startY}`
         if (pos.hasOwnProperty("endX") || pos.hasOwnProperty("endY")) {
           id += `-${pos.endX ?? ""},${pos.endY ?? ""}`
@@ -83,7 +110,13 @@
         // Set the position to the avatar's
         positionOnGrid(element, position.startX, position.startY)
         setPositionAbsolute(element)
-        element.style.setProperty("background-color", color)
+        if (color === "wave") {
+          element.classList.add("wave")
+        } else if (color === "wave-inverse") {
+          element.classList.add("wave", "wave-inverse")
+        } else {
+          element.style.setProperty("background-color", color)
+        }
         // Add to the landscape
         const parentElement = getCellParent()
         parentElement.appendChild(element)
@@ -96,36 +129,61 @@
         parentElement.removeChild(element)
       }
 
-      function onSpacePress(event) {
+      function editLandscape() {
+        const you = document.getElementById("you")
+        if (!you) {
+          return
+        }
+
+        const gridPosition = getPositionOnGrid(you)
+        const landscapeId = hashPosition(gridPosition)
+        const alreadyExists = document.getElementById(landscapeId)
+        const isFromCurrentSession = state.newLandscapeMap.hasOwnProperty(landscapeId)
+        // You can only modify the landscape elements that have been
+        // added by you in your own session
+        if (alreadyExists && isFromCurrentSession) {
+          // Remove cell from the landscape
+          removeCellFromGrid(alreadyExists)
+          delete state.newLandscapeMap[landscapeId]
+          deleteToSavedLandscape(gridPosition, state.newLandscapeColor)
+        } else if (!alreadyExists) {
+          // Add cell to the landscape
+          addCellToGrid(gridPosition, landscapeId, state.newLandscapeColor)
+          // Track what specific cells were added in this session
+          state.newLandscapeMap[landscapeId] = { position: gridPosition, color: state.newLandscapeColor }
+          // Persist the cells across page loads
+          postToSavedLandscape(gridPosition, state.newLandscapeColor)
+        }
+      }
+
+      function changeCurrentColor(colorNumber) {
+        const index = colorNumber < 1 ? 9 : colorNumber - 1
+        state.newLandscapeColor = COLOR_PALETTE[index] ?? COLOR_PALETTE[0]
+      }
+
+      function onSpaceOrNumberPress(event) {
         if (event.key === " ") {
-          const you = document.getElementById("you")
-          if (!you) {
-            return
-          }
+          editLandscape()
+        }
 
-          const gridPosition = getPositionOnGrid(you)
-          const landscapeId = createIdFromPosition(gridPosition)
-          const alreadyExists = document.getElementById(landscapeId)
-          if (alreadyExists) {
-            // TODO: Check if cell exists in the newLandscapeMap
-            // so you can only modify the cells you've added
-            // Remove cell from the landscape
-            removeCellFromGrid(alreadyExists)
-            removeFromSavedLandscape(landscapeId)
-            // Delete the cell from the collective landscape (server json)
-            deleteToSavedLandscape(gridPosition, state.newLandscapeColor)
-          } else {
-            // Add cell to the landscape
-            addCellToGrid(gridPosition, landscapeId, state.newLandscapeColor)
-            // Track what specific cells were added in this session
-            state.newLandscapeMap[landscapeId] = { position: gridPosition, color: state.newLandscapeColor }
-            // Persist the cells across page loads (local storage)
-            // addToSavedLandscape(gridPosition, state.newLandscapeColor)
+        if (["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].includes(event.key)) {
+          changeCurrentColor(parseInt(event.key, 10))
+        }
+      }
 
-            // Save the cell to the collective landscape (server json)
-            postToSavedLandscape(gridPosition, state.newLandscapeColor)
-            
-          }
+      function onExploreClick() {
+        // Remove the obstacle definition for the button
+        // TODO: This shouldn't be so hardcoded lol
+        state.obstacles.pop()
+        // Disappear the landscape white background gradient
+        const landscapeVeil = document.querySelector(".veil-landscape")
+        if (landscapeVeil) {
+          toggleHiddenClass(landscapeVeil, false)
+        }
+        // Disappear the explore button
+        const explore = document.getElementById("explore")
+        if (explore) {
+          toggleHiddenClass(explore, false)
         }
       }
 
@@ -138,7 +196,19 @@
             return res.json()
           })
           .then((data) => {
-            state.landscapeMap = data
+            // data is an array of points with { position: {startX, startY, endX?, endY?}, color }
+            const landscapeMap = data.reduce((map, point) => {
+              if (point.position) {
+                const id = hashPosition(point.position)
+                map[id] = point
+              }
+              return map
+            }, {})
+            // TODO: Consider making this additive, since it may
+            // take time to load, people may have already added points,
+            // and it may make sense to refetch the landscape if
+            // creating new landscape fails because of collision
+            state.landscapeMap = landscapeMap
             Object.keys(state.landscapeMap).forEach((id) => {
               addCellToGrid(state.landscapeMap[id].position, id, state.landscapeMap[id].color)
             })
@@ -163,7 +233,7 @@
           // especially if it's because a point already exists
           // it may be because someone else is adding cells in those
           // same coordinates
-          const id = createIdFromPosition(position)
+          const id = hashPosition(position)
           const alreadyExists = document.getElementById(id)
           if (alreadyExists) {
             removeCellFromGrid(alreadyExists)
@@ -183,39 +253,10 @@
         }).catch((err) => {
           // Add the cell back to the landscape since
           // the delete failed
-          const id = createIdFromPosition(position)
+          const id = hashPosition(position)
           addCellToGrid(position, id, color)
           state.newLandscapeMap[id] = pointToDelete
         })
-      }
-
-      function getSavedLandscape() {
-        const landscape = localStorage.getItem(LANDSCAPE_KEY)
-        if (!landscape) {
-          return {}
-        }
-
-        try {
-          const landscapeData = JSON.parse(landscape)
-          return landscapeData
-        } catch (err) {
-          console.error("landscape data is invalid, resetting", err)
-          localStorage.removeItem(LANDSCAPE_KEY)
-          return {}
-        }
-      }
-
-      function addToSavedLandscape(position, color) {
-        const landscape = getSavedLandscape()
-        const id = createIdFromPosition(position)
-        landscape[id] = { position, color }
-        localStorage.setItem(LANDSCAPE_KEY, JSON.stringify(landscape))
-      }
-
-      function removeFromSavedLandscape(id) {
-        const landscape = getSavedLandscape()
-        delete landscape[id]
-        localStorage.setItem(LANDSCAPE_KEY, JSON.stringify(landscape))
       }
 
       // This is just to make color palette selection easier lol
@@ -237,25 +278,6 @@
         }
       }
 
-      // Just for my own visualization ty, ty
-      function printWholeColorPalletes() {
-        const colorStartPosition = { startX: 2, startY: 3 }
-        const colorGridWidth = 15
-        COLOR_NAMES.forEach((color, i) => {
-          const startX = i % 15 + colorStartPosition.startX
-          const startY = Math.floor(i / 15) + colorStartPosition.startY
-          const colorCell = addCellToGrid({ startX, startY }, createIdFromPosition({ startX, startY }), color)
-          colorCell.addEventListener("click", onClickRecordColor)
-        })
-
-        const chosenStartPosition = { startX: 2, startY: 15 }
-        CHOSEN_PALETTE.forEach((color, i) => {
-          const startX = i % 15 + chosenStartPosition.startX
-          const startY = Math.floor(i / 15) + chosenStartPosition.startY
-          addCellToGrid({ startX, startY }, createIdFromPosition({ startX, startY }), color)
-        })
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
          // position elements on grid based on their pre-defined locations
         for (const selector of Object.keys(initialPositions)) {
@@ -263,44 +285,91 @@
           positionOnGridBySelector(selector, positions)
         }
 
-        // Set up the landscape
-        state.newLandscapeColor = getRandomElement(CHOSEN_PALETTE)
-        // Local storage implementation:
-        const landscape = getSavedLandscape()
-        state.landscapeMap = landscape
-        Object.keys(state.landscapeMap).forEach((id) => {
-          addCellToGrid(state.landscapeMap[id].position, id, state.landscapeMap[id].color)
+        //////////////////// Old functions for game dev
+
+        // get the tagged obstacles and record their grid positions
+        const obstacles = document.querySelectorAll('[data-obstacle]')
+        obstacles.forEach((o) => {
+          const { scrollX, scrollY } = window
+          const { top, left, width, height } = o.getBoundingClientRect()
+          const position = { startX: pixelsToGrid(scrollX + left), startY: pixelsToGrid(scrollY + top) }
+          if (width > GRID_SIZE_PX) {
+            const widthExceedingCell = width - GRID_SIZE_PX
+            position.endX = pixelsToGrid(scrollX + left + widthExceedingCell)
+          }
+
+          if (height > GRID_SIZE_PX) {
+            const heightExceedingCell = height - GRID_SIZE_PX
+            position.endY = pixelsToGrid(scrollY + top + heightExceedingCell)
+          }
+          state.obstacles.push(position)
         })
 
-        // Saved JSON data served implementation:
+        // Create any pre-defined active areas and add them
+        // to the global state
+        if (activeAreasToCreate && Array.isArray(activeAreasToCreate)) {
+          activeAreasToCreate.forEach(area => {
+            state.activeAreas.push(
+              createActiveArea(area.point, area.activation, area.options)
+            )
+          })
+        }
+
+        //////////////////// New functions for landscape creation
+
+        // Set up the landscape by fetching the data
         fetchSavedLandscape()
 
         // Move the avatar based on arrow presses
         document.addEventListener("keydown", onKeyDown)
         // Add elements to the landscape based on avatar position
-        document.addEventListener("keydown", onSpacePress)
+        document.addEventListener("keydown", onSpaceOrNumberPress)
 
-        // Just for dev
-        // printWholeColorPalletes()
       })
     </script>
   </head>
   <body>
-    <nav>
-      <a href="/">back</a>
-    </nav>
     <main>
-      <p id="direction" class="">You've crossed an ocean to be here.</p>
-      <p class="info">
-        This is a messy prototype for playing around <br/>
-        with a local file database of landscape. :)
-      </p>
+      <p class="info" data-obstacle>Welcome, stranger.</p>
+      <p class="info" data-obstacle>You've crossed an ocean to be here. Or rather, your browser has crossed an ocean to meet my tiny web server running on a tiny computer on a desk in my house.</p>
+      <p class="info" data-obstacle>Wanna explore? Leave a piece of earth behind? This place is filled with islands from other strangers who have made this journey and created places for you to visit.</p>
+      <p class="info" data-obstacle>Here, you, too, can create your own island for future strangers to cross an ocean to meet.</p>
+      <p class="info info-mini" data-obstacle>ps. I haven't written instructions yet oops. Navigate <u><b>you</b></u> with the arrow keys. Press <code>space</code> to place a tile, and press it again to remove the tile. Press any number <code>0</code>-<code>9</code> on your keyboard or use the palette buttons to change the current tile color.</p>
       <figure id="you" class="cell center">you</figure>
+      <button id="explore" class="cell two-cell-h fade" onclick="onExploreClick()" data-obstacle>explore</button>
+      <div class="veil-landscape fade" aria-hidden="true"></div>
     </main>
+
     <section role="toolbar" class="controls">
-      <button class="toggle" onclick="printPositions()">print (dev)</button>
-      <button class="toggle" onclick="toggleGrid()">toggle grid</button>
+      <details class="controls-details">
+        <summary class="controls-label">palette</summary>
+        <button class="move-direction" style="background-color: sienna; color: white;" aria-label="select brown" onclick="changeCurrentColor(1)">1</button>
+        <button class="move-direction" style="background-color: green; color: white;" aria-label="select green" onclick="changeCurrentColor(2)">2</button>
+        <button class="move-direction" style="background-color: blue; color: white;" aria-label="select blue" onclick="changeCurrentColor(3)">3</button>
+        <button class="move-direction" style="background-color: gray; color: white;" aria-label="select gray" onclick="changeCurrentColor(4)">4</button>
+        <button class="move-direction" style="background-color: wheat;" aria-label="select yellow" onclick="changeCurrentColor(5)">5</button>
+        <button class="move-direction" style="background-color: goldenrod;" aria-label="select gold" onclick="changeCurrentColor(6)">6</button>
+        <button class="move-direction" style="background-color: purple; color: white;" aria-label="select purple" onclick="changeCurrentColor(7)">7</button>
+        <button class="move-direction" style="background-color: violet;" aria-label="select violet" onclick="changeCurrentColor(8)">8</button>
+        <button class="move-direction wave" aria-label="select wave" onclick="changeCurrentColor(9)">9</button>
+        <button class="move-direction wave wave-inverse" aria-label="select wave with blue background" onclick="changeCurrentColor(0)">0</button>
+      </details>
+      <details class="controls-details">
+        <summary class="controls-label">
+          controls
+        </summary>
+        <button class="move-direction" aria-label="place earth" onclick="editLandscape()">s</button>
+        <button class="move-direction" aria-label="move up" onclick="onArrowButtonClick('up')">↑</button>
+        <button class="move-direction" aria-label="move left" onclick="onArrowButtonClick('left')">←</button>
+        <button class="move-direction" aria-label="move right" onclick="onArrowButtonClick('right')">→</button>
+        <button class="move-direction" aria-label="move down" onclick="onArrowButtonClick('down')">↓</button>
+        <!-- FOR DEV ONLY -->
+        <!-- <button class="toggle" onclick="resetSavedLandscape()">reset</button> -->
+        <!-- <button class="toggle" onclick="printPositions()">print (dev)</button> -->
+        <!-- <button class="toggle" onclick="toggleGrid()">toggle grid</button> -->
+      </details>
     </section>
+
     <!-- For easy dev -->
     <script src="./draggable.js" defer></script>
   </body>

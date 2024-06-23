@@ -33,8 +33,8 @@ const NODE_ENV = process.env.NODE_ENV || "production"
 const PORT = parseInt(process.env.PORT, 10) || 4000
 const ASSETS_DIR = process.env.ASSETS_DIR || "public"
 const DATA_DIR = process.env.DATA_DIR || "."
-const DATA_FILE = "landscape_test.json"
-const DATA_REMOVED_FILE = "landscape_test-removed.json"
+const DATA_FILE = "landscape.json"
+const DATA_REMOVED_FILE = "landscape-removed.json"
 const POST_EARTH_REQUEST_LIMIT = 30
 
 const isDev = NODE_ENV !== "production"
