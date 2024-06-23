@@ -35,6 +35,7 @@ const ASSETS_DIR = process.env.ASSETS_DIR || "public"
 const DATA_DIR = process.env.DATA_DIR || "."
 const DATA_FILE = "landscape_test.json"
 const DATA_REMOVED_FILE = "landscape_test-removed.json"
+const POST_EARTH_REQUEST_LIMIT = 30
 
 const isDev = NODE_ENV !== "production"
 
@@ -79,7 +80,7 @@ function readFileData<T>(dataPath: string, dataValidator: (data: unknown) => dat
   })
 }
 
-function writeLandscapeData(data: LandscapeData, dataPath: string): Promise<void> {
+function writeFileData<T extends object>(data: T, dataPath: string): Promise<void> {
   // TODO: Consider adding a file lock to prevent duplicate writes
   return new Promise((resolve, reject) => {
     console.log("> > . writing landscape data")
@@ -191,6 +192,16 @@ function isArchivedLandscape(data: unknown): data is RemovedLandscapeData {
   return true
 }
 
+function areEqual(point1: LandscapePoint, point2: LandscapePoint): boolean {
+  return (
+    point1.color === point2.color
+    && point1.position.startX === point2.position.startX
+    && point1.position.startY === point2.position.startY
+    && point1.position.endX === point2.position.endX
+    && point1.position.endY === point2.position.endY
+  )
+}
+
 /** App routes */
 
 const app = new App()
@@ -206,7 +217,7 @@ app.get("/earth", (_, res) => {
     res.send(activePoints)
   } catch (err) {
     // There should be better error handling obvs
-    console.error(err)
+    console.error("getting points", err)
     res.sendStatus(500)
   }
 })
@@ -215,45 +226,87 @@ app.use("/earth", json())
 app.post("/earth", async (req, res) => {
   console.log("> > new points for /earth")
   try {
-    if (req.body && Array.isArray(req.body)) {
-      req.body.every((point) => {
-        if (!isLandscapePoint(point)) {
-          throw new Error("data is not landscape point")
-        }
-  
-        const key = hash(point)
-        if (landscapeCache[key]) {
-          throw new Error(`point already exists at position (${point.position.startX}, ${point.position.startY})`)
-        }
-      })
-
-      req.body.forEach((point) => {
-        const key = hash(point)
-        landscapeCache[key] = point
-        // Record the timestamp of each update,
-        // so async save file task can compare against
-        lastCacheUpdate = Date.now()
-      })
-
-      res.sendStatus(200)
-    } else {
+    if (!req.body || !Array.isArray(req.body)) {
       throw new Error("unexpected body data")
     }
+
+    // Rudimentary limit on request size to prevent
+    // large requests from being very slow
+    if (req.body.length > POST_EARTH_REQUEST_LIMIT) {
+      throw new Error("data exceeds request limit")
+    }
+
+    // Validate that each element in the request list
+    // is a landscape point and doesn't already exist
+    req.body.every((point) => {
+      if (!isLandscapePoint(point)) {
+        throw new Error("data is not landscape point")
+      }
+
+      const key = hash(point)
+      if (landscapeCache[key]) {
+        throw new Error(`point already exists at position (${point.position.startX}, ${point.position.startY})`)
+      }
+    })
+
+    // Add each point to the in-memory cache
+    req.body.forEach((point: LandscapePoint) => {
+      const key = hash(point)
+      landscapeCache[key] = point
+      // Record the timestamp of each update,
+      // so async save file task can compare against
+      lastCacheUpdate = Date.now()
+    })
+
+    res.sendStatus(200)
   } catch (err) {
     // There should be better error handling obvs
-    console.error(err)
+    console.error("adding points", err)
     res.sendStatus(500)
   }
 })
 
-// TODO!!!
-// app.delete("/earth", (req, res) => {})
+app.delete("/earth", (req, res) => {
+  console.log("> > deleting on /earth")
+  try {
+    // Note to self: this requires that the whole point
+    // be sent in the request, when only the coordinates
+    // are required to look it up
+    if (!req.body || !isLandscapePoint(req.body)) {
+      throw new Error("unexpected body data")
+    }
 
-// Validating the request
+    const key = hash(req.body)
+    if (landscapeCache[key]) {
+      // Don't delete a point at the same coordinates
+      // if it's not the same point
+      const pointToRemove = landscapeCache[key]
+      if (!areEqual(pointToRemove, req.body)) {
+        throw new Error("points are not the same")
+      }
+
+      // Move the point to the removed cache
+      // and remove it from the active cache
+      if (!removedLandscapeCache[key]) {
+        removedLandscapeCache[key] = []
+      }
+      removedLandscapeCache[key].push(pointToRemove)
+      lastRemovedCacheUpdate = Date.now()
+
+      delete landscapeCache[key]
+      lastCacheUpdate = Date.now()
+    }
+    res.sendStatus(200)
+  } catch (err) {
+    // There should be better error handling obvs
+    console.error("deleting point", err)
+    res.sendStatus(500)
+  }
+})
 
 // Add liminal rate limiting
 
-// ...hot reloading for static files in dev mode or I could just set up two servers
+// ...hot reloading for static files in dev mode or I could just set up two servers?
 
 // And fallback to...? 404?
 
@@ -268,7 +321,7 @@ app.listen(PORT, () => console.log(`* ~ * ~ * server listening on port ${PORT} *
   // to save data AND that the data on disk isn't all overwritten
   // if the original fetch has failed
   const dataPath = resolve(DATA_DIR, DATA_FILE)
-  readFileData(dataPath, isActiveLandscape).then((data) => {
+  readFileData<LandscapeData>(dataPath, isActiveLandscape).then((data) => {
     Object.entries(data).forEach(([k, v]) => {
       landscapeCache[k] = v
     })
@@ -280,7 +333,7 @@ app.listen(PORT, () => console.log(`* ~ * ~ * server listening on port ${PORT} *
   })
 
   const archivedDataPath = resolve(DATA_DIR, DATA_REMOVED_FILE)
-  readFileData(archivedDataPath, isArchivedLandscape).then((data) => {
+  readFileData<RemovedLandscapeData>(archivedDataPath, isArchivedLandscape).then((data) => {
     Object.entries(data).forEach(([k, v]) => {
       removedLandscapeCache[k] = v
     })
@@ -297,7 +350,7 @@ cron.schedule("1 * * * * *", () => {
   if (lastFileWrite < lastCacheUpdate) {
     console.log("> > . saving landscape data")
     const dataPath = resolve(DATA_DIR, DATA_FILE)
-    writeLandscapeData(landscapeCache, dataPath)
+    writeFileData<LandscapeData>(landscapeCache, dataPath)
       .then(() => lastFileWrite = Date.now())
     // TODO: Add some kind of mitigation when saving data fails
   }
@@ -305,7 +358,7 @@ cron.schedule("1 * * * * *", () => {
   if (lastRemovedFileWrite < lastRemovedCacheUpdate) {
     console.log("> > . saving archived landscape data")
     const dataPath = resolve(DATA_DIR, DATA_REMOVED_FILE)
-    writeLandscapeData(landscapeCache, dataPath)
+    writeFileData<RemovedLandscapeData>(removedLandscapeCache, dataPath)
       .then(() => lastRemovedFileWrite = Date.now())
     // TODO: Add some kind of mitigation when saving data fails
   }

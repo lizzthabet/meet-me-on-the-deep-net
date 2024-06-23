@@ -36,7 +36,7 @@
       const activeAreasToCreate = []
 
       const state = {
-        boundaries: [], // there should be a boundary for the top and left of the page
+        boundaries: [{ startX: 0, startY: 0}],
         obstacles: [],
         activeArea: null,
         activeAreas: [],
@@ -112,6 +112,8 @@
             // Remove cell from the landscape
             removeCellFromGrid(alreadyExists)
             removeFromSavedLandscape(landscapeId)
+            // Delete the cell from the collective landscape (server json)
+            deleteToSavedLandscape(gridPosition, state.newLandscapeColor)
           } else {
             // Add cell to the landscape
             addCellToGrid(gridPosition, landscapeId, state.newLandscapeColor)
@@ -129,8 +131,12 @@
 
       function fetchSavedLandscape() {
         fetch("/earth")
-          // TODO: Check response code before parsing
-          .then((value) => value.json())
+          .then((res) => {
+            if (res.status > 200) {
+              throw new Error("failed to fetch")
+            }
+            return res.json()
+          })
           .then((data) => {
             state.landscapeMap = data
             Object.keys(state.landscapeMap).forEach((id) => {
@@ -138,6 +144,7 @@
             })
           })
           .catch((error) => {
+            // TODO: Surface this error on the page
             console.error("fetching landscape", error)
           })
       }
@@ -152,11 +159,33 @@
             throw new Error("failed to save")
           }
         }).catch((err) => {
+          // TODO: Consider displaying an error message,
+          // especially if it's because a point already exists
+          // it may be because someone else is adding cells in those
+          // same coordinates
           const id = createIdFromPosition(position)
           const alreadyExists = document.getElementById(id)
           if (alreadyExists) {
             removeCellFromGrid(alreadyExists)
           }
+        })
+      }
+
+      function deleteToSavedLandscape(position, color) {
+        const pointToDelete = { position, color }
+        fetch("/earth", {
+          method: "delete",
+          body: JSON.stringify(pointToDelete)
+        }).then((res) => {
+          if (res.status > 200) {
+            throw new Error("failed to delete")
+          }
+        }).catch((err) => {
+          // Add the cell back to the landscape since
+          // the delete failed
+          const id = createIdFromPosition(position)
+          addCellToGrid(position, id, color)
+          state.newLandscapeMap[id] = pointToDelete
         })
       }
 
