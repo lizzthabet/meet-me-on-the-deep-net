@@ -17,5 +17,5 @@
     ],
     "rules": {
     },
-    "ignorePatterns": ["**/public/*.js"]
+    "ignorePatterns": ["**/public/*.js", "*.js"]
 }
