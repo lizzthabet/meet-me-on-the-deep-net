@@ -7,7 +7,8 @@
     "dev": "npx nodemon ./dev-server.js --ext js,html,css",
     "build-epilogue": "npx tsc",
     "lint-epilogue": "npx eslint epilogue/",
-    "dev-epilogue": "npx nodemon --ignore './epilogue/test/' --exec 'tsm --env-file=./epilogue/dev.env' ./epilogue/src/server.ts"
+    "dev-epilogue-be": "npx nodemon --ignore './epilogue/test/' --exec 'tsm --env-file=./epilogue/dev.env' ./epilogue/src/server.ts",
+    "dev-epilogue-fe": "FOLDER=epilogue/public npx nodemon ./dev-server.js --ext js,html,css"
   },
   "author": "lizz thabet",
   "contributors": [
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "@tinyhttp/app": "^2.2.3",
+    "@tinyhttp/cors": "^2.0.0",
     "milliparsec": "^2.3.0",
     "node-cron": "^3.0.3",
     "sirv": "^2.0.4"

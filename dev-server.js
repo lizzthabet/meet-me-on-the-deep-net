@@ -8,14 +8,14 @@ const fs_1 = require("fs");
 const path_1 = require("path");
 const ws_1 = require("ws");
 // Customize the port you want your server to run on
-const HTTP_PORT = 8089;
+const HTTP_PORT = process.env.PORT || 8089;
 // Customize the port the websocket connection uses
 // Note: update it both here and `client-websocket.ts`
 const WEBSOCKET_PORT = 8090;
 const CLIENT_WEBSOCKET_CODE = (0, fs_1.readFileSync)((0, path_1.join)(__dirname, 'client-websocket.js'), 'utf8');
 // Most static sites have a `public` folder with everything in it.
 // Customize this if it's a different folder.
-const SERVE_CONTENT_FROM = "public";
+const SERVE_CONTENT_FROM = process.env.FOLDER || "public";
 // Websocket server (for allowing browser and dev server to have 2-way communication)
 // We don't even need to do anything except create the instance!
 new ws_1.Server({ port: WEBSOCKET_PORT });
@@ -92,3 +92,4 @@ const requestHandler = function (req, res) {
 const server = (0, http_1.createServer)(requestHandler);
 server.listen(HTTP_PORT);
 console.log(`Server listening port ${HTTP_PORT}...`);
+//# sourceMappingURL=dev-server.js.map
