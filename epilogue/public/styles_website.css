@@ -129,12 +129,15 @@ while keeping .fade */
   cursor: pointer;
 }
 
-.move-direction {
-  text-align: center;
+.controls-button {
+  border: 1px solid buttonborder;
+  border-radius: 3px;
+  box-sizing: border-box;
   font-size: 1.5rem;
   height: 50px;
-  width: 50px;
   padding: 2px;
+  width: 50px;
+  text-align: center;
 }
 
 .toggle {
@@ -196,23 +199,6 @@ while keeping .fade */
   border-radius: 25px;
   height: 45px;
   width: 45px;
-}
-
-#direction {
-  /* TODO: Improve positioning on small screens */
-  background-color: white;
-  color: black;
-  display: inline-block;
-  font-size: 1.125rem;
-  font-style: italic;
-  font-weight: normal;
-  margin: 1px;
-  max-width: 700px;
-  padding: 10px;
-  position: fixed;
-  top: 50px;
-  left: max(51px, calc(50% - 350px));
-  z-index: 2;
 }
 
 .wave-text {

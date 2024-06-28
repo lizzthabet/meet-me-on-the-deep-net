@@ -23,26 +23,6 @@ function toggleGrid() {
   }
 }
 
-function updateDirection(html, { append } = { append: false }) {
-  const direction = document.getElementById("direction")
-  if (direction) {
-    if (append) {
-      direction.innerHTML = direction.innerHTML + " " + html
-    } else {
-      direction.innerHTML = html
-    }
-    toggleHiddenClass(direction, true)
-  }
-}
-
-function resetDirection() {
-  const direction = document.getElementById("direction")
-  if (direction) {
-    toggleHiddenClass(direction, false)
-    direction.innerHTML = ""
-  }
-}
-
 function toggleHiddenClass(element, visible = true) {
   if (element && visible) {
     if (element.classList.contains("fade")) {
@@ -67,36 +47,6 @@ function showOrHideSelector(selector, visible = true) {
 function showOrHideSelectorList(selector, visible = true) {
   const elements = document.querySelectorAll(selector)
   elements.forEach(e => toggleHiddenClass(e, visible))
-}
-
-function displayOneByOne(htmlList, { append, after } = { append: false, after: () => {} }) {
-  // Because there might be multiple timeout processes trying
-  // to write to the same element, clear the existing timeout process
-  // and only proceed with the current one
-  if (state.animatingTextInProgress) {
-    clearTimeout(state.animatingTextInProgress)
-    state.animatingTextInProgress = null
-  }
-
-  if (!Array.isArray(htmlList)) {
-    console.warn("Displaying elements one-by-one requires a list of elements")
-    return
-  }
-  
-  if (htmlList.length === 0) { 
-    if (after) {
-      after()
-    }
-    return
-  }
-  
-  // Treat the html string list like a queue that gets added
-  // one-by-one to the direction
-  const htmlString = htmlList.shift()
-  updateDirection(htmlString, { append })
-  const timeOutId = setTimeout(() => displayOneByOne(htmlList, { append: true, after }), 250)
-  // Track the timeout id on the state field "animatingTextInProgress"
-  state.animatingTextInProgress = timeOutId
 }
 
 // Display the #next node and add an active area to game state
@@ -355,12 +305,28 @@ function scrollIntoView(element, x, y) {
   }
 }
 
+function moveInvisibleElement(avatarX, avatarY) {
+  const element = document.getElementById("for-invisible-scroll")
+  if (element) {
+    const x = pixelsToGrid(window.innerWidth || 1200) + avatarX
+    const y = pixelsToGrid(window.innerHeight || 1200) + avatarY
+    // console.log(`avatar at ${avatarX}, ${avatarY}, moving invisie to ${x}, ${y}`)
+    positionOnGrid(element, x, y)
+  }
+}
+
 function positionAvatarOnGrid(element, x, y) {
   const canMove = canMoveTo(x, y)
   if (canMove) {
     positionOnGrid(element, x, y)
     activateAreaIfOverlap(x, y)
     scrollIntoView(element, x, y)
+    // Hack! :)
+    // Position an invisible element away off the
+    // screen, so that when the avatar is moving
+    // into areas where there aren't DOM elements
+    // the scroll buffer will work
+    moveInvisibleElement(x, y)
   }
 }
 
@@ -451,7 +417,6 @@ function onKeyDown(event) {
       return
   }
 }
-
 
 // Controls for the game may exist outside this scene,
 // so listen for events and respond to them

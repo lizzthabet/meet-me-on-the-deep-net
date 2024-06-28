@@ -16,28 +16,71 @@
         display: inline-block;
         font-size: 1.125rem;
         margin: 1px;
+        width: 100vh;
         max-width: 500px;
         padding: 10px;
         z-index: 2;
       }
 
-      .info.info-mini {
-        font-size: 0.9rem;
-        z-index: -2;
+      .info > code {
+        background-color: #e5e5e5;
+        border-radius: 3px;
+        font-size: 0.8em;
+        padding: 2px 4px;
       }
-      .info.info-mini > code {
+      
+      .info.info-short {
+        max-width: 250px;
+      }
+      
+      .info.info-mini,
+      .info.info-mini > a {
+        font-size: 0.9rem;
+      }
+
+      .mini-symbol {
         font-size: 0.8rem;
       }
 
-      .wave.move-direction {
-        /* a bit hacky for sure */
-        position: relative;
-        bottom: -10px; 
+      .palette-wrapper {
+        height: 50px;
+        display: flex;
       }
 
-      .move-direction {
-        border-radius: 3px;
-        border: 1px outset buttonborder;
+      .palette + .palette {
+        margin-left: 4px;
+      }
+
+      .palette-selected {
+        box-shadow: 0px 0px 10px 1px blue;
+      }
+
+      #palette-1.palette-selected {
+        box-shadow: 0px 0px 10px 1px sienna;
+      }
+
+      #palette-2.palette-selected {
+        box-shadow: 0px 0px 10px 1px green;
+      }
+
+      #palette-4.palette-selected {
+        box-shadow: 0px 0px 10px 1px gray;
+      }
+
+      #palette-5.palette-selected {
+        box-shadow: 0px 0px 8px 3px wheat;
+      }
+
+      #palette-6.palette-selected {
+        box-shadow: 0px 0px 10px 1px goldenrod;
+      }
+
+      #palette-7.palette-selected {
+        box-shadow: 0px 0px 10px 1px purple;
+      }
+
+      #palette-8.palette-selected {
+        box-shadow: 0px 0px 10px 1px violet;
       }
 
       .veil-landscape {
@@ -50,10 +93,26 @@
         top: 0;
         right: 0;
         width: 100vw;
-        z-index: -1;
+        z-index: 2;
+      }
+
+      .hack {
+        background-color: white;
+        width: 1px;
+        height: 1px;
+      }
+
+      #explore {
+        /* Need z-index above the landscape veil
+        so that it doesn't block any interactions */
+        z-index: 3;
       }
     </style>
     <script>
+      // const EARTH_HOST = "/earth"
+      // TODO: Set this to the correct url!
+      const EARTH_HOST = "http://127.0.0.1:4000/earth"
+      const LOCAL_DEV = true
       const COLOR_PALETTE = ["sienna", "green", "blue", "gray", "wheat", "goldenrod", "purple", "violet", "wave", "wave-inverse"]
 
       const initialPositions = {
@@ -63,9 +122,16 @@
           { x: 2, y: 4, center: false },
           { x: 2, y: 6, center: false },
           { x: 2, y: 8, center: false },
-          { x: 2, y: 15, center: false },
+          { x: 33, y: 5, center: false },
+          { x: 32, y: 7, center: false },
+          { x: 31, y: 9, center: false },
+          { x: 30, y: 11, center: false },
         ],
         "#explore": [{ x: 10, y: 12, center: false }],
+        "#community": [{ x: 32, y: 15, center: false }],
+        ".hack": [
+          { x: 50, y: 50 }
+        ],
       }
 
       const activeAreasToCreate = [
@@ -97,12 +163,12 @@
         return id
       }
 
-      function getCellParent() {
+      function getParentForPatches() {
         const main = document.querySelector("main")
         return main ?? document.body
       }
 
-      function addCellToGrid(position, id, color) {
+      function addPatchToHtml(position, id, color) {
         // Create an element
         const element = document.createElement("figure")
         element.setAttribute("id", id)
@@ -118,15 +184,40 @@
           element.style.setProperty("background-color", color)
         }
         // Add to the landscape
-        const parentElement = getCellParent()
+        const parentElement = getParentForPatches()
         parentElement.appendChild(element)
 
         return element
       }
 
-      function removeCellFromGrid(element) {
-        const parentElement = getCellParent()
+      function removePatchFromHtml(element) {
+        const parentElement = getParentForPatches()
         parentElement.removeChild(element)
+      }
+
+      function addPatchToPage(position, id, color, isNew = false) {
+        addPatchToHtml(position, id, color)
+        const patch = { position, color }
+        // Track the patch in different places, depending on
+        // if it was added in this session (and can be edited)
+        // in this session, or if it was added externally
+        if (isNew) {
+          state.newLandscapeMap[id] = patch
+        } else {
+          state.landscapeMap[id] = patch
+        }
+      }
+
+      function removePatchFromPage(id) {
+        const element = document.getElementById(id)
+        if (element) {
+          removePatchFromHtml(element)
+        }
+        // Only patches added in this session can be
+        // removed by this session
+        if (state.newLandscapeMap[id]) {
+          delete state.newLandscapeMap[id]
+        }
       }
 
       function editLandscape() {
@@ -138,27 +229,37 @@
         const gridPosition = getPositionOnGrid(you)
         const landscapeId = hashPosition(gridPosition)
         const alreadyExists = document.getElementById(landscapeId)
-        const isFromCurrentSession = state.newLandscapeMap.hasOwnProperty(landscapeId)
+        const isFromCurrentSession = state.newLandscapeMap.hasOwnProperty(landscapeId) || LOCAL_DEV
         // You can only modify the landscape elements that have been
         // added by you in your own session
         if (alreadyExists && isFromCurrentSession) {
-          // Remove cell from the landscape
-          removeCellFromGrid(alreadyExists)
-          delete state.newLandscapeMap[landscapeId]
-          deleteToSavedLandscape(gridPosition, state.newLandscapeColor)
+          const alreadyPatch = state.newLandscapeMap[landscapeId] || state.landscapeMap[landscapeId] || { color: "nonexistent" }
+          const alreadyColor = alreadyPatch.color
+          // Remove patch from the landscape
+          removePatchFromPage(landscapeId)
+          // Save the delete
+          deleteToLandscape(gridPosition, alreadyColor)
         } else if (!alreadyExists) {
-          // Add cell to the landscape
-          addCellToGrid(gridPosition, landscapeId, state.newLandscapeColor)
-          // Track what specific cells were added in this session
-          state.newLandscapeMap[landscapeId] = { position: gridPosition, color: state.newLandscapeColor }
-          // Persist the cells across page loads
-          postToSavedLandscape(gridPosition, state.newLandscapeColor)
+          // Add patch to the landscape
+          addPatchToPage(gridPosition, landscapeId, state.newLandscapeColor, true)
+          // Save the addition
+          postToLandscape(gridPosition, state.newLandscapeColor)
         }
       }
 
       function changeCurrentColor(colorNumber) {
         const index = colorNumber < 1 ? 9 : colorNumber - 1
         state.newLandscapeColor = COLOR_PALETTE[index] ?? COLOR_PALETTE[0]
+
+        const prevPalette = document.querySelector(".palette-selected")
+        if (prevPalette) {
+          prevPalette.classList.remove("palette-selected")
+        }
+        
+        const currentPalette = document.getElementById(`palette-${colorNumber}`)
+        if (currentPalette) {
+          currentPalette.classList.add("palette-selected")
+        }
       }
 
       function onSpaceOrNumberPress(event) {
@@ -172,9 +273,9 @@
       }
 
       function onExploreClick() {
+        // TODO: This shouldn't be so hardcoded lol; currently the button is the 5th data obstacle.
         // Remove the obstacle definition for the button
-        // TODO: This shouldn't be so hardcoded lol
-        state.obstacles.pop()
+        state.obstacles = state.obstacles.filter((_, i) => i !== 4)
         // Disappear the landscape white background gradient
         const landscapeVeil = document.querySelector(".veil-landscape")
         if (landscapeVeil) {
@@ -185,10 +286,18 @@
         if (explore) {
           toggleHiddenClass(explore, false)
         }
+
+        // Open the palette selector
+        setTimeout(() => {
+          const palette = document.getElementById("palette")
+          if (palette) {
+            palette.setAttribute("open", true)
+          }
+        }, 2000)
       }
 
-      function fetchSavedLandscape() {
-        fetch("/earth")
+      function getToLandscape() {
+        fetch(EARTH_HOST)
           .then((res) => {
             if (res.status > 200) {
               throw new Error("failed to fetch")
@@ -196,21 +305,11 @@
             return res.json()
           })
           .then((data) => {
-            // data is an array of points with { position: {startX, startY, endX?, endY?}, color }
-            const landscapeMap = data.reduce((map, point) => {
-              if (point.position) {
-                const id = hashPosition(point.position)
-                map[id] = point
+            data.forEach(({ position, color }) => {
+              if (position && color) {
+                const id = hashPosition(position)
+                addPatchToPage(position, id, color)
               }
-              return map
-            }, {})
-            // TODO: Consider making this additive, since it may
-            // take time to load, people may have already added points,
-            // and it may make sense to refetch the landscape if
-            // creating new landscape fails because of collision
-            state.landscapeMap = landscapeMap
-            Object.keys(state.landscapeMap).forEach((id) => {
-              addCellToGrid(state.landscapeMap[id].position, id, state.landscapeMap[id].color)
             })
           })
           .catch((error) => {
@@ -219,9 +318,9 @@
           })
       }
 
-      function postToSavedLandscape(position, color) {
+      function postToLandscape(position, color) {
         const newPoint = [{ position, color }]
-        fetch("/earth", {
+        fetch(EARTH_HOST, {
           method: "POST",
           body: JSON.stringify(newPoint),
         }).then((res) => {
@@ -231,19 +330,16 @@
         }).catch((err) => {
           // TODO: Consider displaying an error message,
           // especially if it's because a point already exists
-          // it may be because someone else is adding cells in those
+          // it may be because someone else is adding patches in those
           // same coordinates
           const id = hashPosition(position)
-          const alreadyExists = document.getElementById(id)
-          if (alreadyExists) {
-            removeCellFromGrid(alreadyExists)
-          }
+          removePatchFromPage(id)
         })
       }
 
-      function deleteToSavedLandscape(position, color) {
+      function deleteToLandscape(position, color) {
         const pointToDelete = { position, color }
-        fetch("/earth", {
+        fetch(EARTH_HOST, {
           method: "delete",
           body: JSON.stringify(pointToDelete)
         }).then((res) => {
@@ -251,31 +347,11 @@
             throw new Error("failed to delete")
           }
         }).catch((err) => {
-          // Add the cell back to the landscape since
+          // Add the patch back to the landscape since
           // the delete failed
           const id = hashPosition(position)
-          addCellToGrid(position, id, color)
-          state.newLandscapeMap[id] = pointToDelete
+          addPatchToPage(position, id, color)
         })
-      }
-
-      // This is just to make color palette selection easier lol
-      const colorsToList = new Set()
-      function onClickRecordColor(event) {
-        if (!event.target) {
-          return
-        }
-
-        const color = event.target.style.getPropertyValue("background-color")
-        if (color && color.length > 0) {
-          if (colorsToList.has(color)) {
-            colorsToList.delete(color)
-            event.target.style.setProperty("border", "none")
-          } else {
-            colorsToList.add(color)
-            event.target.style.setProperty("border", "1px dotted black")
-          }
-        }
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -318,59 +394,80 @@
         //////////////////// New functions for landscape creation
 
         // Set up the landscape by fetching the data
-        fetchSavedLandscape()
+        getToLandscape()
 
         // Move the avatar based on arrow presses
         document.addEventListener("keydown", onKeyDown)
         // Add elements to the landscape based on avatar position
         document.addEventListener("keydown", onSpaceOrNumberPress)
 
+        // Reset the scroll in case it's off from a past visit
+        window.scrollTo(0, 0)
       })
     </script>
   </head>
   <body>
     <main>
+      <!-- An invitation -->
       <p class="info" data-obstacle>Welcome, stranger.</p>
       <p class="info" data-obstacle>You've crossed an ocean to be here. Or rather, your browser has crossed an ocean to meet my tiny web server running on a tiny computer on a desk in my house.</p>
       <p class="info" data-obstacle>Wanna explore? Leave a piece of earth behind? This place is filled with islands from other strangers who have made this journey and created places for you to visit.</p>
       <p class="info" data-obstacle>Here, you, too, can create your own island for future strangers to cross an ocean to meet.</p>
-      <p class="info info-mini" data-obstacle>ps. I haven't written instructions yet oops. Navigate <u><b>you</b></u> with the arrow keys. Press <code>space</code> to place a tile, and press it again to remove the tile. Press any number <code>0</code>-<code>9</code> on your keyboard or use the palette buttons to change the current tile color.</p>
       <figure id="you" class="cell center">you</figure>
       <button id="explore" class="cell two-cell-h fade" onclick="onExploreClick()" data-obstacle>explore</button>
       <div class="veil-landscape fade" aria-hidden="true"></div>
+
+      <!-- Orientation -->
+      <p class="info" data-obstacle><i>How to explore and create your own island:</i></p>
+      <p class="info" data-obstacle>Move <u><b>you</b></u> around by using the arrow keys on your keyboard or the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;controls</b> menu.</p>
+      <p class="info" data-obstacle>Press <code>space</code> to place a tile on the grid, and press <code>space</code> again to remove the tile. You can only edit spaces you've added during your visit.</p>
+      <p class="info" data-obstacle>Press any number between <code>0</code> and <code>9</code> on your keyboard to change the current tile color or use the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;palette</b> menu.</p>
+
+      <!-- A note on communal space -->
+      <section id="community" aria-label="community agreement" data-obstacle>
+        <p class="info info-mini"><i>This is a communal digital space, and it's tended to from time-to-time.</i> ♡</p>
+        <p class="info info-mini">There is no room for racist, sexist, classist, xenophobic, transphobic, zionist, or fascist gestures. Any imagery or gestures that are harmful and unkind will be removed.</p>
+        <p class="info info-mini">If you come across something that you think violates these guidelines, <a href="mailto:lizzthabet@proton.me">send me a note</a>. It's possible it's popped up between my tending sessions.</p>
+      </section>
+
+      <!-- A random element to make the landscape scrolling less awkward -->
+      <div id="for-invisible-scroll" class="hack" aria-hidden="true"></div>
+      <!-- <div class="hack" aria-hidden="true"></div> -->
     </main>
 
     <section role="toolbar" class="controls">
-      <details class="controls-details">
+      <details id="palette" class="controls-details">
         <summary class="controls-label">palette</summary>
-        <button class="move-direction" style="background-color: sienna; color: white;" aria-label="select brown" onclick="changeCurrentColor(1)">1</button>
-        <button class="move-direction" style="background-color: green; color: white;" aria-label="select green" onclick="changeCurrentColor(2)">2</button>
-        <button class="move-direction" style="background-color: blue; color: white;" aria-label="select blue" onclick="changeCurrentColor(3)">3</button>
-        <button class="move-direction" style="background-color: gray; color: white;" aria-label="select gray" onclick="changeCurrentColor(4)">4</button>
-        <button class="move-direction" style="background-color: wheat;" aria-label="select yellow" onclick="changeCurrentColor(5)">5</button>
-        <button class="move-direction" style="background-color: goldenrod;" aria-label="select gold" onclick="changeCurrentColor(6)">6</button>
-        <button class="move-direction" style="background-color: purple; color: white;" aria-label="select purple" onclick="changeCurrentColor(7)">7</button>
-        <button class="move-direction" style="background-color: violet;" aria-label="select violet" onclick="changeCurrentColor(8)">8</button>
-        <button class="move-direction wave" aria-label="select wave" onclick="changeCurrentColor(9)">9</button>
-        <button class="move-direction wave wave-inverse" aria-label="select wave with blue background" onclick="changeCurrentColor(0)">0</button>
+        <div class="palette-wrapper">
+          <button id="palette-1" class="controls-button palette" style="background-color: sienna; color: white;" aria-label="select brown" onclick="changeCurrentColor(1)">1</button>
+          <button id="palette-2" class="controls-button palette" style="background-color: green; color: white;" aria-label="select green" onclick="changeCurrentColor(2)">2</button>
+          <button id="palette-3" class="controls-button palette" style="background-color: blue; color: white;" aria-label="select blue" onclick="changeCurrentColor(3)">3</button>
+          <button id="palette-4" class="controls-button palette" style="background-color: gray; color: white;" aria-label="select gray" onclick="changeCurrentColor(4)">4</button>
+          <button id="palette-5" class="controls-button palette" style="background-color: wheat;" aria-label="select yellow" onclick="changeCurrentColor(5)">5</button>
+          <button id="palette-6" class="controls-button palette" style="background-color: goldenrod;" aria-label="select gold" onclick="changeCurrentColor(6)">6</button>
+          <button id="palette-7" class="controls-button palette" style="background-color: purple; color: white;" aria-label="select purple" onclick="changeCurrentColor(7)">7</button>
+          <button id="palette-8" class="controls-button palette" style="background-color: violet;" aria-label="select violet" onclick="changeCurrentColor(8)">8</button>
+          <button id="palette-9" class="controls-button palette wave" aria-label="select wave" onclick="changeCurrentColor(9)">9</button>
+          <button id="palette-0" class="controls-button palette wave wave-inverse palette-selected" aria-label="select wave with blue background" onclick="changeCurrentColor(0)">0</button>
+        </div>
       </details>
       <details class="controls-details">
         <summary class="controls-label">
           controls
         </summary>
-        <button class="move-direction" aria-label="place earth" onclick="editLandscape()">s</button>
-        <button class="move-direction" aria-label="move up" onclick="onArrowButtonClick('up')">↑</button>
-        <button class="move-direction" aria-label="move left" onclick="onArrowButtonClick('left')">←</button>
-        <button class="move-direction" aria-label="move right" onclick="onArrowButtonClick('right')">→</button>
-        <button class="move-direction" aria-label="move down" onclick="onArrowButtonClick('down')">↓</button>
+        <button class="controls-button" aria-label="place earth" onclick="editLandscape()">s</button>
+        <button class="controls-button" aria-label="move up" onclick="onArrowButtonClick('up')">↑</button>
+        <button class="controls-button" aria-label="move left" onclick="onArrowButtonClick('left')">←</button>
+        <button class="controls-button" aria-label="move right" onclick="onArrowButtonClick('right')">→</button>
+        <button class="controls-button" aria-label="move down" onclick="onArrowButtonClick('down')">↓</button>
         <!-- FOR DEV ONLY -->
         <!-- <button class="toggle" onclick="resetSavedLandscape()">reset</button> -->
         <!-- <button class="toggle" onclick="printPositions()">print (dev)</button> -->
         <!-- <button class="toggle" onclick="toggleGrid()">toggle grid</button> -->
       </details>
     </section>
-
+    <div class="veil disappear" aria-hidden></div>
     <!-- For easy dev -->
-    <script src="./draggable.js" defer></script>
+    <!-- <script src="./draggable.js" defer></script> -->
   </body>
 </html>

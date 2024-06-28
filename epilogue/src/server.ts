@@ -4,6 +4,7 @@ import { json } from 'milliparsec'
 import { resolve } from 'path'
 import sirv from 'sirv'
 import cron from 'node-cron'
+import { cors } from '@tinyhttp/cors'
 
 /** Types */
 
@@ -206,6 +207,10 @@ function areEqual(point1: LandscapePoint, point2: LandscapePoint): boolean {
 
 const app = new App()
 const assets = sirv(ASSETS_DIR, { dev: isDev })
+
+// TODO: Set less permissive CORS origin + options
+// https://github.com/tinyhttp/cors?tab=readme-ov-file#options
+app.use(cors())
 
 // Serve all static files in the ASSETS_DIR folder
 app.use(assets)
