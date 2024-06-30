@@ -73,5 +73,8 @@ dist/
 **/dist
 
 # tor files
-dev.torrc
+torrc.local
 hidden_service
+
+# test files
+epilogue/test/
