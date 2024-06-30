@@ -7,9 +7,10 @@
     "dev": "npx nodemon ./dev-server.js --ext js,html,css",
     "build-epilogue": "npx tsc",
     "lint-epilogue": "npx eslint epilogue/",
-    "dev-epilogue-be": "npx nodemon --ignore './epilogue/test/' --exec 'tsm --env-file=./epilogue/dev.env' ./epilogue/src/server.ts",
+    "dev-epilogue-be": "npx nodemon --ignore './epilogue/test/' --exec 'tsm --env-file=./epilogue/.env.local' ./epilogue/src/server.ts",
     "dev-epilogue-fe": "FOLDER=epilogue/public npx nodemon ./dev-server.js --ext js,html,css"
   },
+  "type": "module",
   "author": "lizz thabet",
   "contributors": [
     "Chiara Marcial Martínez"

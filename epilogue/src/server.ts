@@ -317,7 +317,10 @@ app.delete("/earth", (req, res) => {
 
 // And database backups?
 
+// Listen on one port for local, private access
 app.listen(PORT, () => console.log(`* ~ * ~ * server listening on port ${PORT} * ~ * ~ *`));
+// Listen on another port for public access
+app.listen(PORT + 1, () => console.log(`* ~ * ~ * server listening on port ${PORT + 1} * ~ * ~ *`));
 
 (function readLandscapeDataOnStartup (){
   console.log("~ * ~ * ~ pre-loading landscape ~ * ~ * ~")

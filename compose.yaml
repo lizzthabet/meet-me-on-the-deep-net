@@ -1,0 +1,25 @@
+services:
+  landscape:
+    build:
+      context: .
+    environment:
+      NODE_NO_WARNINGS: 1
+      NODE_ENV: production
+      ASSETS_DIR: "public"
+      DATA_DIR: "earth"
+    ports:
+      - 4000:4000
+    volumes:
+      - "./epilogue/public:/usr/landscape/public"
+      - "./epilogue/data:/usr/landscape/earth"
+    restart: unless-stopped
+
+  tor:
+    image: lizz0thabet/tor-hidden-service:latest
+    links:
+      - landscape
+    environment:
+      LANDSCAPE_TOR_SERVICE_HOSTS: "80:landscape:4001"
+    volumes:
+      - "./epilogue/hidden_service:/var/lib/tor/hidden_service"
+    restart: unless-stopped
