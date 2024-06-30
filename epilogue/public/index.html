@@ -7,10 +7,267 @@
     <link rel="stylesheet" type="text/css" href="./styles_website.css" />
     <script src="./gameplay.js" defer></script>
     <style>
+      /* z-indexing creates these layers:
+        - controls (5)
+        - you (4)
+        - veil (3)
+        - text (2)
+        - tiles (1)
+      */
+      /* general styles */
+      html {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 18px;
+      }
+
       body {
+        box-sizing: border-box;
+        margin: 0;
         overflow: hidden;
       }
 
+      .grid {
+        background-size: 50px 50px;
+        background-image:
+          linear-gradient(to right, lightgray 1px, transparent 1px),
+          linear-gradient(to bottom, lightgray 1px, transparent 1px);
+      }
+
+      a, a:visited {
+        font-size: 1.25rem;
+        color: blue;
+      }
+
+      button {
+        color: black;
+        font-size: 1rem;
+      }
+
+      /* important for sizing and positioning */
+      figure,
+      section,
+      fieldset {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      fieldset {
+        border: unset;
+      }
+
+      /* Basic helper styles */
+      .cell,
+      .two-cell-h,
+      .two-cell-v,
+      .three-cell-h,
+      .three-cell-v {
+        z-index: 1;
+      }
+
+      .cell {
+        height: 50px;
+        width: 50px;
+      }
+
+      .two-cell-h {
+        height: 50px;
+        width: 100px;
+      }
+
+      .two-cell-v {
+        height: 100px;
+        width: 50px;
+      }
+
+      .three-cell-h {
+        height: 50px;
+        width: 150px;
+      }
+
+      .three-cell-v {
+        height: 150px;
+        width: 50px;
+      }
+
+      .circle {
+        border-radius: 25px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .hidden-with-fade {
+        opacity: 0 !important;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      /* To be used with .hidden-with-fade,
+      either add or remove .hidden-with-fade
+      while keeping .fade */
+      .fade {
+        transition: opacity 2s ease;
+        opacity: 1;
+      }
+
+      /* For text */
+      .left { 
+        padding: 10px;
+        user-select: none;
+      }
+
+      /* For text */
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex-wrap: wrap;
+        user-select: none;
+      }
+
+      /* For common game elements */
+      .controls {
+        bottom: 0;
+        position: fixed;
+        right: 0;
+        text-align: right;
+        z-index: 5;
+      }
+
+      .controls-details {
+        padding: 1rem;
+      }
+
+      .controls-details[open] > .controls-label {
+        margin-bottom: 1rem;
+      }
+
+      .controls-label {
+        cursor: pointer;
+      }
+
+      .controls-button {
+        border: 1px solid buttonborder;
+        border-radius: 3px;
+        box-sizing: border-box;
+        font-size: 1.5rem;
+        height: 50px;
+        padding: 2px;
+        width: 50px;
+        text-align: center;
+      }
+
+      .toggle {
+        font-size: 1rem;
+      }
+
+      /* Animations for making stuff appear & disappear */
+      @keyframes appear {
+        0% {
+          opacity: 0;
+          z-index: -1;
+        }
+        100% {
+          opacity: 1;
+          z-index: 1000;
+        }
+      }
+      @keyframes disappear {
+        0% {
+          opacity: 1;
+          z-index: 1000;
+        }
+        100% {
+          opacity: 0;
+          z-index: -1;
+        }
+      }
+
+      .appear {
+        animation-name: appear;
+        animation-duration: 2s; 
+      }
+
+      .disappear {
+        animation-name: disappear;
+        animation-duration: 2s; 
+      }
+
+      .veil {
+        background-color: white;
+        left: 0;
+        height: 100vh;
+        overflow: hidden;
+        opacity: 0;
+        position: fixed;
+        top: 0;
+        width: 100vw;
+        z-index: -1;
+      }
+
+      /* More common game elements */
+
+      #you {
+        z-index: 4;
+        font-weight: bold;
+        text-decoration: underline;
+        color: black;
+        background-color: white;
+        border-radius: 25px;
+        height: 45px;
+        width: 45px;
+      }
+
+      .wave {
+        overflow: hidden;
+      }
+
+      .wave.wave-inverse,
+      .wave-text.wave-inverse {
+        background-color: blue;
+        color: white;
+      }
+
+      .wave::before {
+        animation:
+          backNForth 2s linear infinite,
+          upNDown 1s linear infinite alternate;
+        content: "~~~~~~~~~~~~~~~~~~";
+        font-size: 2.5rem;
+        color: blue;
+        width: 100%;
+        position: relative;
+      }
+
+      .wave.wave-inverse::before,
+      .wave.wave-transparent::before {
+        color: white;
+      }
+
+      @keyframes backNForth {
+        from {
+          left: 0px;
+        }
+        
+        to {
+          left: -50px;
+        }
+      }
+
+      @keyframes upNDown {
+        from {
+          top: -5px;
+        }
+        
+        to {
+          top: 5px;
+        }
+      }
+
+      /* directions */
       .info {
         background-color: white;
         display: inline-block;
@@ -42,6 +299,7 @@
         font-size: 0.8rem;
       }
 
+      /* palette display */
       .palette-wrapper {
         height: 50px;
         display: flex;
@@ -93,7 +351,7 @@
         top: 0;
         right: 0;
         width: 100vw;
-        z-index: 2;
+        z-index: 3;
       }
 
       .hack {
@@ -105,41 +363,37 @@
       #explore {
         /* Need z-index above the landscape veil
         so that it doesn't block any interactions */
-        z-index: 3;
+        z-index: 4;
       }
     </style>
     <script>
-      // const EARTH_HOST = "/earth"
-      // TODO: Set this to the correct url!
-      const EARTH_HOST = "http://127.0.0.1:4000/earth"
-      const LOCAL_DEV = true
+      const LOCAL_TESTING = true
+      const EARTH_HOST = LOCAL_TESTING ? "http://127.0.0.1:4000/earth" : "/earth"
       const COLOR_PALETTE = ["sienna", "green", "blue", "gray", "wheat", "goldenrod", "purple", "violet", "wave", "wave-inverse"]
 
+      // Note: there are no initial positions specified here; instead,
+      // they're hardcoded in the html to reduce any delay creating
+      // the layout
       const initialPositions = {
-        "#you": [{ x: 2, y: 12 }],
-        ".info": [
-          { x: 2, y: 3, center: false },
-          { x: 2, y: 4, center: false },
-          { x: 2, y: 6, center: false },
-          { x: 2, y: 8, center: false },
-          { x: 33, y: 5, center: false },
-          { x: 32, y: 7, center: false },
-          { x: 31, y: 9, center: false },
-          { x: 30, y: 11, center: false },
-        ],
-        "#explore": [{ x: 10, y: 12, center: false }],
-        "#community": [{ x: 32, y: 15, center: false }],
-        ".hack": [
-          { x: 50, y: 50 }
-        ],
+        // "#you": [{ x: 2, y: 12 }],
+        // ".info": [
+          // { x: 2, y: 3, center: false },
+          // { x: 2, y: 4, center: false },
+          // { x: 2, y: 6, center: false },
+          // { x: 2, y: 8, center: false },
+          // { x: 33, y: 5, center: false },
+          // { x: 32, y: 7, center: false },
+          // { x: 31, y: 9, center: false },
+          // { x: 30, y: 11, center: false },
+        // ],
+        // "#explore": [{ x: 10, y: 12, center: false }],
+        // "#community": [{ x: 32, y: 15, center: false }],
+        // ".hack": [{ x: 50, y: 50 }],
       }
 
       const activeAreasToCreate = [
         {
-          point: {
-            x: initialPositions["#explore"][0].x - 1,
-            y: initialPositions["#explore"][0].y - 1,
-          },
+          point: { x: 9, y: 11 },
           activation: onExploreClick,
           options: { height: 3, width: 4, center: false },
         },
@@ -229,7 +483,7 @@
         const gridPosition = getPositionOnGrid(you)
         const landscapeId = hashPosition(gridPosition)
         const alreadyExists = document.getElementById(landscapeId)
-        const isFromCurrentSession = state.newLandscapeMap.hasOwnProperty(landscapeId) || LOCAL_DEV
+        const isFromCurrentSession = state.newLandscapeMap.hasOwnProperty(landscapeId) || LOCAL_TESTING
         // You can only modify the landscape elements that have been
         // added by you in your own session
         if (alreadyExists && isFromCurrentSession) {
@@ -402,37 +656,36 @@
         document.addEventListener("keydown", onSpaceOrNumberPress)
 
         // Reset the scroll in case it's off from a past visit
-        window.scrollTo(0, 0)
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" })
       })
     </script>
   </head>
   <body>
     <main>
       <!-- An invitation -->
-      <p class="info" data-obstacle>Welcome, stranger.</p>
-      <p class="info" data-obstacle>You've crossed an ocean to be here. Or rather, your browser has crossed an ocean to meet my tiny web server running on a tiny computer on a desk in my house.</p>
-      <p class="info" data-obstacle>Wanna explore? Leave a piece of earth behind? This place is filled with islands from other strangers who have made this journey and created places for you to visit.</p>
-      <p class="info" data-obstacle>Here, you, too, can create your own island for future strangers to cross an ocean to meet.</p>
-      <figure id="you" class="cell center">you</figure>
-      <button id="explore" class="cell two-cell-h fade" onclick="onExploreClick()" data-obstacle>explore</button>
+      <p class="info" style="position: absolute; left: 100px; top: 150px;" data-obstacle>Welcome, stranger.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 200px;" data-obstacle>You've crossed an ocean to be here. Or rather, your browser has crossed an ocean to meet my tiny web server running on a tiny computer on a desk in my house.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 300px;" data-obstacle>Wanna explore? Leave a piece of earth behind? This place is filled with islands from other strangers who have made this journey and created places for you to visit.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 400px;" data-obstacle>Here, you, too, can create your own island for future strangers to cross an ocean to meet.</p>
+      <figure id="you" class="cell center" style="position: absolute; left: 102.5px; top: 602.5px;">you</figure>
+      <button id="explore" class="cell two-cell-h fade" onclick="onExploreClick()" style="position: absolute; left: 500px; top: 600px;" data-obstacle>explore</button>
       <div class="veil-landscape fade" aria-hidden="true"></div>
 
       <!-- Orientation -->
-      <p class="info" data-obstacle><i>How to explore and create your own island:</i></p>
-      <p class="info" data-obstacle>Move <u><b>you</b></u> around by using the arrow keys on your keyboard or the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;controls</b> menu.</p>
-      <p class="info" data-obstacle>Press <code>space</code> to place a tile on the grid, and press <code>space</code> again to remove the tile. You can only edit spaces you've added during your visit.</p>
-      <p class="info" data-obstacle>Press any number between <code>0</code> and <code>9</code> on your keyboard to change the current tile color or use the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;palette</b> menu.</p>
+      <p class="info" style="position: absolute; left: 1650px; top: 250px;" data-obstacle><i>How to explore and create your own island:</i></p>
+      <p class="info" style="position: absolute; left: 1600px; top: 350px;" data-obstacle>Move <u><b>you</b></u> around by using the arrow keys on your keyboard or the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;controls</b> menu.</p>
+      <p class="info" style="position: absolute; left: 1550px; top: 450px;" data-obstacle>Press <code>space</code> to place a tile on the grid, and press <code>space</code> again to remove the tile. You can only edit spaces you've added during your visit.</p>
+      <p class="info" style="position: absolute; left: 1500px; top: 550px;" data-obstacle>Press any number between <code>0</code> and <code>9</code> on your keyboard to change the current tile color or use the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;palette</b> menu.</p>
 
       <!-- A note on communal space -->
-      <section id="community" aria-label="community agreement" data-obstacle>
+      <section id="community" aria-label="community agreement" style="position: absolute; left: 1600px; top: 750px;" data-obstacle>
         <p class="info info-mini"><i>This is a communal digital space, and it's tended to from time-to-time.</i> ♡</p>
         <p class="info info-mini">There is no room for racist, sexist, classist, xenophobic, transphobic, zionist, or fascist gestures. Any imagery or gestures that are harmful and unkind will be removed.</p>
         <p class="info info-mini">If you come across something that you think violates these guidelines, <a href="mailto:lizzthabet@proton.me">send me a note</a>. It's possible it's popped up between my tending sessions.</p>
       </section>
 
       <!-- A random element to make the landscape scrolling less awkward -->
-      <div id="for-invisible-scroll" class="hack" aria-hidden="true"></div>
-      <!-- <div class="hack" aria-hidden="true"></div> -->
+      <div id="for-invisible-scroll" class="hack" style="position: absolute; left: 2500px; top: 2500px;" aria-hidden="true"></div>
     </main>
 
     <section role="toolbar" class="controls">
@@ -462,12 +715,8 @@
         <button class="controls-button" aria-label="move down" onclick="onArrowButtonClick('down')">↓</button>
         <!-- FOR DEV ONLY -->
         <!-- <button class="toggle" onclick="resetSavedLandscape()">reset</button> -->
-        <!-- <button class="toggle" onclick="printPositions()">print (dev)</button> -->
-        <!-- <button class="toggle" onclick="toggleGrid()">toggle grid</button> -->
       </details>
     </section>
     <div class="veil disappear" aria-hidden></div>
-    <!-- For easy dev -->
-    <!-- <script src="./draggable.js" defer></script> -->
   </body>
 </html>

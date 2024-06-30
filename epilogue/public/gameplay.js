@@ -418,30 +418,6 @@ function onKeyDown(event) {
   }
 }
 
-// Controls for the game may exist outside this scene,
-// so listen for events and respond to them
-window.addEventListener("message", (event) => {
-  // Only allow messages from same-origin
-  if (event.origin !== window.location.origin) {
-    return
-  }
-
-  switch(event.data) {
-    case EVENT_MOVE_UP:
-      onArrowButtonClick(UP)
-      return
-    case EVENT_MOVE_DOWN:
-      onArrowButtonClick(DOWN)
-      return
-    case EVENT_MOVE_LEFT:
-      onArrowButtonClick(LEFT)
-      return
-    case EVENT_MOVE_RIGHT:
-      onArrowButtonClick(RIGHT)
-      return
-  }
-})
-
 // Just for dev :)
 // This lets me drag elements around and then just print
 // their grid positions to paste into code config,
