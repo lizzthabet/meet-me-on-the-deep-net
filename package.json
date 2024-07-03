@@ -4,11 +4,11 @@
   "description": "a browser game about intimacy, trust, and establishing connection while being anonymous",
   "main": "public/index.html",
   "scripts": {
-    "dev": "npx nodemon ./dev-server.js --ext js,html,css",
+    "dev": "npx nodemon ./dev-server.cjs --ext js,html,css",
     "build-epilogue": "npx tsc",
     "lint-epilogue": "npx eslint epilogue/",
     "dev-epilogue-be": "npx nodemon --ignore './epilogue/test/' --exec 'tsm --env-file=./epilogue/.env.local' ./epilogue/src/server.ts",
-    "dev-epilogue-fe": "FOLDER=epilogue/public npx nodemon ./dev-server.js --ext js,html,css"
+    "dev-epilogue-fe": "FOLDER=epilogue/public npx nodemon ./dev-server.cjs --ext js,html,css"
   },
   "type": "module",
   "author": "lizz thabet",
