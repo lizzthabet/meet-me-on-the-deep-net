@@ -1,0 +1,7 @@
+{
+  "name": "meet-me-on-the-deep-net",
+  "workspaces": [
+    "game",
+    "landscape"
+  ]
+}

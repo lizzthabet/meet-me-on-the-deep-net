@@ -11,7 +11,7 @@ const ws_1 = require("ws");
 const HTTP_PORT = process.env.PORT || 8089;
 // Customize the port the websocket connection uses
 // Note: update it both here and `client-websocket.ts`
-const WEBSOCKET_PORT = 8090;
+const WEBSOCKET_PORT = 8092;
 const CLIENT_WEBSOCKET_CODE = (0, fs_1.readFileSync)((0, path_1.join)(__dirname, 'client-websocket.js'), 'utf8');
 // Most static sites have a `public` folder with everything in it.
 // Customize this if it's a different folder.

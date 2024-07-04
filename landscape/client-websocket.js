@@ -3,7 +3,7 @@
 // and tweaked with Typescript
 (() => {
     // This port should match the websocket port defined in `dev-server.js`
-    const socketUrl = 'ws://localhost:8090';
+    const socketUrl = 'ws://localhost:8092';
     let socket = new WebSocket(socketUrl);
     socket.addEventListener('close', () => {
         // Then the server has been turned off,
