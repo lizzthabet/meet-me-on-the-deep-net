@@ -77,4 +77,4 @@ torrc.local
 hidden_service
 
 # test files
-epilogue/test/
+landscape/test/

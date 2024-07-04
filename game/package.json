@@ -1,0 +1,17 @@
+{
+  "name": "meet-me-on-the-deep-net",
+  "version": "1.0.0",
+  "description": "a browser game about intimacy, trust, and establishing connection while being anonymous",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "npx nodemon ./dev-server.cjs --ext js,html,css"
+  },
+  "author": "lizz thabet",
+  "contributors": [
+    "Chiara Marcial Martínez"
+  ],
+  "devDependencies": {
+    "nodemon": "^3.1.3",
+    "ws": "^8.16.0"
+  }
+}

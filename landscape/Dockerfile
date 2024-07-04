@@ -28,11 +28,11 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Copy the rest of the source files into the image.
 # DO this with a mount instead
 RUN --mount=type=bind,source=tsconfig.json,target=tsconfig.json \
-    --mount=type=bind,source=epilogue/src,target=epilogue/src \
+    --mount=type=bind,source=src,target=src \
     --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
-    npm run build-epilogue
+    npm run build
 
 # Create a stage for running the production application.
 FROM node:${NODE_VERSION}-alpine AS final
@@ -59,7 +59,7 @@ USER node
 # explicitly rename the server js so it's recognized by node as
 # a module. Compiling with ESM is necessary since tiny-http is an ESM-only
 # library and needs to be compiled as such.
-COPY --from=compile /usr/src/app/epilogue/dist/server.js ./server.mjs
+COPY --from=compile /usr/src/app/dist/server.js ./server.mjs
 
 # Expose the port that the application listens on.
 EXPOSE 4001
