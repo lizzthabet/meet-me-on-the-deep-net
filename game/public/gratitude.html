@@ -24,15 +24,112 @@
         font-size: 1.25rem;
       }
 
+      code {
+        background-color: #e5e5e5;
+        border-radius: 3px;
+        font-size: 0.8em;
+        padding: 2px 4px;
+      }
+
       a {
         text-decoration: blue 1px underline wavy;
         text-underline-offset: 5px;
       }
 
+      a.small {
+        font-size: inherit;
+      }
+
+      a.plain {
+        text-decoration: blue 1px underline solid;
+      }
+
       .footer-link + .footer-link {
         margin-left: 20px;
       }
+
+      .link-wrap {
+        line-height: 1.35;
+      }
+
+      dialog#tor-invitation {
+        max-width: min(500px, 100%);
+        position: fixed;
+        top: 15vh;
+        word-break: break-word;
+      }
+
+      li + li {
+        margin-top: 10px;
+      }
+
+      .tor-introduction > summary {
+        cursor: pointer;
+      }
+
+      .tor-link {
+        border-radius: 5px;
+        border: 1px dashed blue;
+        padding: 15px;
+      }
+
+      .tor-href {
+        display: block;
+      }
+
+      .tor-href + .copy-button {
+        display: block;
+        margin-left: auto;
+      }
+
+      .copy-button {
+        font-size: 0.75rem;
+      }
+
+      .dialog-buttons {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .dialog-button + .dialog-button {
+        margin-left: 5px;
+      }
     </style>
+    <script>
+      const EVENT_RESTART_GAME = "restart-game"
+      function openDialog(e) {
+        // This link element opens a dialog with special instructions on
+        // how to access this onion website link, so prevent the default
+        // behavior
+        if (e) {
+          e.preventDefault()
+        }
+        const dialog = document.getElementById("tor-invitation")
+        if (dialog) {
+          dialog.show()
+        }
+      }
+
+      function onPlayAgain(e) {
+        // Post a message to the parent window to navigate to the
+        // root site, since the game is played in an iframe and
+        // most browsers prevent infinite nesting of iframe windows
+        if (e) {
+          e.preventDefault()
+        }
+        window.parent.postMessage(EVENT_RESTART_GAME, window.location.origin)
+      }
+
+      function copyOnionUrl() {
+        addTextToClipboard("http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion")
+      }
+
+      function addTextToClipboard(text) {
+        navigator.clipboard.writeText(text).catch((err) => {
+          console.error("could not copy url to clipboard:", err)
+        })
+      }
+    </script>
   </head>
   <body>
     <main>
@@ -45,25 +142,70 @@
       </p>
       <p class="thank-you">
         In a web that's increasingly surveilled, extractive, and monopolized, this kind of network communication that's built on open-source tools, designed with privacy, and supported by volunteers around the world presents a counter-narrative.
-        <!-- Say more? A counter-vision? An alternative vision? -->
-        <!-- Counter-narrative to common talking points that anonymity on the internet is inherently toxic, that you're the product if you're using services for free, ... -->
       </p>
       <p class="thank-you">
-         <!-- As Alexis Shotwell says in <i>Against Purity</i>... Contesting the past -->
-         Learning about how systems like Tor operate helps me contest the logic and inevitability of technologies that we have. Connection and intimacy do come in many forms. I'm finding more and more of it through anonymity these days.
+        Learning about how systems like Tor operate helps me contest the logic and inevitability of technologies that we have. Connection and intimacy do come in many forms. I'm finding more and more of it through anonymity these days.
+      </p>
+      <p class="thank-you">
+        I'm hosting one of these websites over Tor right now, for travelers like you to visit, explore, and leave a treasure behind. Your browser and the tiny web server running from a computer in my house will do this same elaborate dance to establish secure, anonymous connection. If you'd like, <a class="glow" href="http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion" onclick="openDialog(event)">drop by for a visit</a>.
       </p>
       <p class="thank-you">See you (or not ◕ᴗ◕) on the deep net,<br/>xo lizz</p>
+      <dialog id="tor-invitation">
+        <p style="margin-top: 0;">Here's the super secret link:</p>
+        <p class="tor-link">
+          <a class="link-wrap tor-href" href="http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion">http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion</a>
+          <!-- <button class="copy-button" onclick="addTextToClipboard('http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion')">copy</button> -->
+        </p>
+        <details class="tor-introduction">
+          <summary>
+            If you've never visited a website over Tor before, here's a short introduction.
+          </summary>
+          <ul>
+            <li>
+              Websites that are only available over Tor have a long, unique <code>.onion</code> address that helps your browser find them.
+            </li>
+            <li>
+              All you need is a web browser that has Tor support. I recommend <a class="small plain" href="https://www.torproject.org/download" target="_blank">Tor Browser</a> or <a class="small plain" href="https://brave.com/download" target="_blank">Brave Browser</a>. Both respect your privacy and know how to rendezvous with the web server running on my computer.
+            </li>
+            <li>
+              With Tor Browser, you can simply go to that link. 
+            </li>
+            <li>
+              With Brave Browser, you can right click on the link and select <code>open new window with Tor</code>.
+            </li>
+            <li>
+              If you need a direct link to this page without having to play the game over again, <button class="copy-button" onclick="addTextToClipboard('https://meetmeonthedeep.net/gratitude')">copy it to your clipboard</button>.
+            </li>
+          </ul>
+        </details>
+        <!-- <p>
+          This long <code>.onion</code> link is the unique address that helps your browser find my website.
+        </p>
+        <p>
+          All you need is a browser that has Tor support. I recommend <a class="small plain" href="https://www.torproject.org/download" target="_blank">Tor Browser</a> or <a class="small plain" href="https://brave.com/download" target="_blank">Brave Browser</a>. Both of these browsers respect your privacy and know how to rendezvous with the web server running on my computer.
+        </p>
+        <p>With Tor Browser, you can simply go to that link. With Brave Browser, you can right click on the link and select "open new window with Tor."</p> -->
+
+        <p>
+          If you're dialing in from a place where accessing or using Tor could put you at risk, I'll have an alternative version of the collaborative landscape available soon. ♡
+          <!-- or you'd prefer not to use Tor, you can try using a third-party proxy that's responsible for accessing the Tor website on your behalf. You'll lose the anonymity protection of using Tor, and you need to rely on the trustworthiness of the third-party proxy. (I've tested <code>onion.ly</code> a few times and seen no shady behavior, but I make no guarantees! Use at your own risk. ) -->
+        </p>
+        <div class="dialog-buttons">
+          <button class="dialog-button" onclick="addTextToClipboard('http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion')">copy link to clipboard</button>
+          <form class="dialog-button" method="dialog"><button>close</button></form>
+        </div>
+      </dialog>
     </main>
     <footer>
       <p class="glow">Handcoded by <a href="https://lizz.website">Lizz Thabet</a> with music by <button>Dave</button></p>
       <p>
-        Made with <span class="blue">✎♡☁</span> during <a class="glow" href="https://www.welcometomyhomepage.net" target="_blank">Welcome to my Homepage</a>
+        Made with <span class="blue">✎♡☁</span> during <a class="glow" href="https://www.welcometomyhomepage.net" target="_blank">Welcome to my Homepage</a> and <a class="glow" href="https://summerofprotocols.com" target="_blank">Summer of Protocols</a>
       </p>
       <p class="glow">
         Many thanks to both the new & old friends who listened, played, and guided this game along with me, especially Rachel Stuckey, Coby West, Walt Mitchell, Eriane Austria, and Chiara Marcial Martínez.
       </p>
       <p>
-        <a class="footer-link" href="/">Play again</a>
+        <a class="footer-link" href="/" onclick="onPlayAgain(event)">Play again</a>
         <a class="footer-link" href="https://github.com/lizzthabet/meet-me-on-the-deep-net">View code</a>
         <a class="footer-link" href="https://self-host.lizz.website">Learn about hosting websites with Tor</a>
       </p>

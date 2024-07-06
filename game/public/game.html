@@ -27,6 +27,7 @@
       // will receive these events
       const EVENT_PLAY_MAIN_TRACK = "play-main-track"
       const EVENT_PLAY_MELODY = "play-melody"
+      const EVENT_RESTART_GAME = "restart-game"
 
       // will send these events
       const EVENT_MOVE_UP = 'move-up'
@@ -98,6 +99,9 @@
               return
             case EVENT_PLAY_MELODY:
               setUpMelody(false)
+              return
+            case EVENT_RESTART_GAME:
+              window.location.assign("/")
               return
           }
         })
