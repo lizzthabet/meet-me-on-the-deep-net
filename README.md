@@ -9,7 +9,7 @@ The game is hosted through Netlify and set up with automatic deployments, while 
 ## local development
 
 ```sh
-npm run dev
+npm run dev -w game
 ```
 
 The main game content is all HTML, CSS, and JavaScript. To work on it locally, there's a simple HTTP server that uses a websocket connection to hot reload the browser window when the connection is severed. Nodemon watches for file changes and restarts the dev server (thus triggering the browser page reload!).
@@ -33,11 +33,11 @@ DATA_DIR="./epilogue/test"
 
 To run the backend server with hot reloading for `.ts` files:
 ```sh
-npm run dev-epilogue-be
+npm run dev-server -w landscape
 ```
 
 To run the frontend site with hot reloading for `/public` files:
 ```sh
-npm run dev-epilogue-fe
+npm run dev-site -w landscape
 ```
 Note: outside of local development, the backend server is responsible for serving up static assets in `epilogue/public`.
