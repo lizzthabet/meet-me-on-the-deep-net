@@ -57,6 +57,7 @@
         position: fixed;
         top: 15vh;
         word-break: break-word;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
       }
 
       li + li {
@@ -73,7 +74,7 @@
         padding: 15px;
       }
 
-      .tor-href {
+      /* .tor-href {
         display: block;
       }
 
@@ -84,7 +85,7 @@
 
       .copy-button {
         font-size: 0.75rem;
-      }
+      } */
 
       .dialog-buttons {
         display: flex;
@@ -151,7 +152,7 @@
       </p>
       <p class="thank-you">See you (or not ◕ᴗ◕) on the deep net,<br/>xo lizz</p>
       <dialog id="tor-invitation">
-        <p style="margin-top: 0;">Here's the super secret link:</p>
+        <p style="margin-top: 0;">Here's the link:</p>
         <p class="tor-link">
           <a class="link-wrap tor-href" href="http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion">http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion</a>
           <!-- <button class="copy-button" onclick="addTextToClipboard('http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion')">copy</button> -->
@@ -178,17 +179,8 @@
             </li>
           </ul>
         </details>
-        <!-- <p>
-          This long <code>.onion</code> link is the unique address that helps your browser find my website.
-        </p>
-        <p>
-          All you need is a browser that has Tor support. I recommend <a class="small plain" href="https://www.torproject.org/download" target="_blank">Tor Browser</a> or <a class="small plain" href="https://brave.com/download" target="_blank">Brave Browser</a>. Both of these browsers respect your privacy and know how to rendezvous with the web server running on my computer.
-        </p>
-        <p>With Tor Browser, you can simply go to that link. With Brave Browser, you can right click on the link and select "open new window with Tor."</p> -->
-
         <p>
           If you're dialing in from a place where accessing or using Tor could put you at risk, I'll have an alternative version of the collaborative landscape available soon. ♡
-          <!-- or you'd prefer not to use Tor, you can try using a third-party proxy that's responsible for accessing the Tor website on your behalf. You'll lose the anonymity protection of using Tor, and you need to rely on the trustworthiness of the third-party proxy. (I've tested <code>onion.ly</code> a few times and seen no shady behavior, but I make no guarantees! Use at your own risk. ) -->
         </p>
         <div class="dialog-buttons">
           <button class="dialog-button" onclick="addTextToClipboard('http://2fni3t2qjajjtmxa3spk73rugdyznalfxess4a2mfspltlkcy55z5nqd.onion')">copy link to clipboard</button>
