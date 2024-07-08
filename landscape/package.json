@@ -7,7 +7,7 @@
     "build": "npx tsc",
     "lint": "npx eslint",
     "dev-site": "FOLDER=public PORT=8091 npx nodemon ./dev-server.cjs --ext js,html,css",
-    "dev-server": "npx nodemon --ignore './test/' --exec 'tsm --env-file=.env.local' ./src/server.ts"
+    "dev-server": "npx nodemon --ignore '*.json' --exec 'tsm --env-file=.env.local' ./src/server.ts"
   },
   "type": "module",
   "author": "lizz thabet",
