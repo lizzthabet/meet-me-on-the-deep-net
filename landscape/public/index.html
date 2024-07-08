@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>you've crossed an ocean and now you're here</title>
-    <link rel="stylesheet" type="text/css" href="./styles_website.css" />
+    <link rel="icon" href="favicon.ico" />
     <script src="./gameplay.js" defer></script>
     <style>
       /* z-indexing creates these layers:
@@ -271,10 +271,10 @@
       .info {
         background-color: white;
         display: inline-block;
-        font-size: 1.125rem;
+        font-size: 1.25rem;
         margin: 1px;
         width: 100vh;
-        max-width: 500px;
+        max-width: 600px;
         padding: 10px;
         z-index: 2;
       }
@@ -287,12 +287,18 @@
       }
       
       .info.info-short {
-        max-width: 250px;
+        max-width: 400px;
+      }
+
+      .info-mini {
+        border: 1px solid violet;
+        border-radius: 5px;
+        max-width: 530px;
       }
       
       .info.info-mini,
       .info.info-mini > a {
-        font-size: 0.9rem;
+        font-size: 1rem;
       }
 
       .mini-symbol {
@@ -663,16 +669,16 @@
   <body>
     <main>
       <!-- An invitation -->
-      <p class="info" style="position: absolute; left: 100px; top: 150px;" data-obstacle>Welcome, stranger.</p>
-      <p class="info" style="position: absolute; left: 100px; top: 200px;" data-obstacle>You've crossed an ocean to be here. Or rather, your browser has crossed an ocean to meet my tiny web server running on a tiny computer on a desk in my house.</p>
-      <p class="info" style="position: absolute; left: 100px; top: 300px;" data-obstacle>Wanna explore? Leave a piece of earth behind? This place is filled with islands from other strangers who have made this journey and created places for you to visit.</p>
-      <p class="info" style="position: absolute; left: 100px; top: 400px;" data-obstacle>Here, you, too, can create your own island for future strangers to cross an ocean to meet.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 150px;" data-obstacle>Welcome, traveler.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 200px;" data-obstacle>You've made it! You have crossed an ocean to be here. Or rather, your browser has crossed an ocean to meet my tiny web server running on a tiny computer on a desk in my house.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 300px;" data-obstacle>Wanna explore? Leave a piece of earth behind? This place is filled with islands from other travelers who have made this journey and created places for you to visit.</p>
+      <p class="info" style="position: absolute; left: 100px; top: 400px;" data-obstacle>Here, you, too, can create your own island for future travelers to cross an ocean to meet.</p>
       <figure id="you" class="cell center" style="position: absolute; left: 102.5px; top: 602.5px;">you</figure>
       <button id="explore" class="cell two-cell-h fade" onclick="onExploreClick()" style="position: absolute; left: 500px; top: 600px;" data-obstacle>explore</button>
       <div class="veil-landscape fade" aria-hidden="true"></div>
 
       <!-- Orientation -->
-      <p class="info" style="position: absolute; left: 1650px; top: 250px;" data-obstacle><i>How to explore and create your own island:</i></p>
+      <p class="info info-short" style="position: absolute; left: 1650px; top: 250px;" data-obstacle><i>How to explore and create your own island:</i></p>
       <p class="info" style="position: absolute; left: 1600px; top: 350px;" data-obstacle>Move <u><b>you</b></u> around by using the arrow keys on your keyboard or the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;controls</b> menu.</p>
       <p class="info" style="position: absolute; left: 1550px; top: 450px;" data-obstacle>Press <code>space</code> to place a tile on the grid, and press <code>space</code> again to remove the tile. You can only edit spaces you've added during your visit.</p>
       <p class="info" style="position: absolute; left: 1500px; top: 550px;" data-obstacle>Press any number between <code>0</code> and <code>9</code> on your keyboard to change the current tile color or use the buttons in the <b><span class="mini-symbol">▶</span>&nbsp;palette</b> menu.</p>
@@ -680,7 +686,7 @@
       <!-- A note on communal space -->
       <section id="community" aria-label="community agreement" style="position: absolute; left: 1600px; top: 750px;" data-obstacle>
         <p class="info info-mini"><i>This is a communal digital space, and it's tended to from time-to-time.</i> ♡</p>
-        <p class="info info-mini">There is no room for racist, sexist, classist, xenophobic, transphobic, zionist, or fascist gestures. Any imagery or gestures that are harmful and unkind will be removed.</p>
+        <p class="info info-mini">There is no room for racist, sexist, classist, xenophobic, transphobic, zionist, or fascist gestures. Any imagery that is harmful and unkind will be removed.</p>
         <p class="info info-mini">If you come across something that you think violates these guidelines, <a href="mailto:lizzthabet@proton.me">send me a note</a>. It's possible it's popped up between my tending sessions.</p>
       </section>
 
@@ -713,8 +719,6 @@
         <button class="controls-button" aria-label="move left" onclick="onArrowButtonClick('left')">←</button>
         <button class="controls-button" aria-label="move right" onclick="onArrowButtonClick('right')">→</button>
         <button class="controls-button" aria-label="move down" onclick="onArrowButtonClick('down')">↓</button>
-        <!-- FOR DEV ONLY -->
-        <!-- <button class="toggle" onclick="resetSavedLandscape()">reset</button> -->
       </details>
     </section>
     <div class="veil disappear" aria-hidden></div>
