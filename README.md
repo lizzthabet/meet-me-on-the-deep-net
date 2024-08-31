@@ -6,6 +6,8 @@ The journeys a player can make are inspired by how secure rendezvous points are 
 
 The game is hosted through Netlify and set up with automatic deployments, while the game epilogue is self-hosted using Tor.
 
+![game-in-browser](https://github.com/user-attachments/assets/a6fccd7c-21f3-4831-a704-1515cf50fa72)
+
 ## the game
 
 The main game content is all vanilla HTML, CSS, and JavaScript. No dependencies, just a little math and optimism. :)
