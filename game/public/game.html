@@ -57,19 +57,46 @@
           game.contentWindow.focus()
         }
 
-        function setUpMainAudioLoop(autoplay = true) {
-          const mainAudioTrack = new Audio("../assets/static-chirps.m4a")
-          mainAudioTrack.preload = "auto"
-          mainAudioTrack.loop = true
-          if (autoplay) {
-            mainAudioTrack.autoplay = autoplay
+        const TRACK_FADE_DURATION_SEC = 13
+        function fadeInAudio(e) {
+          const { target } = e
+          if (!target || !(target instanceof HTMLAudioElement)) {
+            return
+          }
+          if (target.currentTime <= TRACK_FADE_DURATION_SEC) {
+            target.volume = 1 - ((TRACK_FADE_DURATION_SEC - target.currentTime) / TRACK_FADE_DURATION_SEC)
           } else {
-            mainAudioTrack.addEventListener("canplay", () => {
-              mainAudioTrack.play()
-            })
+            // Subsequent loops of the track (if there are any) shouldn't fade in,
+            // so remove this event listener
+            target.removeEventListener("timeupdate", fadeInAudio)
+          }
+        }
+
+        function playAndFade(e) {
+          const { target } = e
+          if (!target || !(target instanceof HTMLAudioElement)) {
+            return
+          }
+          target.volume = 0
+          target.addEventListener("timeupdate", fadeInAudio)
+          target.play()
+          // Remove the event listener so there isn't a repeat fade-in
+          // whenever the track loops
+          target.removeEventListener("canplay", playAndFade)
+        }
+
+        function setUpMainAudioLoop(autoplay = true) {
+          const mainTrack = new Audio("../assets/static-chirps.m4a")
+          mainTrack.preload = "auto"
+          mainTrack.loop = true
+
+          if (autoplay) {
+            mainTrack.autoplay = autoplay
+          } else {
+            mainTrack.addEventListener("canplay", playAndFade)
           }
 
-          return mainAudioTrack
+          return mainTrack
         }
 
         function setUpMelody(autoplay = true) {
